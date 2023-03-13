@@ -20,7 +20,7 @@ $lessons = get_posts($args);
 $button_styles = array();
 while (have_posts()) : the_post();
 global $wpdb;
-$trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections WHERE trek_id={$post->ID}");
+$trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections WHERE trek_id={$post->ID} ORDER BY sort");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -677,8 +677,9 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
         jQuery('.assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user').css('background-color', '#eaedf1');
         
         window.selectedCalendarEvent = null;
-        let apiUrl = window.location.origin + '/wp-json/lms/v1/';
-        var apiUrlLoadAssignments = window.location.origin + '/wp-json/lms/v1/get/all/trek/events?user_id=<?php echo get_current_user_id() ?>';
+        let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+        let apiUrl = host + '/wp-json/lms/v1/';
+        var apiUrlLoadAssignments = host + '/wp-json/lms/v1/get/all/trek/events?user_id=<?php echo get_current_user_id() ?>';
         var calendarEl = document.getElementById('assignmentCalendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
           selectable: true,
