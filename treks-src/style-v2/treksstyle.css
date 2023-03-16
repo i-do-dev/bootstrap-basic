@@ -26,6 +26,114 @@ body {
   line-height: 24px;
   color: #000000;
 }
+/* Header Section Style */
+.treks-nav {
+  background: #ffffff !important;
+}
+.header-section {
+  background-color: var(--main-color-white);
+  height: 80px;
+}
+
+.header-section-div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header-logo-search {
+  display: flex;
+}
+ul {
+  padding-left: 0 !important;
+}
+.header-logo {
+  padding: 16px 0px 16px 16px;
+}
+
+.header-search {
+  border: 1px solid #979797;
+  border-radius: 8px;
+  width: 320px;
+
+  height: 40px;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 48px;
+}
+@media (max-width: 991px) {
+  .header-search {
+    width: 100%;
+
+    height: 40px;
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 0px;
+  }
+}
+
+.header-search input {
+  display: block;
+  border: none;
+  outline: none;
+
+  /* font-family: var(--main-secondary-font); */
+  font-family: "Droid Sans";
+  font-style: normal;
+  font-weight: 100;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.header-notification-user {
+  display: flex;
+}
+.header-notification {
+  cursor: pointer;
+  padding-top: 30px;
+  padding-bottom: 34px;
+  margin-right: 35px;
+}
+.header-user {
+  display: flex;
+}
+.header-user .user-avatar {
+  padding: 16px 0;
+  margin-right: 6px;
+}
+
+.header-user .user-detail {
+  padding-top: 16px;
+}
+
+.header-user .user-detail span:nth-child(1) {
+  display: block;
+  font-family: var(--main-primary-font);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--main-color-black);
+}
+
+.header-user .user-detail span:nth-child(2) {
+  display: block;
+  font-family: var(--main-secondary-font);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 16px;
+  color: #979797;
+}
+.header-user .user-options {
+  cursor: pointer;
+  padding-top: 37px;
+  padding-left: 22px;
+  padding-right: 22px;
+}
 
 /* Nav Section Style */
 
@@ -206,11 +314,7 @@ body {
   background: #979797;
 }
 
-.my-trk-detail-section-div
-  .detail-prep-tags
-  .overview-poly-body
-  .tags-body-detail
-  span {
+.my-trk-detail-section-div .detail-prep-tags .overview-poly-body .tags-body-detail span {
   color: #979797;
 }
 /* recall-poly-body */
@@ -221,11 +325,7 @@ body {
 .detail-prep-tags .recall-poly-body .tags-body-polygon {
   background: #ca2738;
 }
-.my-trk-detail-section-div
-  .detail-prep-tags
-  .recall-poly-body
-  .tags-body-detail
-  span {
+.my-trk-detail-section-div .detail-prep-tags .recall-poly-body .tags-body-detail span {
   color: #ca2738;
 }
 
@@ -237,11 +337,7 @@ body {
 .detail-prep-tags .pa-poly-body .tags-body-polygon {
   background: #1fa5d4;
 }
-.my-trk-detail-section-div
-  .detail-prep-tags
-  .pa-poly-body
-  .tags-body-detail
-  span {
+.my-trk-detail-section-div .detail-prep-tags .pa-poly-body .tags-body-detail span {
   color: #1fa5d4;
 }
 /*  pb-poly-body */
@@ -252,11 +348,7 @@ body {
 .detail-prep-tags .pb-poly-body .tags-body-polygon {
   background: #1fa5d4;
 }
-.my-trk-detail-section-div
-  .detail-prep-tags
-  .pb-poly-body
-  .tags-body-detail
-  span {
+.my-trk-detail-section-div .detail-prep-tags .pb-poly-body .tags-body-detail span {
   color: #1fa5d4;
 }
 /*  apply-poly-body */
@@ -267,11 +359,7 @@ body {
 .detail-prep-tags .apply-poly-body .tags-body-polygon {
   background: #9fc33b;
 }
-.my-trk-detail-section-div
-  .detail-prep-tags
-  .apply-poly-body
-  .tags-body-detail
-  span {
+.my-trk-detail-section-div .detail-prep-tags .apply-poly-body .tags-body-detail span {
   color: #9fc33b;
 }
 
@@ -416,10 +504,7 @@ body {
 .intg-stand-section-div .intg-stand-detail {
   margin-top: 8px;
 }
-.intg-stand-section-div
-  .intg-stand-detail-list
-  .intg-stand-detail
-  .main-detail {
+.intg-stand-section-div .intg-stand-detail-list .intg-stand-detail .main-detail {
   margin-left: 26px;
   margin-bottom: 0px !important;
 }
@@ -465,38 +550,7 @@ body {
 
 .students-modal .modal-content .modal-header .modal-header-title img,
 .students-modal .modal-content .modal-header .btn-close,
-.assignment-modal
-  .modal-content
-  .modal-body
-  .assignment-modal-left
-  .assignment-left-header
-  img,
-.students-modal
-  .modal-content
-  .modal-body
-  .students-breadcrumb
-  .students-breadcrumb-arrow,
-.students-modal
-  .modal-content
-  .modal-body
-  .filters-students
-  .filter-header
-  .filter
-  img,
-.students-modal
-  .modal-content
-  .modal-body
-  .filters-students
-  .filter-header
-  .filter-sort-by
-  img,
-.students-modal
-  .modal-content
-  .modal-body
-  .filters-students
-  .student
-  .report
-  img {
+.assignment-modal .modal-content .modal-body .assignment-modal-left .assignment-left-header img {
   width: 24px;
   height: 24px;
 }
@@ -513,16 +567,8 @@ body {
   margin-bottom: 16px;
 }
 
-.students-modal
-  .modal-content
-  .modal-body
-  .students-breadcrumb
-  .interdependence-user,
-.students-modal
-  .modal-content
-  .modal-body
-  .students-breadcrumb
-  .interdependence-tab {
+.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-user,
+.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -553,6 +599,10 @@ body {
   line-height: 24px;
   color: #000000;
   margin: 0;
+}
+.students-modal .modal-content .modal-body .students-breadcrumb .students-breadcrumb-arrow {
+  width: 24px;
+  height: 24px;
 }
 
 .students-modal
@@ -603,12 +653,7 @@ body {
   .students-breadcrumb
   .interdependence-tab
   .inter-tab-polygon-name,
-.assignment-modal
-  .modal-content
-  .modal-body
-  .assignment-modal-left
-  .recall-user
-  .inter-user-name {
+.assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-user-name {
   font-family: "Nunito";
   font-style: normal;
   font-weight: 500;
@@ -633,14 +678,7 @@ body {
 .students-modal .modal-content .modal-body .students-table .table > thead {
   background-color: #f6f7fa !important;
 }
-.students-modal
-  .modal-content
-  .modal-body
-  .students-table
-  .table
-  > thead
-  > tr
-  > th {
+.students-modal .modal-content .modal-body .students-table .table > thead > tr > th {
   font-family: "Nunito";
   font-style: normal;
   font-weight: 700;
@@ -650,15 +688,7 @@ body {
   padding: 8px;
 }
 
-.students-modal
-  .modal-content
-  .modal-body
-  .students-table
-  .table
-  > tbody
-  > tr
-  > td
-  > .table-user {
+.students-modal .modal-content .modal-body .students-table .table > tbody > tr > td > .table-user {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -719,14 +749,7 @@ body {
   margin: 0;
 }
 
-.students-modal
-  .modal-content
-  .modal-body
-  .students-table
-  .table
-  > tbody
-  > tr
-  > td {
+.students-modal .modal-content .modal-body .students-table .table > tbody > tr > td {
   font-family: "Nunito";
   font-style: normal;
   font-weight: 500;
@@ -781,35 +804,12 @@ body {
   height: 707px;
   background: #f6f7fa;
 }
-.assignment-modal
-  .modal-content
-  .modal-body
-  .assignment-modal-left
-  .assignment-left-header {
+.assignment-modal .modal-content .modal-body .assignment-modal-left .assignment-left-header {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.assignment-modal
-  .modal-content
-  .modal-body
-  .assignment-modal-left
-  .assignment-left-header
-  p,
-.students-modal
-  .modal-content
-  .modal-body
-  .filters-students
-  .filter-header
-  .filter
-  p,
-.students-modal
-  .modal-content
-  .modal-body
-  .filters-students
-  .filter-header
-  .filter-sort-by
-  p {
+.assignment-modal .modal-content .modal-body .assignment-modal-left .assignment-left-header p {
   font-family: "Nunito";
   font-style: normal;
   font-weight: 500;
@@ -819,12 +819,7 @@ body {
   margin: 0;
 }
 
-.assignment-modal
-  .modal-content
-  .modal-body
-  .assignment-modal-left
-  .assignment-left-detail
-  h1 {
+.assignment-modal .modal-content .modal-body .assignment-modal-left .assignment-left-detail h1 {
   font-family: "Nunito";
   font-style: normal;
   font-weight: 700;
@@ -833,12 +828,7 @@ body {
   color: #000000;
   margin: 0 0 8px;
 }
-.assignment-modal
-  .modal-content
-  .modal-body
-  .assignment-modal-left
-  .assignment-left-detail
-  p {
+.assignment-modal .modal-content .modal-body .assignment-modal-left .assignment-left-detail p {
   font-family: "Nunito";
   font-style: normal;
   font-weight: 500;
@@ -847,11 +837,7 @@ body {
   color: #000000;
   margin: 0;
 }
-.assignment-modal
-  .modal-content
-  .modal-body
-  .assignment-modal-left
-  .interdependence-user {
+.assignment-modal .modal-content .modal-body .assignment-modal-left .interdependence-user {
   display: flex;
   align-items: center;
   padding: 4px;
@@ -888,11 +874,7 @@ body {
   color: #000000;
   margin: 0;
 }
-.assignment-modal
-  .modal-content
-  .modal-body
-  .assignment-modal-left
-  .assignment-left-label {
+.assignment-modal .modal-content .modal-body .assignment-modal-left .assignment-left-label {
   width: 100%;
 }
 .assignment-modal
@@ -901,12 +883,7 @@ body {
   .assignment-modal-left
   .assignment-left-label
   .taek-label,
-.assignment-modal
-  .modal-content
-  .modal-body
-  .assignment-modal-left
-  .assignment-search
-  .taek-label {
+.assignment-modal .modal-content .modal-body .assignment-modal-left .assignment-search .taek-label {
   font-family: "Droid Sans";
   font-style: normal;
   font-weight: 400;
@@ -917,11 +894,7 @@ body {
   padding-left: 8px;
 }
 
-.assignment-modal
-  .modal-content
-  .modal-body
-  .assignment-modal-left
-  .recall-user {
+.assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user {
   display: flex;
   align-items: center;
   padding: 12px 8px 12px 12px;
@@ -932,11 +905,7 @@ body {
   border-radius: 8px;
 }
 
-.assignment-modal
-  .modal-content
-  .modal-body
-  .assignment-modal-left
-  .assignment-search {
+.assignment-modal .modal-content .modal-body .assignment-modal-left .assignment-search {
   width: 100%;
 }
 .assignment-modal
@@ -966,11 +935,7 @@ body {
   padding: 16px 16px 24px;
   width: 100%;
 }
-.assignment-modal
-  .modal-content
-  .modal-body
-  .assignment-modal-right
-  .assignment-right-header {
+.assignment-modal .modal-content .modal-body .assignment-modal-right .assignment-right-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -993,11 +958,7 @@ body {
   color: #000000;
   margin: 0;
 }
-.assignment-modal
-  .modal-content
-  .modal-body
-  .assignment-modal-right
-  .assignment-calendar {
+.assignment-modal .modal-content .modal-body .assignment-modal-right .assignment-calendar {
   width: 100%;
   height: 547px;
   background: #f6f7fa;
@@ -1005,11 +966,7 @@ body {
   border-radius: 16px;
   margin-bottom: 24px;
 }
-.assignment-modal
-  .modal-content
-  .modal-body
-  .assignment-modal-right
-  .assignment-right-btn {
+.assignment-modal .modal-content .modal-body .assignment-modal-right .assignment-right-btn {
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -1096,14 +1053,7 @@ body {
   .assignment-search-result
   .search-user
   .user-name-detail
-  h5,
-.students-modal
-  .modal-content
-  .modal-body
-  .filters-students
-  .student
-  .detail
-  h6 {
+  h5 {
   font-family: "Nunito";
   font-style: normal;
   font-weight: 500;
@@ -1120,13 +1070,6 @@ body {
   .assignment-search-result
   .search-user
   .user-name-detail
-  p,
-.students-modal
-  .modal-content
-  .modal-body
-  .filters-students
-  .student
-  .detail
   p {
   font-family: "Droid Sans";
   font-style: normal;
@@ -1134,99 +1077,6 @@ body {
   font-size: 10px;
   line-height: 16px;
   color: #979797;
-  margin: 0;
-}
-
-.students-modal .modal-content .modal-body .filters-students {
-  padding: 8px;
-}
-
-.students-modal .modal-content .modal-body .filters-students .filter-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 8px 16px;
-  gap: 8px;
-  width: 100%;
-  height: auto;
-  border-bottom: 1px solid #eaedf1;
-  margin-bottom: 8px;
-}
-
-.students-modal
-  .modal-content
-  .modal-body
-  .filters-students
-  .filter-header
-  .filter {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.students-modal
-  .modal-content
-  .modal-body
-  .filters-students
-  .filter-header
-  .filter-sort-by {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.students-modal .modal-content .modal-body .filters-students .student {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 4px;
-  border-bottom: 1px solid #eaedf1;
-}
-
-.students-modal
-  .modal-content
-  .modal-body
-  .filters-students
-  .student
-  .user-details {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.students-modal
-  .modal-content
-  .modal-body
-  .filters-students
-  .student
-  .user-details
-  .user {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.students-modal .modal-content .modal-body .filters-students .student .report {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-end;
-}
-.students-modal
-  .modal-content
-  .modal-body
-  .filters-students
-  .student
-  .report
-  a {
-  font-family: "Nunito";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 24px;
-  text-decoration-line: underline;
-  color: #0b5d7a;
   margin: 0;
 }
 

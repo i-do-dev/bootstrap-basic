@@ -1,5 +1,7 @@
 <?php
+get_template_part('lxp/functions');
 global $treks_src;
+$district_post = lxp_get_user_district_post();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,7 +64,7 @@ global $treks_src;
 
     <!-- Welcome: section-->
     <div class="welcome-section">
-        <h2 class="welcome-heading">Welcome Kristin!</h2>
+        <h2 class="welcome-heading">Welcome <?php echo $district_post->post_title; ?>!</h2>
         <p class="welcome-text">Here's how your academic system looks like</p>
     </div>
 
@@ -71,39 +73,39 @@ global $treks_src;
         <div class="cards-box">
             <div class="card">
                 <img src="<?php echo $treks_src; ?>/assets/img/home-logo.svg" alt="logo" />
-                <h3 class="numbers-heading">25</h3>
+                <h3 class="numbers-heading"><?php echo count( lxp_get_district_schools($district_post->ID) ); ?></h3>
                 <p class="name-text">Schools</p>
             </div>
             <div class="card">
                 <img src="<?php echo $treks_src; ?>/assets/img/verified-user.svg" alt="logo" />
-                <h3 class="numbers-heading">349</h3>
+                <h3 class="numbers-heading">0</h3>
                 <p class="name-text">Teachers</p>
             </div>
             <div class="card">
                 <img src="<?php echo $treks_src; ?>/assets/img/user.svg" alt="logo" />
-                <h3 class="numbers-heading">869</h3>
+                <h3 class="numbers-heading">0</h3>
                 <p class="name-text">Students</p>
             </div>
         </div>
     </section>
 
     <!-- Recent TREKs -->
-    <section class="recent-treks-section">
+    <!-- <section class="recent-treks-section">
         <div class="recent-treks-section-div">
-            <!--  TREKs header-->
+            
             <div class="recent-treks-header section-div-header">
                 <h2>Top TREKs</h2>
                 <div>
                     <a href="#">See All</a>
                 </div>
             </div>
-            <!-- TREKs cards -->
+            
             <div class="recent-treks-cards-list">
-                <!-- each cards  -->
-                <!-- card 1 -->
+                
+                
                 <div class="recent-treks-card-body">
                     <div>
-                        <img src="<?php echo $treks_src; ?>/assets/img/admin_rec_tre_img1.svg" />
+                        <img src="<?php // echo $treks_src; ?>/assets/img/admin_rec_tre_img1.svg" />
                     </div>
                     <div>
                         <h3>5.12A Interdependence</h3>
@@ -111,10 +113,10 @@ global $treks_src;
                     </div>
                 </div>
 
-                <!-- card 2 -->
+                
                 <div class="recent-treks-card-body">
                     <div>
-                        <img src="<?php echo $treks_src; ?>/assets/img/admin_rec_tre_img2.svg" />
+                        <img src="<?php // echo $treks_src; ?>/assets/img/admin_rec_tre_img2.svg" />
                     </div>
                     <div>
                         <h3>5.7B Forces & Experimental Design</h3>
@@ -122,10 +124,10 @@ global $treks_src;
                     </div>
                 </div>
 
-                <!-- card 3 -->
+                
                 <div class="recent-treks-card-body">
                     <div>
-                        <img src="<?php echo $treks_src; ?>/assets/img/admin_rec_tre_img3.svg" />
+                        <img src="<?php // echo $treks_src; ?>/assets/img/admin_rec_tre_img3.svg" />
                     </div>
                     <div>
                         <h3>5.6A Physical Properties</h3>
@@ -134,7 +136,7 @@ global $treks_src;
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
 
 

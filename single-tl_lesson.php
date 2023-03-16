@@ -1,4 +1,7 @@
 <?php
+get_template_part('trek/functions');
+lxp_login_check();
+
 // $treks_src = plugin_dir_url(__FILE__) . '../treks-src';
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 

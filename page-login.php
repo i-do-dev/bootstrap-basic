@@ -100,10 +100,11 @@ while (have_posts()) : the_post();
 
             <?php
               if (!is_user_logged_in()) {
+                $redirect_to = isset($_GET['redirect']) ? urldecode($_GET['redirect']) : site_url("/dashboard");
                 $args = array(
                   'echo' => true,
                   'label_username' => 'Email &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
-                  'redirect' => site_url("/dashboard")
+                  'redirect' => $redirect_to
                 );
                 wp_login_form($args); 
               }

@@ -2,7 +2,9 @@
 function lxp_login_check()
 {
   if (!is_user_logged_in()) {
-    wp_redirect(site_url('login'));
+    global $wp;
+    $url = "http" . (isset($_SERVER["HTTPS"]) ? "s" : "") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    wp_redirect(site_url('login') . '?redirect=' . urlencode($url));
   }
 }
 

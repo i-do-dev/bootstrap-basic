@@ -11,7 +11,6 @@
 .welcome-section .welcome-heading {
   font-family: "Nunito";
   font-style: normal;
-  margin: 0;
   font-weight: 700;
   font-size: 36px;
   line-height: 48px;
@@ -22,7 +21,6 @@
   font-family: "Droid Sans";
   font-style: normal;
   font-weight: 400;
-  margin: 0;
   font-size: 14px;
   line-height: 24px;
   color: #757575;
