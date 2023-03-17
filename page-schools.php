@@ -150,7 +150,7 @@ while (have_posts()) : the_post();
                             </div>
                             <!-- <div class="row-box">
                                 <p class="showing-row-text">First</p>
-                                <img class="previous-slide-img" src="<?php echo $treks_src; ?>/assets/img/previous-arrow.svg" alt="logo" />
+                                <img class="previous-slide-img" src="<?php // echo $treks_src; ?>/assets/img/previous-arrow.svg" alt="logo" />
                                 <div class="slides-boxes">
                                     <div class="slide-box"><span class="showing-row-text slide-num">1</span></div>
                                     <div class="slide-box"><span class="showing-row-text slide-num slide-num2">2</span>
@@ -158,7 +158,7 @@ while (have_posts()) : the_post();
                                     <div class="slide-box"><span class="showing-row-text slide-num slide-num2">3</span>
                                     </div>
                                 </div>
-                                <img class="last-slide-img" src="<?php echo $treks_src; ?>/assets/img/last-slide.svg" alt="logo" />
+                                <img class="last-slide-img" src="<?php // echo $treks_src; ?>/assets/img/last-slide.svg" alt="logo" />
                                 <p class="showing-row-text">Last</p>
                             </div> -->
                         </div>
@@ -221,7 +221,7 @@ while (have_posts()) : the_post();
                                             <div class="table-status"><?php echo get_userdata(get_post_meta($school->ID, 'lxp_school_admin_id', true))->display_name; ?></div>
                                         </td>
                                         <td><?php echo $school->ID; ?></td>
-                                        <td>0</td>
+                                        <td><?php echo count(lxp_get_school_teachers($school->ID)); ?></td>
                                         <td>0</td>
                                         <td>Texas</td>
                                         <td>
@@ -305,7 +305,7 @@ while (have_posts()) : the_post();
                     jQuery('#inputLastName').val(admin.last_name);
                     jQuery('#inputEmail').val(admin.user_email);
                     jQuery('#inputEmailDefault').val(admin.user_email);
-                    jQuery('#inputPassword').val(admin.user_pass);
+                    
                     schoolModalObj.show();
                 }).fail(function (response) {
                     console.error("Can not load school");

@@ -1,7 +1,8 @@
 <?php
 get_template_part('lxp/functions');
 global $treks_src;
-$district_post = lxp_get_user_district_post();
+$school_post = lxp_get_user_school_post();
+$teachers = lxp_get_school_teachers($school_post->ID);
 ?>
 
 <!DOCTYPE html>
@@ -15,6 +16,9 @@ $district_post = lxp_get_user_district_post();
     <link href="<?php echo $treks_src; ?>/style/main.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolDashboard.css" />
+    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolAdminTeachers.css" />
+    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/addNewTeacherModal.css" />
+    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/calendar.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
 </head>
@@ -49,26 +53,7 @@ $district_post = lxp_get_user_district_post();
                 </div>
                 <div class="d-flex" role="search">
                     <div class="header-notification-user">
-                        <!-- notification -->
-                        <div class="header-notification">
-                            <img src="<?php echo $treks_src; ?>/assets/img/header_bell-notification.svg" alt="svg" />
-                        </div>
-                        <!-- user detail & Image  -->
-                        <div class="header-user">
-                            <!-- User Avatar -->
-                            <div class="user-avatar">
-                                <img src="<?php echo $treks_src; ?>/assets/img/header_avatar.svg" alt="svg" />
-                            </div>
-                            <!-- User short detail -->
-                            <div class="user-detail">
-                                <span class="user-detail-name">Kristin Watson</span>
-                                <span>Science teacher</span>
-                            </div>
-                            <!-- Arrow for open menu -->
-                            <div class="user-options">
-                                <img src="<?php echo $treks_src; ?>/assets/img/header_arrow open.svg" alt="svg" />
-                            </div>
-                        </div>
+                        <?php get_template_part('trek/user-profile-block'); ?>
                     </div>
                 </div>
             </div>
@@ -78,24 +63,7 @@ $district_post = lxp_get_user_district_post();
     <!-- Nav Section -->
     <section class="main-container">
         <nav class="nav-section">
-            <ul>
-                <li class="nav-section-selected">
-                    <img src="<?php echo $treks_src; ?>/assets/img/nav_dashboard-dots.svg" />
-                    <a href="/">Dashboard</a>
-                </li>
-                <li>
-                    <img src="<?php echo $treks_src; ?>/assets/img/nav-verified-user.svg" />
-                    <a href="/">Teachers</a>
-                </li>
-                <li>
-                    <img src="<?php echo $treks_src; ?>/assets/img/nav-user.svg" />
-                    <a href="/">Students</a>
-                </li>
-                <li>
-                    <img src="<?php echo $treks_src; ?>/assets/img/nav_Treks.svg" />
-                    <a href="/">TREKs</a>
-                </li>
-            </ul>
+            <?php get_template_part('lxp/admin-nav'); ?>
         </nav>
     </section>
 
@@ -104,7 +72,7 @@ $district_post = lxp_get_user_district_post();
 
         <!-- Welcome: heading-->
         <div class="welcome-content">
-            <h2 class="welcome-heading">Welcome Nathan!</h2>
+            <h2 class="welcome-heading">Welcome <?php echo $school_post->post_title; ?>!</h2>
             <p class="welcome-text">Here's how your academic system looks like</p>
         </div>
 
@@ -114,27 +82,27 @@ $district_post = lxp_get_user_district_post();
                 <div class="cards-box">
                     <div class="card">
                         <img src="<?php echo $treks_src; ?>/assets/img/verified-user.svg" alt="logo" />
-                        <h3 class="numbers-heading">22</h3>
+                        <h3 class="numbers-heading"><?php echo count($teachers); ?></h3>
                         <p class="name-text">Teachers</p>
                     </div>
                     <div class="card">
                         <img src="<?php echo $treks_src; ?>/assets/img/classes.svg" alt="logo" />
-                        <h3 class="numbers-heading">19</h3>
+                        <h3 class="numbers-heading">0</h3>
                         <p class="name-text">Classes</p>
                     </div>
                     <div class="card">
                         <img src="<?php echo $treks_src; ?>/assets/img/groups.svg" alt="logo" />
-                        <h3 class="numbers-heading">11</h3>
+                        <h3 class="numbers-heading">0</h3>
                         <p class="name-text">Groups</p>
                     </div>
                     <div class="card">
                         <img src="<?php echo $treks_src; ?>/assets/img/user.svg" alt="logo" />
-                        <h3 class="numbers-heading">345</h3>
+                        <h3 class="numbers-heading">0</h3>
                         <p class="name-text">Students</p>
                     </div>
                     <div class="card">
                         <img src="<?php echo $treks_src; ?>/assets/img/assignment.svg" alt="logo" />
-                        <h3 class="numbers-heading">124</h3>
+                        <h3 class="numbers-heading">0</h3>
                         <p class="name-text">Assignments</p>
                     </div>
 
@@ -182,10 +150,10 @@ $district_post = lxp_get_user_district_post();
                                 <p class="filter-heading">Filter</p>
                             </div>
                         </div>
-                        <div class="add-box">
-                            <img src="<?php echo $treks_src; ?>/assets/img/add.svg" alt="logo" />
-                            <p class="add-heading">Add New Teacher</p>
-                        </div>
+                        <button class="add-heading" type="button" type="button" data-bs-toggle="modal"
+                            data-bs-target="#teacherModal" class="primary-btn">
+                            Add New Teacher
+                        </button>
                     </div>
                     <div class="students-table">
                         <table class="table">
@@ -224,191 +192,53 @@ $district_post = lxp_get_user_district_post();
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="user-box">
-                                        <div class="table-user">
-                                            <img src="<?php echo $treks_src; ?>/assets/img/user1.svg" alt="user" />
-                                            <div class="user-about">
-                                                <h5>Jane Cooper</h5>
+                                <?php 
+                                    foreach ($teachers as $teacher) {
+                                        $teacher_admin = get_userdata(get_post_meta($teacher->ID, 'lxp_teacher_admin_id', true));
+                                ?>
+                                    <tr>
+                                        <td class="user-box">
+                                            <div class="table-user">
+                                                <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="teacher" />
+                                                <div class="user-about">
+                                                    <h5><?php echo $teacher_admin->display_name?></h5>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="table-status">tranthuy.nute@gmail.com</div>
-                                    </td>
-                                    <td>4</td>
-                                    <td class="grade">
-                                        <span>
-                                            4th
-                                        </span>
-                                    </td>
-                                    <td>3627</td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <button class="dropdown_btn" type="button" id="dropdownMenu2"
-                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <img src="<?php echo $treks_src; ?>/assets/img/dots.svg" alt="logo" />
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                                <button class="dropdown-item" type="button">
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
-                                                    Edit</button>
-                                                <button class="dropdown-item" type="button">
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />
-                                                    Delete</button>
+                                        </td>
+                                        <td>
+                                            <div class="table-status"><?php echo $teacher_admin->user_email?></div>
+                                        </td>
+                                        <td>0</td>
+                                        <td class="grade">
+                                            <?php 
+                                                $teacher_grades = json_decode(get_post_meta($teacher->ID, 'grades', true));
+                                                $teacher_grades = $teacher_grades ? $teacher_grades : array();
+                                                foreach ($teacher_grades as $grade) {
+                                            ?>
+                                                <span><?php echo $grade; ?></span>
+                                            <?php        
+                                                }
+                                            ?>
+                                        </td>
+                                        <td><?php echo $teacher->ID ?></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="dropdown_btn" type="button" id="dropdownMenu2"
+                                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <img src="<?php echo $treks_src; ?>/assets/img/dots.svg" alt="logo" />
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                                    <button class="dropdown-item" type="button" onclick="onTeacherEdit(<?php echo $teacher->ID; ?>)">
+                                                        <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
+                                                        Edit</button>
+                                                    <!-- <button class="dropdown-item" type="button">
+                                                        <img src="<?php // echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />
+                                                        Delete</button> -->
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="second-row">
-                                    <td class="user-box">
-                                        <div class="table-user">
-                                            <img src="<?php echo $treks_src; ?>/assets/img/user2.svg" alt="user" />
-                                            <div class="user-about">
-                                                <h5>Wade Warren</h5>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="table-status wade-email">manhhachkt08@gmail.com</div>
-                                    </td>
-                                    <td>5</td>
-                                    <td class="grade">
-                                        <div class="grades_box">
-                                            <span class="span">4th</span>
-                                            <span class="span">5th</span>
-
-                                        </div>
-                                    </td>
-                                    <td>5322</td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <button class="dropdown_btn" type="button" id="dropdownMenu2"
-                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <img src="<?php echo $treks_src; ?>/assets/img/dots.svg" alt="logo" />
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                                <button class="dropdown-item" type="button">
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
-                                                    Edit</button>
-                                                <button class="dropdown-item" type="button">
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />
-                                                    Delete</button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="user-box">
-                                        <div class="table-user">
-                                            <img src="<?php echo $treks_src; ?>/assets/img/user3.svg" alt="user" />
-                                            <div class="user-about">
-                                                <h5>Esther Howard</h5>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="table-status">nvt.isst.nute@gmail.com</div>
-                                    </td>
-                                    <td><span>3</span></td>
-                                    <td class="grade">
-                                        <div class="grades_box">
-                                            <span>3rd</span>
-                                            <span>4th</span>
-                                        </div>
-                                    </td>
-                                    <td>3024</td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <button class="dropdown_btn" type="button" id="dropdownMenu2"
-                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <img src="<?php echo $treks_src; ?>/assets/img/dots.svg" alt="logo" />
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                                <button class="dropdown-item" type="button">
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
-                                                    Edit</button>
-                                                <button class="dropdown-item" type="button">
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />
-                                                    Delete</button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="user-box">
-                                        <div class="table-user">
-                                            <img src="<?php echo $treks_src; ?>/assets/img/user4.svg" alt="user" />
-                                            <div class="user-about">
-                                                <h5>Brooklyn Simmons</h5>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="table-status">trungkienspktnd@gamail.com</div>
-                                    </td>
-                                    <td>3</td>
-                                    <td class="grade">
-                                        <span>
-                                            5th
-                                        </span>
-                                    </td>
-                                    </td>
-                                    <td>3614</td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <button class="dropdown_btn" type="button" id="dropdownMenu2"
-                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <img src="<?php echo $treks_src; ?>/assets/img/dots.svg" alt="logo" />
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                                <button class="dropdown-item" type="button">
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
-                                                    Edit</button>
-                                                <button class="dropdown-item" type="button">
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />
-                                                    Delete</button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="user-box">
-                                        <div class="table-user">
-                                            <img src="<?php echo $treks_src; ?>/assets/img/user5.svg" alt="user" />
-                                            <div class="user-about">
-                                                <h5>Jenny Wilson</h5>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="table-status">trungkienspktnd@gamail.com</div>
-                                    </td>
-                                    <td>3</td>
-                                    <td class="grade">
-                                        <span>
-                                            3rd
-                                        </span>
-                                    </td>
-                                    </td>
-                                    <td>2984</td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <button class="dropdown_btn" type="button" id="dropdownMenu2"
-                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <img src="<?php echo $treks_src; ?>/assets/img/dots.svg" alt="logo" />
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                                <button class="dropdown-item" type="button">
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
-                                                    Edit</button>
-                                                <button class="dropdown-item" type="button">
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />
-                                                    Delete</button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>
@@ -486,6 +316,8 @@ $district_post = lxp_get_user_district_post();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
+    
+    <?php get_template_part('lxp/school-teacher-modal'); ?>
 </body>
 
 </html>
