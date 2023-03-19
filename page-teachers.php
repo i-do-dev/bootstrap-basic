@@ -11,7 +11,7 @@ switch ($userRole) {
     get_template_part('lxp/client-teachers');
     break;
   case 'lxp_school_admin':
-    //get_template_part('lxp/school-dashboard');
+    get_template_part('lxp/school-teachers');
     break;
   case 'lxp_teacher':
     //get_template_part('lxp/teacher-dashboard');

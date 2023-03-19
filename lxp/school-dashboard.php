@@ -3,6 +3,7 @@ get_template_part('lxp/functions');
 global $treks_src;
 $school_post = lxp_get_user_school_post();
 $teachers = lxp_get_school_teachers($school_post->ID);
+$students = lxp_get_school_students($school_post->ID);
 ?>
 
 <!DOCTYPE html>
@@ -21,6 +22,15 @@ $teachers = lxp_get_school_teachers($school_post->ID);
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/calendar.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+    <style type="text/css">
+        .tab-content > .active {
+            display: block !important;
+        }
+        
+        label.add-heading {
+         cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
@@ -113,139 +123,43 @@ $teachers = lxp_get_school_teachers($school_post->ID);
                     <nav class="nav-section treks_nav table_tabs">
                         <ul class="treks_ul" id="myTab" role="tablist">
                             <li>
-                                <button class="nav-link active" id="all-tab" data-bs-toggle="tab"
-                                    data-bs-target="#all-tab-pane" type="button" role="tab" aria-controls="all-tab-pane"
-                                    aria-selected="true">
+                                <button class="nav-link" data-bs-toggle="tab"
+                                    data-bs-target="#teacher-tab-content" type="button" role="tab" aria-controls="teacher-tab-content"
+                                    aria-selected="false">
                                     Teachers
+                                </button>
+                            </li>
+                            <li>
+                                <button class="nav-link active" id="completed-tab" data-bs-toggle="tab"
+                                    data-bs-target="#student-tab-content" type="button" role="tab"
+                                    aria-controls="student-tab-content" aria-selected="true">
+                                    Students
                                 </button>
                             </li>
                             <li>
                                 <button class="nav-link" id="to-tab" data-bs-toggle="tab"
                                     data-bs-target="#todo-tab-pane" type="button" role="tab"
-                                    aria-controls="todo-tab-pane" aria-selected="true">
+                                    aria-controls="todo-tab-pane" aria-selected="false">
                                     Classes
                                 </button>
                             </li>
                             <li>
                                 <button class="nav-link" id="inprogress-tab" data-bs-toggle="tab"
                                     data-bs-target="#inprogress-tab-pane" type="button" role="tab"
-                                    aria-controls="inprogress-tab-pane" aria-selected="true">
+                                    aria-controls="inprogress-tab-pane" aria-selected="false">
                                     Groups
-                                </button>
-                            </li>
-                            <li>
-                                <button class="nav-link" id="completed-tab" data-bs-toggle="tab"
-                                    data-bs-target="#completed-tab-pane" type="button" role="tab"
-                                    aria-controls="completed-tab-pane" aria-selected="true">
-                                    Students
                                 </button>
                             </li>
                         </ul>
                     </nav>
-                    <div class="add-teacher-box">
-                        <div class="search-filter-box">
-                            <input type="text" name="text" placeholder="Search..." />
-                            <div class="filter-box">
-                                <img src="<?php echo $treks_src; ?>/assets/img/filter-alt.svg" alt="filter logo" />
-                                <p class="filter-heading">Filter</p>
-                            </div>
-                        </div>
-                        <button class="add-heading" type="button" type="button" data-bs-toggle="modal"
-                            data-bs-target="#teacherModal" class="primary-btn">
-                            Add New Teacher
-                        </button>
-                    </div>
-                    <div class="students-table">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th class="">
-                                        <div class="th1">
-                                            Teacher
-                                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="th1 th2">
-                                            Email
-                                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="th1 th3">
-                                            Classes
-                                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="th1 th4">
-                                            Grades
-                                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="th1 th5">
-                                            ID
-                                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
-                                        </div>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php 
-                                    foreach ($teachers as $teacher) {
-                                        $teacher_admin = get_userdata(get_post_meta($teacher->ID, 'lxp_teacher_admin_id', true));
-                                ?>
-                                    <tr>
-                                        <td class="user-box">
-                                            <div class="table-user">
-                                                <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="teacher" />
-                                                <div class="user-about">
-                                                    <h5><?php echo $teacher_admin->display_name?></h5>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="table-status"><?php echo $teacher_admin->user_email?></div>
-                                        </td>
-                                        <td>0</td>
-                                        <td class="grade">
-                                            <?php 
-                                                $teacher_grades = json_decode(get_post_meta($teacher->ID, 'grades', true));
-                                                $teacher_grades = $teacher_grades ? $teacher_grades : array();
-                                                foreach ($teacher_grades as $grade) {
-                                            ?>
-                                                <span><?php echo $grade; ?></span>
-                                            <?php        
-                                                }
-                                            ?>
-                                        </td>
-                                        <td><?php echo $teacher->ID ?></td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <button class="dropdown_btn" type="button" id="dropdownMenu2"
-                                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/dots.svg" alt="logo" />
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                                    <button class="dropdown-item" type="button" onclick="onTeacherEdit(<?php echo $teacher->ID; ?>)">
-                                                        <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
-                                                        Edit</button>
-                                                    <!-- <button class="dropdown-item" type="button">
-                                                        <img src="<?php // echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />
-                                                        Delete</button> -->
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
+                    <div class="tab-content">
+                        <?php get_template_part('lxp/school-dashboard-teachers-tab', 'teacher-tab', array('teachers' => $teachers)); ?>
+                        <?php get_template_part('lxp/school-dashboard-students-tab', 'student-tab', array('students' => $students)); ?>
                     </div>
                 </section>
             </section>
             <!-- Recent TREKs -->
-            <section class="recent-treks-section">
+            <section class="recent-treks-section" style="width: 100%;">
                 <div class="recent-treks-section-div">
                     <!--  TREKs header-->
                     <div class="recent-treks-header section-div-header">
@@ -255,33 +169,30 @@ $teachers = lxp_get_school_teachers($school_post->ID);
                         </div>
                     </div>
                     <!-- TREKs cards -->
+                    <!-- 
                     <div class="recent-treks-cards-list">
-                        <!-- each cards  -->
 
-                        <!-- card 1 -->
                         <div class="recent-treks-card-body">
                             <div>
-                                <img src="<?php echo $treks_src; ?>/assets/img/admin_rec_tre_img1.svg" />
+                                <img src="<?php // echo $treks_src; ?>/assets/img/admin_rec_tre_img1.svg" />
                             </div>
                             <div>
                                 <h3>5.12A Interdependence</h3>
                                 <span>Due date: May 17, 2023</span>
                             </div>
                         </div>
-                        <!-- card 2 -->
                         <div class="recent-treks-card-body">
                             <div>
-                                <img src="<?php echo $treks_src; ?>/assets/img/admin_rec_tre_img2.svg" />
+                                <img src="<?php // echo $treks_src; ?>/assets/img/admin_rec_tre_img2.svg" />
                             </div>
                             <div class="recent-second-card">
                                 <h3>5.7B Forces & Experimental Design</h3>
                                 <span>Due date: May 17, 2023</span>
                             </div>
                         </div>
-                        <!-- card 3 -->
                         <div class="recent-treks-card-body">
                             <div>
-                                <img src="<?php echo $treks_src; ?>/assets/img/admin_rec_tre_img3.svg" />
+                                <img src="<?php // echo $treks_src; ?>/assets/img/admin_rec_tre_img3.svg" />
                             </div>
                             <div>
                                 <h3>5.6A Physical Properties</h3>
@@ -289,6 +200,7 @@ $teachers = lxp_get_school_teachers($school_post->ID);
                             </div>
                         </div>
                     </div>
+ -->
                 </div>
                 <!-- Assignment section -->
                 <section class="recent-treks-section assignment-section">
@@ -318,6 +230,8 @@ $teachers = lxp_get_school_teachers($school_post->ID);
         crossorigin="anonymous"></script>
     
     <?php get_template_part('lxp/school-teacher-modal'); ?>
+    <?php get_template_part('lxp/school-student-modal', 'stuent-modal', array("school_post" => $school_post)); ?>
+    
 </body>
 
 </html>
