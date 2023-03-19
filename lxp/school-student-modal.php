@@ -92,28 +92,28 @@ $school_post = $args['school_post'];
                         <h3 class="modal-title assign-text">Assign Grades</h3>
                         <div class="input_box brief_input_box">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="gradeCheckbox1" value="1st">
-                                <label class="form-check-label" for="gradeCheckbox1">1st</label>
+                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="studentGradeCheckbox1" value="1st">
+                                <label class="form-check-label" for="studentGradeCheckbox1">1st</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="gradeCheckbox2" value="2nd">
-                                <label class="form-check-label" for="gradeCheckbox2">2nd</label>
+                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="studentGradeCheckbox2" value="2nd">
+                                <label class="form-check-label" for="studentGradeCheckbox2">2nd</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="gradeCheckbox3" value="3rd">
-                                <label class="form-check-label" for="gradeCheckbox3">3rd</label>
+                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="studentGradeCheckbox3" value="3rd">
+                                <label class="form-check-label" for="studentGradeCheckbox3">3rd</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="gradeCheckbox4" value="4th">
-                                <label class="form-check-label" for="gradeCheckbox4">4th</label>
+                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="studentGradeCheckbox4" value="4th">
+                                <label class="form-check-label" for="studentGradeCheckbox4">4th</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="gradeCheckbox5" value="5th">
-                                <label class="form-check-label" for="gradeCheckbox5">5th</label>
+                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="studentGradeCheckbox5" value="5th">
+                                <label class="form-check-label" for="studentGradeCheckbox5">5th</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="gradeCheckbox6" value="6th">
-                                <label class="form-check-label" for="gradeCheckbox6">6th</label>
+                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="studentGradeCheckbox6" value="6th">
+                                <label class="form-check-label" for="studentGradeCheckbox6">6th</label>
                             </div>
                             <!-- <div class="label_box brief_label_box id_label_box">
                                 <label class="label">Grade</label>
@@ -138,16 +138,16 @@ $school_post = $args['school_post'];
 
                         <div class="input_box brief_input_box">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="gradeCheckbox7" value="7th">
-                                <label class="form-check-label" for="gradeCheckbox7">7th</label>
+                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="studentGradeCheckbox7" value="7th">
+                                <label class="form-check-label" for="studentGradeCheckbox7">7th</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="gradeCheckbox8" value="8th">
-                                <label class="form-check-label" for="gradeCheckbox8">8th</label>
+                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="studentGradeCheckbox8" value="8th">
+                                <label class="form-check-label" for="studentGradeCheckbox8">8th</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="gradeCheckbox9" value="9th">
-                                <label class="form-check-label" for="gradeCheckbox9">9th</label>
+                                <input class="form-check-input grade-checkbox" type="checkbox" name="grades[]" id="studentGradeCheckbox9" value="9th">
+                                <label class="form-check-label" for="studentGradeCheckbox9">9th</label>
                             </div>
                         </div>
 
@@ -251,6 +251,44 @@ function onStudentEdit(student_id) {
                     alert(response.responseJSON.data);
                 }
             });
+        });
+
+        studentModal.addEventListener('hide.bs.modal', function (event) {
+            jQuery("#student_post_id").val(0);
+            jQuery('#studentModal #about').val("");
+            jQuery('#studentModal #first_name').val("");
+            jQuery('#studentModal #last_name').val("");
+            jQuery('#studentModal #email').val("");
+            jQuery('#studentModal #inputEmailDefault').val("");
+            jQuery('#studentModal #password').val("");
+            window.location.reload();
+        });
+
+        let studentForm = jQuery("#studentForm");
+        jQuery(studentForm).on('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            $.ajax({
+                method: "POST",
+                enctype: 'multipart/form-data',
+                url: apiUrl + "students/save",
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+            }).done(function( response ) {
+                jQuery('#studentForm .form-control').removeClass('is-invalid');
+                studentModalObj.hide();
+            }).fail(function (response) {
+                jQuery('#studentForm .form-control').removeClass('is-invalid');
+                if (response.responseJSON !== undefined) {
+                    Object.keys(response.responseJSON.data.params).forEach(element => {
+                        jQuery('#studentModal input[name="' + element + '"]').addClass('is-invalid');
+                        jQuery('#studentModal textarea[name="' + element + '"]').addClass('is-invalid');
+                    });
+                }
+            });
+        
         });
     });
 </script>

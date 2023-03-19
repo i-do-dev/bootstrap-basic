@@ -225,8 +225,8 @@ $school_post = lxp_get_user_school_post();
                 jQuery('#teacherForm .form-control').removeClass('is-invalid');
                 if (response.responseJSON !== undefined) {
                     Object.keys(response.responseJSON.data.params).forEach(element => {
-                        jQuery('input[name="' + element + '"]').addClass('is-invalid');
-                        jQuery('textarea[name="' + element + '"]').addClass('is-invalid');
+                        jQuery('#teacherModal input[name="' + element + '"]').addClass('is-invalid');
+                        jQuery('#teacherModal textarea[name="' + element + '"]').addClass('is-invalid');
                     });
                 }
             });
@@ -235,12 +235,12 @@ $school_post = lxp_get_user_school_post();
 
         teacherModal.addEventListener('hide.bs.modal', function (event) {
             jQuery("#teacher_post_id").val(0);
-            jQuery('#about').val("");
-            jQuery('#first_name').val("");
-            jQuery('#last_name').val("");
-            jQuery('#email').val("");
-            jQuery('#inputEmailDefault').val("");
-            jQuery('#password').val("");
+            jQuery('#teacherModal #about').val("");
+            jQuery('#teacherModal #first_name').val("");
+            jQuery('#teacherModal #last_name').val("");
+            jQuery('#teacherModal #email').val("");
+            jQuery('#teacherModal #inputEmailDefault').val("");
+            jQuery('#teacherModal #password').val("");
             jQuery('.teacher-action').text("Add");
             window.location.reload();
         });
@@ -262,14 +262,14 @@ $school_post = lxp_get_user_school_post();
             let teacher = response.data.teacher;
             let admin = response.data.admin.data;
             jQuery('#teacherForm .form-control').removeClass('is-invalid');
-            jQuery('#about').val(teacher.post_content);
-            jQuery('#first_name').val(admin.first_name);
-            jQuery('#last_name').val(admin.last_name);
-            jQuery('#email').val(admin.user_email);
-            jQuery('#inputEmailDefault').val(admin.user_email);
+            jQuery('#teacherModal #about').val(teacher.post_content);
+            jQuery('#teacherModal #first_name').val(admin.first_name);
+            jQuery('#teacherModal #last_name').val(admin.last_name);
+            jQuery('#teacherModal #email').val(admin.user_email);
+            jQuery('#teacherModal #inputEmailDefault').val(admin.user_email);
             
             if (teacher.grades) {
-                teacher.grades.forEach(grade => jQuery('input.grade-checkbox[value=' + grade +']').prop('checked', true));
+                teacher.grades.forEach(grade => jQuery('#teacherModal input.grade-checkbox[value=' + grade +']').prop('checked', true));
             }
             teacherModalObj.show();
         }).fail(function (response) {
