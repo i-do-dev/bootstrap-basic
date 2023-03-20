@@ -2,7 +2,7 @@
 global $treks_src;
 $students = $args["students"];
 ?>
-<div id="student-tab-content" class="tab-pane fade show active" role="tabpanel">
+<div id="student-tab-content" class="tab-pane fade" role="tabpanel">
     <div class="add-teacher-box">
         <div class="search-filter-box">
             <input type="text" name="text" placeholder="Search..." />
@@ -22,7 +22,7 @@ $students = $args["students"];
                 <tr>
                     <th class="">
                         <div class="th1">
-                            Teacher
+                            Student
                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                         </div>
                     </th>

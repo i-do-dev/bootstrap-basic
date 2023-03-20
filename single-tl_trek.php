@@ -33,7 +33,8 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
     <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
     <link href="<?php echo $treks_src; ?>/style/style-trek-section.css" rel="stylesheet" />
     <link href="<?php echo $treks_src; ?>/style/trek-section.css" rel="stylesheet" />
-
+    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
+    
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"

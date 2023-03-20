@@ -31,13 +31,30 @@ $userdata = get_userdata(get_current_user_id());
 
         <?php } ?>
 
-    <li>
-        <img src="<?php echo $treks_src; ?>/assets/img/nav-verified-user.svg" />
-        <a href="<?php echo site_url("teachers") ?>">Teachers</a>
-    </li>
-    <li>
-        <img src="<?php echo $treks_src; ?>/assets/img/nav-user.svg" />
-        <a href="<?php echo site_url("students") ?>">Students</a>
-    </li>
+        <?php if ($post->post_name === 'teachers') {?>
+            <li class="nav-section-selected">
+                <img src="<?php echo $treks_src; ?>/assets/img/select-verified-user.svg" />
+                <a href="<?php echo site_url("teachers") ?>">Teachers</a>
+            </li>
+            
+        <?php } else {?>
+            <li>
+                <img src="<?php echo $treks_src; ?>/assets/img/nav-verified-user.svg" />
+                <a href="<?php echo site_url("teachers") ?>">Teachers</a>
+            </li>
+            
+        <?php } ?>
+
+        <?php if ($post->post_name === 'students') {?>
+            <li class="nav-section-selected">
+                <img src="<?php echo $treks_src; ?>/assets/img/select-user.svg" />
+                <a href="<?php echo site_url("students") ?>">Students</a>
+            </li>
+        <?php } else {?>
+            <li>
+                <img src="<?php echo $treks_src; ?>/assets/img/nav-user.svg" />
+                <a href="<?php echo site_url("students") ?>">Students</a>
+            </li>
+        <?php } ?>
 
 </ul>

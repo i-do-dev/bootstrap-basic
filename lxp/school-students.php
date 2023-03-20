@@ -1,10 +1,10 @@
 <?php
 get_template_part('lxp/functions');
-lxp_login_check();
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 $school_post = lxp_get_user_school_post();
-$teachers = lxp_get_school_teachers($school_post->ID);
+$students = lxp_get_school_students($school_post->ID);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,14 +12,14 @@ $teachers = lxp_get_school_teachers($school_post->ID);
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>School Admin / Teachers</title>
+    <title>School Admin / Students</title>
     <link href="<?php echo $treks_src; ?>/style/main.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolAdminTeachers.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/addNewTeacherModal.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolDashboard.css" />
-    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/calendar.css" />
-    <!-- <link rel="stylesheet" href="<?php // echo $treks_src; ?>/style/adminInternalTeacherView.css" /> -->
+    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolAdminStudents.css" />
+    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/adminInternalTeacherView.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
 </head>
@@ -72,8 +72,8 @@ $teachers = lxp_get_school_teachers($school_post->ID);
     <section class="welcome-section">
         <!-- Welcome: heading-->
         <div class="welcome-content">
-            <h2 class="welcome-heading">Teachers</h2>
-            <p class="welcome-text">Comprehensive teacher database and records management</p>
+            <h2 class="welcome-heading">Students</h2>
+            <p class="welcome-text">Student enrollment and registration management</p>
         </div>
 
         <!-- Total Schools: section-->
@@ -90,18 +90,18 @@ $teachers = lxp_get_school_teachers($school_post->ID);
                             <p class="filter-heading">Filter</p>
                         </div>
                     </div>
-                    <button class="add-heading" type="button" type="button" data-bs-toggle="modal"
-                        data-bs-target="#teacherModal" class="primary-btn">
-                        Add New Teacher
-                    </button>
+                    <label for="import-student" class="primary-btn add-heading">
+                        Import Students (CSV)
+                    </label >
+                    <input type="file" id="import-student" hidden />
                 </div>
 
                 <!-- Table Section -->
                 <section class="recent-treks-section-div table-school-section">
 
                     <div class="students-table">
-                      <!--   
-                    <div class="school-box">
+                        <!-- 
+                        <div class="school-box">
                             <div class="showing-row-box">
                                 <p class="showing-row-text">Showing 1 - 5 of 25</p>
                                 <div class="row-box">
@@ -137,14 +137,14 @@ $teachers = lxp_get_school_teachers($school_post->ID);
                                 <img class="last-slide-img" src="<?php // echo $treks_src; ?>/assets/img/last-slide.svg" alt="logo" />
                                 <p class="showing-row-text">Last</p>
                             </div>
-                        </div> -->
-                        
-                        <table class="table teacher_table">
+                        </div>
+                        -->
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th class="">
                                         <div class="th1">
-                                            Teacher
+                                            Student
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>
@@ -175,34 +175,35 @@ $teachers = lxp_get_school_teachers($school_post->ID);
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($teachers as $teacher) {
-                                    $teacher_admin = get_userdata(get_post_meta($teacher->ID, 'lxp_teacher_admin_id', true));
+                                <?php 
+                                    foreach ($students as $student) {
+                                        $student_admin = get_userdata(get_post_meta($student->ID, 'lxp_student_admin_id', true));
                                 ?>
                                     <tr>
                                         <td class="user-box">
                                             <div class="table-user">
-                                                <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="teacher" />
+                                                <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="student" />
                                                 <div class="user-about">
-                                                    <h5><?php echo $teacher_admin->display_name; ?></h5>
+                                                    <h5><?php echo $student_admin->display_name?></h5>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="table-status"><?php echo $teacher_admin->user_email; ?></div>
+                                            <div class="table-status"><?php echo $student_admin->user_email?></div>
                                         </td>
                                         <td>0</td>
                                         <td class="grade">
                                             <?php 
-                                                $teacher_grades = json_decode(get_post_meta($teacher->ID, 'grades', true));
-                                                $teacher_grades = $teacher_grades ? $teacher_grades : array();
-                                                foreach ($teacher_grades as $grade) {
+                                                $student_grades = json_decode(get_post_meta($student->ID, 'grades', true));
+                                                $student_grades = $student_grades ? $student_grades : array();
+                                                foreach ($student_grades as $grade) {
                                             ?>
                                                 <span><?php echo $grade; ?></span>
                                             <?php        
                                                 }
                                             ?>
                                         </td>
-                                        <td><?php echo $teacher->ID; ?></td>
+                                        <td><?php echo $student->ID ?></td>
                                         <td>
                                             <div class="dropdown">
                                                 <button class="dropdown_btn" type="button" id="dropdownMenu2"
@@ -210,7 +211,7 @@ $teachers = lxp_get_school_teachers($school_post->ID);
                                                     <img src="<?php echo $treks_src; ?>/assets/img/dots.svg" alt="logo" />
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                                    <button class="dropdown-item" type="button" onclick="onTeacherEdit(<?php echo $teacher->ID; ?>)">
+                                                    <button class="dropdown-item" type="button" onclick="onStudentEdit(<?php echo $student->ID; ?>)">
                                                         <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
                                                         Edit</button>
                                                     <!-- <button class="dropdown-item" type="button">
@@ -242,7 +243,7 @@ $teachers = lxp_get_school_teachers($school_post->ID);
                                 <p class="showing-row-text">Last</p>
                             </div>
                         </div>
- -->
+                         -->
                     </div>
                 </section>
             </section>
@@ -257,8 +258,8 @@ $teachers = lxp_get_school_teachers($school_post->ID);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
-
-        <?php get_template_part('lxp/school-teacher-modal'); ?>
+    
+    <?php get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post)); ?>
 </body>
 
 </html>

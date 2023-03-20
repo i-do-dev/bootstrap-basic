@@ -15,7 +15,7 @@ $school_post = lxp_get_user_school_post();
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-header-title">
-                    <h2 class="modal-title" id="teacherModalLabel"><span class="teacher-action">New</span> Teacher</h2>
+                    <h2 class="modal-title" id="teacherModalLabel"><span class="teacher-action-head">New</span> Teacher</h2>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-label="Close"></button>
@@ -242,6 +242,7 @@ $school_post = lxp_get_user_school_post();
             jQuery('#teacherModal #inputEmailDefault').val("");
             jQuery('#teacherModal #password').val("");
             jQuery('.teacher-action').text("Add");
+            jQuery('.teacher-action-head').text("New");
             window.location.reload();
         });
     });
@@ -249,6 +250,7 @@ $school_post = lxp_get_user_school_post();
     function onTeacherEdit(teacher_id) {
         jQuery("#teacher_post_id").val(teacher_id);
         jQuery(".teacher-action").text("Update");
+        jQuery(".teacher-action-head").text("Update");
         
         let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
         let apiUrl = host + '/wp-json/lms/v1/';

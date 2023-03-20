@@ -90,4 +90,19 @@ function lxp_get_all_schools_teachers($school_ids)
     $posts = $school_query->get_posts();
     return $posts;
 }
+
+function lxp_get_all_schools_students($school_ids)
+{
+    $school_query = new WP_Query( array( 
+        'post_type' => TL_STUDENT_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_student_school_id', 'value' => $school_ids, 'compare' => 'IN')
+        )
+    ) );
+    
+    $posts = $school_query->get_posts();
+    return $posts;
+}
 ?>

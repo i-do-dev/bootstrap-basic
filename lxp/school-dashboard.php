@@ -107,7 +107,7 @@ $students = lxp_get_school_students($school_post->ID);
                     </div>
                     <div class="card">
                         <img src="<?php echo $treks_src; ?>/assets/img/user.svg" alt="logo" />
-                        <h3 class="numbers-heading">0</h3>
+                        <h3 class="numbers-heading"><?php echo count($students); ?></h3>
                         <p class="name-text">Students</p>
                     </div>
                     <div class="card">
@@ -130,7 +130,7 @@ $students = lxp_get_school_students($school_post->ID);
                                 </button>
                             </li>
                             <li>
-                                <button class="nav-link active" id="completed-tab" data-bs-toggle="tab"
+                                <button class="nav-link" id="completed-tab" data-bs-toggle="tab"
                                     data-bs-target="#student-tab-content" type="button" role="tab"
                                     aria-controls="student-tab-content" aria-selected="true">
                                     Students
@@ -138,15 +138,15 @@ $students = lxp_get_school_students($school_post->ID);
                             </li>
                             <li>
                                 <button class="nav-link" id="to-tab" data-bs-toggle="tab"
-                                    data-bs-target="#todo-tab-pane" type="button" role="tab"
-                                    aria-controls="todo-tab-pane" aria-selected="false">
+                                    data-bs-target="#class-tab-content" type="button" role="tab"
+                                    aria-controls="class-tab-content" aria-selected="false">
                                     Classes
                                 </button>
                             </li>
                             <li>
                                 <button class="nav-link" id="inprogress-tab" data-bs-toggle="tab"
-                                    data-bs-target="#inprogress-tab-pane" type="button" role="tab"
-                                    aria-controls="inprogress-tab-pane" aria-selected="false">
+                                    data-bs-target="#group-tab-content" type="button" role="tab"
+                                    aria-controls="group-tab-content" aria-selected="false">
                                     Groups
                                 </button>
                             </li>
@@ -230,8 +230,26 @@ $students = lxp_get_school_students($school_post->ID);
         crossorigin="anonymous"></script>
     
     <?php get_template_part('lxp/school-teacher-modal'); ?>
-    <?php get_template_part('lxp/school-student-modal', 'stuent-modal', array("school_post" => $school_post)); ?>
+    <?php get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post)); ?>
     
+    <script type="text/javascript">
+        jQuery(document).ready(function(){
+            jQuery('.nav-link').on('show.bs.tab', function (event) {
+                localStorage.setItem("school_dashboard_tab", jQuery(event.target).attr('data-bs-target'));
+            });
+
+            let current_tab = localStorage.getItem("school_dashboard_tab");
+            if (current_tab) {
+                let tabEl = jQuery('button.nav-link[data-bs-target="' + current_tab + '"]');
+                var tab = new bootstrap.Tab(tabEl);
+                tab.show();
+            } else {
+                let tabEl = jQuery('button.nav-link[data-bs-target="' + '#teacher-tab-content' + '"]');
+                var tab = new bootstrap.Tab(tabEl);
+                tab.show();
+            }
+        });
+    </script>
 </body>
 
 </html>

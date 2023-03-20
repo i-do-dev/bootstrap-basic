@@ -4,8 +4,7 @@ lxp_login_check();
 
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 $userdata = get_userdata(get_current_user_id());
-
-$userRole = count($userdata->roles) > 0 ? $userdata->roles[0] : '';
+$userRole = count($userdata->roles) > 0 ? array_values($userdata->roles)[0] : '';
 switch ($userRole) {
   case 'lxp_client_admin':
     get_template_part('lxp/client-dashboard');
@@ -15,6 +14,9 @@ switch ($userRole) {
     break;
   case 'lxp_teacher':
     get_template_part('lxp/teacher-dashboard');
+    break;
+  case 'lxp_student':
+    get_template_part('lxp/student-dashboard');
     break;
   default:
     echo 'Not a valid User role';

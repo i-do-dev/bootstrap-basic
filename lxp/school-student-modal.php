@@ -46,34 +46,34 @@ $school_post = $args['school_post'];
                         <div class="input_box">
                             <div class="label_box">
                                 <label class="label">First name</label>
-                                <input class="form-control" type="text" name="first_name" id="first_name"
+                                <input class="form-control" type="text" name="first_name" id="first_name_student"
                                     placeholder="Enter student’s first name here" />
                             </div>
                         </div>
                         <div class="input_box">
                             <div class="label_box">
                                 <label class="label">Last name</label>
-                                <input class="form-control" type="text" name="last_name" id="last_name"
+                                <input class="form-control" type="text" name="last_name" id="last_name_student"
                                     placeholder="Enter student’s last name here" />
                             </div>
                         </div>
                         <div class="input_box">
                             <div class="label_box">
                                 <label class="label">Email</label>
-                                <input class="form-control" type="email" name="user_email" id="email" placeholder="johndoe@gmail.com" />
-                                <input type="hidden" id="inputEmailDefault" name="user_email_default" />
+                                <input class="form-control" type="email" name="user_email" id="emailStudent" placeholder="johndoe@gmail.com" />
+                                <input type="hidden" id="inputEmailDefaultStudent" name="user_email_default" />
                             </div>
                         </div>
                         <div class="input_box">
                             <div class="label_box">
                                 <label class="label">Password</label>
-                                <input class="form-control" type="password" name="user_password" id="password" placeholder="***" />
+                                <input class="form-control" type="password" name="user_password" id="passwordStudent" placeholder="***" />
                             </div>
                         </div>
                         <div class="input_box brief_input_box">
                             <div class="label_box brief_label_box">
                                 <label class="label">About</label>
-                                <input class="brief_info form-control" type="text" name="about" id="about"
+                                <input class="brief_info form-control" type="text" name="about" id="aboutStudent"
                                     placeholder="Enter a brief description here" />
                             </div>
                         </div>
@@ -205,11 +205,11 @@ function onStudentEdit(student_id) {
         let student = response.data.student;
         let admin = response.data.admin.data;
         jQuery('#studentForm .form-control').removeClass('is-invalid');
-        jQuery('#studentModal #about').val(student.post_content);
-        jQuery('#studentModal #first_name').val(admin.first_name);
-        jQuery('#studentModal #last_name').val(admin.last_name);
-        jQuery('#studentModal #email').val(admin.user_email);
-        jQuery('#studentModal #inputEmailDefault').val(admin.user_email);
+        jQuery('#studentModal #aboutStudent').val(student.post_content);
+        jQuery('#studentModal #first_name_student').val(admin.first_name);
+        jQuery('#studentModal #last_name_student').val(admin.last_name);
+        jQuery('#studentModal #emailStudent').val(admin.user_email);
+        jQuery('#studentModal #inputEmailDefaultStudent').val(admin.user_email);
         
         if (student.grades) {
             student.grades.forEach(grade => jQuery('#studentModal input.grade-checkbox[value=' + grade +']').prop('checked', true));
@@ -255,12 +255,12 @@ function onStudentEdit(student_id) {
 
         studentModal.addEventListener('hide.bs.modal', function (event) {
             jQuery("#student_post_id").val(0);
-            jQuery('#studentModal #about').val("");
-            jQuery('#studentModal #first_name').val("");
-            jQuery('#studentModal #last_name').val("");
-            jQuery('#studentModal #email').val("");
-            jQuery('#studentModal #inputEmailDefault').val("");
-            jQuery('#studentModal #password').val("");
+            jQuery('#studentModal #aboutStudent').val("");
+            jQuery('#studentModal #first_name_student').val("");
+            jQuery('#studentModal #last_name_student').val("");
+            jQuery('#studentModal #emailStudent').val("");
+            jQuery('#studentModal #inputEmailDefaultStudent').val("");
+            jQuery('#studentModal #passwordStudent').val("");
             window.location.reload();
         });
 

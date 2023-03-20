@@ -1,11 +1,7 @@
 <?php
 get_template_part('lxp/functions');
 global $treks_src;
-$district_post = lxp_get_user_district_post();
-$district_schools = lxp_get_district_schools($district_post->ID);
-$district_schools_ids = array_map(function ($school) { return $school->ID; },  $district_schools);
-$district_schools_teachers = lxp_get_all_schools_teachers($district_schools_ids);
-$district_schools_students = lxp_get_all_schools_students($district_schools_ids);
+$userdata = get_userdata(get_current_user_id());
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,13 +58,13 @@ $district_schools_students = lxp_get_all_schools_students($district_schools_ids)
     <!-- Nav Section -->
     <section class="main-container">
         <nav class="nav-section">
-            <?php get_template_part('lxp/admin-nav'); ?>
+            <?php // get_template_part('lxp/admin-nav'); ?>
         </nav>
     </section>
 
     <!-- Welcome: section-->
     <div class="welcome-section">
-        <h2 class="welcome-heading">Welcome <?php echo $district_post->post_title; ?>!</h2>
+        <h2 class="welcome-heading">Welcome <?php echo $userdata->display_name; ?>!</h2>
         <p class="welcome-text">Here's how your academic system looks like</p>
     </div>
 
@@ -76,19 +72,7 @@ $district_schools_students = lxp_get_all_schools_students($district_schools_ids)
     <section class="school-section">
         <div class="cards-box">
             <div class="card">
-                <img src="<?php echo $treks_src; ?>/assets/img/home-logo.svg" alt="logo" />
-                <h3 class="numbers-heading"><?php echo count( $district_schools ); ?></h3>
-                <p class="name-text">Schools</p>
-            </div>
-            <div class="card">
-                <img src="<?php echo $treks_src; ?>/assets/img/verified-user.svg" alt="logo" />
-                <h3 class="numbers-heading"><?php echo count($district_schools_teachers); ?></h3>
-                <p class="name-text">Teachers</p>
-            </div>
-            <div class="card">
-                <img src="<?php echo $treks_src; ?>/assets/img/user.svg" alt="logo" />
-                <h3 class="numbers-heading"><?php echo count($district_schools_students); ?></h3>
-                <p class="name-text">Students</p>
+                Under Development
             </div>
         </div>
     </section>
