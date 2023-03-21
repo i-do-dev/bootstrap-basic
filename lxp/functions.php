@@ -105,4 +105,19 @@ function lxp_get_all_schools_students($school_ids)
     $posts = $school_query->get_posts();
     return $posts;
 }
+
+function lxp_get_teacher_post($lxp_teacher_admin_id)
+{
+    $school_query = new WP_Query( array( 
+        'post_type' => TL_TEACHER_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_teacher_admin_id', 'value' => $lxp_teacher_admin_id, 'compare' => '=')
+        )
+    ) );
+    
+    $posts = $school_query->get_posts();
+    return ( count($posts) > 0 ? $posts[0] : null );
+}
 ?>

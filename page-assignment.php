@@ -145,6 +145,11 @@ $userdata = get_userdata(get_current_user_id());
                     </div>
                 </section>
             </section>
+            <section class="calendar-container">
+                <section class="calendar-section">
+                    <div id="calendar"></div>
+                </section>
+            </section>
         </div>
         <!-- 2nd Tab -->
         <div class="tab-pane fade show active2" id="classes-tab-pane" role="tabpanel" aria-labelledby="classes-tab"

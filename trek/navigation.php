@@ -16,10 +16,24 @@
       <img src="<?php echo $treks_src; ?>/assets/img/calendar<?php echo $post->post_name === "calendar" ? "-selected" : ""; ?>.svg" />
       <a href="<?php echo site_url("calendar") ?>">Calendar</a>
     </li>
-    <li>
-      <img src="<?php echo $treks_src; ?>/assets/img/nav_students.svg" />
+
+    <?php if ($post->post_name === 'students') {?>
+        <li class="nav-section-selected">
+            <img src="<?php echo $treks_src; ?>/assets/img/select-user.svg" />
+            <a href="<?php echo site_url("students") ?>">Students</a>
+        </li>
+    <?php } else {?>
+        <li>
+            <img src="<?php echo $treks_src; ?>/assets/img/nav_students.svg" />
+            <a href="<?php echo site_url("students") ?>">Students</a>
+        </li>
+    <?php } ?>
+
+    <!-- <li>
+      <img src="<?php // echo $treks_src; ?>/assets/img/nav_students.svg" />
       <a href="/">Students</a>
-    </li>
+    </li> -->
+
     <li>
       <img src="<?php echo $treks_src; ?>/assets/img/nav_reports.svg" />
       <a href="/">Reports</a>
