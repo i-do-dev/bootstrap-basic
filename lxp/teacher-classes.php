@@ -23,6 +23,8 @@ $students = lxp_get_school_students($teacher_school_id);
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolDashboard.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolAdminStudents.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/adminInternalTeacherView.css" />
+    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/teacherStudentsClasses.css" />
+    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/newAssignment.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
     
@@ -39,6 +41,10 @@ $students = lxp_get_school_students($teacher_school_id);
             padding-top: 70px;
             padding-right: 20px;
             float: right;
+        }
+
+        .students-table .table tbody tr td .dropdown .dropdown-menu.show {
+            width: 200px;
         }
     </style>
 </head>
@@ -122,8 +128,7 @@ $students = lxp_get_school_students($teacher_school_id);
                         Import Students (CSV)
                     </label >
                     <input type="file" id="import-student" hidden /> -->
-                    <button class="add-heading" type="button" type="button" data-bs-toggle="modal"
-                        data-bs-target="#exampleModal" class="primary-btn">
+                    <button id="classModalBtn" class="add-heading" type="button" data-bs-toggle="modal" data-bs-target="#classModal" class="primary-btn">
                         Add New Class
                     </button>
                 </div>
@@ -243,11 +248,11 @@ $students = lxp_get_school_students($teacher_school_id);
                                                     <img src="<?php echo $treks_src; ?>/assets/img/dots.svg" alt="logo" />
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                                    <button class="dropdown-item" type="button" onclick="onStudentEdit(<?php echo $student->ID; ?>)">
+                                                    <button class="dropdown-item" type="button" onclick="onClassEdit(<?php echo $student->ID; ?>)">
                                                         <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
                                                         Edit</button>
                                                     <!-- <button class="dropdown-item" type="button">
-                                                        <img src="<?php // echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />
+                                                        <img src="./assets/img/delete.svg" alt="logo" />
                                                         Delete</button> -->
                                                 </div>
                                             </div>
@@ -291,7 +296,7 @@ $students = lxp_get_school_students($teacher_school_id);
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
     
-    <?php get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post)); ?>
+    <?php get_template_part('lxp/teacher-class-modal', 'student-modal', array("school_post" => $school_post)); ?>
 </body>
 
 </html>
