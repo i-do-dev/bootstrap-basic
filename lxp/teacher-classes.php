@@ -6,6 +6,7 @@ $teacher_post = lxp_get_teacher_post($userdata->data->ID);
 $teacher_school_id = get_post_meta($teacher_post->ID, 'lxp_teacher_school_id', true);
 $school_post = get_post($teacher_school_id);
 $students = lxp_get_school_students($teacher_school_id);
+$classes = lxp_get_teacher_classes($teacher_post->ID);
 ?>
 
 <!DOCTYPE html>
@@ -193,7 +194,7 @@ $students = lxp_get_school_students($teacher_school_id);
                                     </th>
                                     <th>
                                         <div class="th1 th3">
-                                            Assignment
+                                            Assignments
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>
@@ -213,34 +214,34 @@ $students = lxp_get_school_students($teacher_school_id);
                             </thead>
                             <tbody>
                                 <?php 
-                                    foreach ($students as $student) {
-                                        $student_admin = get_userdata(get_post_meta($student->ID, 'lxp_student_admin_id', true));
+                                    foreach ($classes as $class) {
                                 ?>
                                     <tr>
                                         <td class="user-box">
                                             <div class="table-user">
                                                 <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="student" />
                                                 <div class="user-about">
-                                                    <h5><?php echo $student_admin->display_name?></h5>
+                                                    <h5><?php echo $class->post_title?></h5>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="table-status"><?php echo $student_admin->user_email?></div>
+                                            <div class="table-status grade">
+                                                <?php 
+                                                    $schedule = (array)json_decode(get_post_meta($class->ID, 'schedule', true));
+                                                    foreach (array_keys($schedule) as $day) {
+                                                        $start = $schedule[$day]->start;
+                                                        $end = $schedule[$day]->end;
+                                                    ?>
+                                                        <span><?php echo ucwords($day) ?> / <?php echo $start; ?> - <?php echo $end; ?></span>
+                                                    <?php } ?>
+                                            </div>
                                         </td>
                                         <td>0</td>
                                         <td class="grade">
-                                            <?php 
-                                                $student_grades = json_decode(get_post_meta($student->ID, 'grades', true));
-                                                $student_grades = $student_grades ? $student_grades : array();
-                                                foreach ($student_grades as $grade) {
-                                            ?>
-                                                <span><?php echo $grade; ?></span>
-                                            <?php        
-                                                }
-                                            ?>
+                                            <span><?php echo get_post_meta($class->ID, 'grade', true); ?></span>
                                         </td>
-                                        <td><?php echo $student->ID ?></td>
+                                        <td>0</td>
                                         <td>
                                             <div class="dropdown">
                                                 <button class="dropdown_btn" type="button" id="dropdownMenu2"
@@ -248,7 +249,7 @@ $students = lxp_get_school_students($teacher_school_id);
                                                     <img src="<?php echo $treks_src; ?>/assets/img/dots.svg" alt="logo" />
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                                    <button class="dropdown-item" type="button" onclick="onClassEdit(<?php echo $student->ID; ?>)">
+                                                    <button class="dropdown-item" type="button" onclick="onClassEdit(<?php echo $class->ID; ?>)">
                                                         <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
                                                         Edit</button>
                                                     <!-- <button class="dropdown-item" type="button">
@@ -296,7 +297,7 @@ $students = lxp_get_school_students($teacher_school_id);
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
     
-    <?php get_template_part('lxp/teacher-class-modal', 'student-modal', array("school_post" => $school_post, 'students' => $students)); ?>
+    <?php get_template_part('lxp/teacher-class-modal', 'student-modal', array("school_post" => $school_post, 'students' => $students, 'teacher_post' => $teacher_post)); ?>
 </body>
 
 </html>

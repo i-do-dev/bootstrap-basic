@@ -120,4 +120,31 @@ function lxp_get_teacher_post($lxp_teacher_admin_id)
     $posts = $school_query->get_posts();
     return ( count($posts) > 0 ? $posts[0] : null );
 }
+
+function lxp_get_teacher_classes($lxp_class_teacher_id)
+{
+    $school_query = new WP_Query( array( 
+        'post_type' => TL_CLASS_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_class_teacher_id', 'value' => $lxp_class_teacher_id, 'compare' => '=')
+        )
+    ) );
+    return $school_query->get_posts();
+}
+
+function lxp_get_all_student_classes($student_id)
+{
+    $school_query = new WP_Query( array( 
+        'post_type' => TL_CLASS_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_student_ids', 'value' => $student_id, 'compare' => '=')
+        )
+    ) );
+    return $school_query->get_posts();
+}
+
 ?>

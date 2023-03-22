@@ -1,6 +1,7 @@
 <?php
 global $treks_src;
 $students = $args['students'];
+$teacher_post = $args['teacher_post'];
 ?>
 
 <div class="modal fade classes-modal" id="classModal" tabindex="-1" aria-labelledby="classModalLabel" aria-hidden="true">
@@ -21,7 +22,7 @@ $students = $args['students'];
                     Please make class schedule with valide time.
                 </div>
                 <form class="row g-3" id="classForm">
-                    <input type="hidden" name="class_teacher_id" id="class_teacher_id" value="<?php echo get_current_user_id(); ?>" />
+                    <input type="hidden" name="class_teacher_id" id="class_teacher_id" value="<?php echo $teacher_post->ID; ?>" />
                     <input type="hidden" name="class_post_id" id="class_post_id" value="0" />
                     <div class="personal_box">
                         <!-- Left Class box -->
@@ -94,8 +95,8 @@ $students = $args['students'];
                                                 <label class="form-check-label" for="friday">Friday</label>
                                             </div>
                                         </td>
-                                        <td><input type="time" id="firday-sd" name="firday-sd"></td>
-                                        <td><input type="time" id="firday-ed" name="firday-ed"></td>
+                                        <td><input type="time" id="friday-sd" name="friday-sd"></td>
+                                        <td><input type="time" id="friday-ed" name="friday-ed"></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -135,7 +136,7 @@ $students = $args['students'];
                                         </button>
                                     </div>
                                 </div> -->
-                                <select class="form-select form-control" aria-label="Default select example" name="grade">
+                                <select class="form-select form-control" aria-label="Default select example" name="grade" id="grade">
                                     <option value="0">--- Select ---</option>
                                     <option value="1st">1st</option>
                                     <option value="2nd">2nd</option>
@@ -214,7 +215,8 @@ $students = $args['students'];
 
 function onClassEdit(class_id) {
     jQuery("#class_post_id").val(class_id);
-    jQuery(".class-action").text("Update");
+    jQuery("#class-action-heading").text("Update");
+    jQuery("#class-action").text("Update");
     
     let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
     let apiUrl = host + '/wp-json/lms/v1/';
@@ -226,17 +228,27 @@ function onClassEdit(class_id) {
         data: {class_id}
     }).done(function( response ) {
         let class_record = response.data.class;
-        let admin = response.data.admin.data;
         jQuery('#classForm .form-control').removeClass('is-invalid');
-        jQuery('#classModal #aboutClass').val(class_record.post_content);
-        jQuery('#classModal #first_name_class').val(admin.first_name);
-        jQuery('#classModal #last_name_class').val(admin.last_name);
-        jQuery('#classModal #emailClass').val(admin.user_email);
-        jQuery('#classModal #inputEmailDefaultClass').val(admin.user_email);
+        jQuery(".alert-danger").hide();
+        jQuery('#classModal #class_name').val(class_record.post_title);
+        jQuery('#classModal #class_description').val(class_record.post_content);
+        window.class_record = class_record;
+        console.log('class_record >> ', class_record);
+
+        Object.keys(class_record.schedule).forEach(day => {
+            jQuery('input#' + day).prop("checked", true);
+            jQuery('input#' + day + '-sd').val(class_record.schedule[day].start);
+            jQuery('input#' + day + '-ed').val(class_record.schedule[day].end);
+        });
+
+        jQuery('select#grade').val(class_record.grade);
         
-        if (class_record.grades) {
-            class_record.grades.forEach(grade => jQuery('#classModal input.grade-checkbox[value=' + grade +']').prop('checked', true));
-        }
+        class_record.lxp_student_ids.forEach(student_id => {
+            jQuery('input.select-student-check[value="' + student_id + '"]').prop('checked', true);
+        });
+
+        jQuery("#studentsDropdownMenu span").text(jQuery(".select-student-check:checked").length);
+
         classModalObj.show();
     }).fail(function (response) {
         console.error("Can not load class");
