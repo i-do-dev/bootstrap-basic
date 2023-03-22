@@ -1,8 +1,9 @@
 <?php
 global $treks_src;
+$students = $args['students'];
 ?>
 
-<div class="modal fade classs-modal" id="classModal" tabindex="-1" aria-labelledby="classModalLabel" aria-hidden="true">
+<div class="modal fade classes-modal" id="classModal" tabindex="-1" aria-labelledby="classModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered class-modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -13,6 +14,12 @@ global $treks_src;
                     aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div class="alert alert-danger invalid-feedback-student_ids" role="alert" style="display: none;">
+                    Please select students
+                </div>
+                <div class="alert alert-danger invalid-feedback-schedule" role="alert" style="display: none;">
+                    Please make class schedule with valide time.
+                </div>
                 <form class="row g-3" id="classForm">
                     <input type="hidden" name="class_teacher_id" id="class_teacher_id" value="<?php echo get_current_user_id(); ?>" />
                     <input type="hidden" name="class_post_id" id="class_post_id" value="0" />
@@ -22,11 +29,11 @@ global $treks_src;
                             <p class="personal-text">Class information</p>
                             <div class="search_box">
                                 <label class="trek-label">Class name</label>
-                                <input type="text" class="period-select" value="" id="class_name" name="class_name" />
+                                <input type="text" class="form-control period-select" value="" id="class_name" name="class_name" />
                             </div>
                             <div class="search_box">
                                 <label class="trek-label">Description</label>
-                                <textarea class="period-select" id="class_description" name="class_description"></textarea>
+                                <textarea class="period-select form-control" id="class_description" name="class_description"></textarea>
                             </div>
                             <div class="horizontal-line"></div>
                             <p class="personal-text">Schedule</p>
@@ -41,27 +48,52 @@ global $treks_src;
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Monday</td>
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="monday" id="monday" name="schedule[]">
+                                                <label class="form-check-label" for="monday">Monday</label>
+                                            </div>
+                                        </td>
                                         <td><input type="time" id="monday-sd" name="monday-sd"></td>
                                         <td><input type="time" id="monday-ed" name="monday-ed"></td>
                                     </tr>
                                     <tr>
-                                        <td>Tuesday</td>
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="tuesday" id="tuesday" name="schedule[]">
+                                                <label class="form-check-label" for="tuesday">Tuesday</label>
+                                            </div>
+                                        </td>
                                         <td><input type="time" id="tuesday-sd" name="tuesday-sd"></td>
                                         <td><input type="time" id="tuesday-ed" name="tuesday-ed"></td>
                                     </tr>
                                     <tr>
-                                        <td>Wednesday</td>
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="wednesday" id="wednesday" name="schedule[]">
+                                                <label class="form-check-label" for="wednesday">Wednesday</label>
+                                            </div>
+                                        </td>
                                         <td><input type="time" id="wednesday-sd" name="wednesday-sd"></td>
                                         <td><input type="time" id="wednesday-ed" name="wednesday-ed"></td>
                                     </tr>
                                     <tr>
-                                        <td>Thursday</td>
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="thursday" id="thursday" name="schedule[]">
+                                                <label class="form-check-label" for="thursday">Thursday</label>
+                                            </div>
+                                        </td>
                                         <td><input type="time" id="thursday-sd" name="thursday-sd"></td>
                                         <td><input type="time" id="thursday-ed" name="thursday-ed"></td>
                                     </tr>
                                     <tr>
-                                        <td>Friday</td>
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="friday" id="friday" name="schedule[]">
+                                                <label class="form-check-label" for="friday">Friday</label>
+                                            </div>
+                                        </td>
                                         <td><input type="time" id="firday-sd" name="firday-sd"></td>
                                         <td><input type="time" id="firday-ed" name="firday-ed"></td>
                                     </tr>
@@ -75,17 +107,17 @@ global $treks_src;
 
                         <!-- Right Class box -->
                         <div class="class-information class-information">
-                            <p class="personal-text">Classs</p>
+                            <p class="personal-text">Classes</p>
 
                             <!-- Select Grade -->
                             <div class="search_box">
                                 <label class="trek-label">Grade</label>
-                                <div class="dropdown period-box">
+                                <!-- <div class="dropdown period-box">
                                     <button class="input_dropdown dropdown-button" type="button"
                                         id="dropdownMenu2" data-bs-toggle="dropdown"
                                         aria-haspopup="true" aria-expanded="false">
                                         Select a Grade
-                                        <img class="rotate-arrow" src="<?php echo $treks_src; ?>/assets/img/down-arrow.svg"
+                                        <img class="rotate-arrow" src="<?php // echo $treks_src; ?>/assets/img/down-arrow.svg"
                                             alt="logo" />
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -102,111 +134,68 @@ global $treks_src;
                                             <p>4th grade</p>
                                         </button>
                                     </div>
-                                </div>
+                                </div> -->
+                                <select class="form-select form-control" aria-label="Default select example" name="grade">
+                                    <option value="0">--- Select ---</option>
+                                    <option value="1st">1st</option>
+                                    <option value="2nd">2nd</option>
+                                    <option value="3rd">3rd</option>
+                                    <option value="4th">4th</option>
+                                    <option value="5th">5th</option>
+                                    <option value="6th">6th</option>
+                                    <option value="7th">7th</option>
+                                    <option value="8th">8th</option>
+                                    <option value="9th">9th</option>
+                                    <option value="10th">10th</option>
+                                    <option value="11th">11th</option>
+                                    <option value="12th">12th</option>
+                                </select>
                             </div>
-
                             <!-- When Selected a Grade -->
                             <div class="search_box">
-                                <label class="trek-label">Grade</label>
+                                <label class="trek-label">
+                                    Students
+                                </label>
                                 <div class="dropdown period-box">
-                                    <button class="input_dropdown dropdown-button second-drop-button"
-                                        type="button" id="dropdownMenu2" data-bs-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false">
-                                        3rd period
-                                        <img class="rotate-arrow" src="<?php echo $treks_src; ?>/assets/img/down-arrow.svg"
-                                            alt="logo" />
+                                    <!-- second-drop-button -->
+                                    <button class="input_dropdown dropdown-button" type="button" id="studentsDropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span>--- Select ---</span>
+                                        <img class="rotate-arrow" src="<?php echo $treks_src; ?>/assets/img/down-arrow.svg" alt="logo" />
                                     </button>
-                                    <div class="dropdown-menu grade-dropdown-menu"
-                                        aria-labelledby="dropdownMenu2">
+                                    <div class="dropdown-menu grade-dropdown-menu" aria-labelledby="studentsDropdownMenu">
                                         <!-- Select All -->
-                                        <button class="dropdown-item dropdown-item2 practice-button">
+                                        <div class="dropdown-item dropdown-item2 dd-button" id="select-all-students-btn">
                                             <!-- Select Grade -->
                                             <div class="time-date-box class-class-box">
-                                                <input class="form-check-input " type="checkbox"
-                                                    value="" id="checkbox" />
+                                                <input class="form-check-input " type="checkbox" value="select-all-students" id="select-all-students" />
                                                 <div class="tags-body-detail">
                                                     <p class="select-all">Select All</p>
                                                 </div>
                                             </div>
-                                        </button>
+                                        </div>
                                         <div class="scroll-box">
-                                            <!-- Grade-->
-                                            <button
-                                                class="dropdown-item dropdown-item2 practice-button">
-                                                <!-- Select Grade -->
-                                                <div class="time-date-box class-class-box">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        value="" id="check" />
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/class-student.svg"
-                                                        alt="logo" />
-                                                    <div class="tags-body-detail">
-                                                        <p class="class-name">Gabriella Hawkins</p>
+                                            <?php 
+                                                foreach ($students as $student) { 
+                                                    $student_admin = get_userdata(get_post_meta($student->ID, 'lxp_student_admin_id', true));
+                                            ?>
+                                                <!-- Grade-->
+                                                <div class="dropdown-item dropdown-item2 dd-button select-student-btn">
+                                                    <!-- Select Grade -->
+                                                    <div class="time-date-box class-class-box">
+                                                        <input class="form-check-input select-student-check" type="checkbox" value="<?php echo $student->ID; ?>" id="checkbox-<?php echo $student->ID; ?>" name="student_ids[]" />
+                                                        <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="student" />
+                                                        <div class="tags-body-detail">
+                                                            <p class="class-name"><?php echo $student_admin->display_name?></p>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </button>
-                                            <!-- Grade-->
-                                            <button
-                                                class="dropdown-item dropdown-item2 practice-button">
-                                                <!-- Select Grade -->
-                                                <div class="time-date-box class-class-box">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        value="" id="check" />
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/class-student.svg"
-                                                        alt="logo" />
-                                                    <div class="tags-body-detail">
-                                                        <p class="class-name">Gabriella Hawkins</p>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                            <!-- Grade-->
-                                            <button
-                                                class="dropdown-item dropdown-item2 practice-button">
-                                                <!-- Select Grade -->
-                                                <div class="time-date-box class-class-box">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        value="" id="check" />
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/class-student.svg"
-                                                        alt="logo" />
-                                                    <div class="tags-body-detail">
-                                                        <p class="class-name">Gabriella Hawkins</p>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                            <!-- Grade-->
-                                            <button
-                                                class="dropdown-item dropdown-item2 practice-button">
-                                                <!-- Select Grade -->
-                                                <div class="time-date-box class-class-box">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        value="" id="check" />
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/class-student.svg"
-                                                        alt="logo" />
-                                                    <div class="tags-body-detail">
-                                                        <p class="class-name">Gabriella Hawkins</p>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                            <!-- Grade-->
-                                            <button
-                                                class="dropdown-item dropdown-item2 practice-button">
-                                                <!-- Select Grade -->
-                                                <div class="time-date-box class-class-box">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        value="" id="check" />
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/class-student.svg"
-                                                        alt="logo" />
-                                                    <div class="tags-body-detail">
-                                                        <p class="class-name">Gabriella Hawkins</p>
-                                                    </div>
-                                                </div>
-                                            </button>
+                                            <?php } ?>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <!-- Button Section -->
                     <div class="input_section">
                         <div class="btn_box class_btns">
@@ -233,7 +222,7 @@ function onClassEdit(class_id) {
     $.ajax({
         method: "POST",
         enctype: 'multipart/form-data',
-        url: apiUrl + "classs",
+        url: apiUrl + "classes",
         data: {class_id}
     }).done(function( response ) {
         let class_record = response.data.class;
@@ -277,11 +266,13 @@ function onClassEdit(class_id) {
         let classForm = jQuery("#classForm");
         jQuery(classForm).on('submit', function(e) {
             e.preventDefault();
+            jQuery(".alert-danger").hide();
+
             const formData = new FormData(e.target);
             $.ajax({
                 method: "POST",
                 enctype: 'multipart/form-data',
-                url: apiUrl + "classs/save",
+                url: apiUrl + "classes/save",
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -291,14 +282,49 @@ function onClassEdit(class_id) {
                 classModalObj.hide();
             }).fail(function (response) {
                 jQuery('#classForm .form-control').removeClass('is-invalid');
+                if (response.responseJSON !== undefined && response.responseJSON.code === "rest_missing_callback_param") {
+                    console.log("yesss", response.responseJSON.data.params);
+                    response.responseJSON.data.params.forEach(element => {
+                        jQuery(".invalid-feedback-" + element).show();
+                    });
+                }
+                
                 if (response.responseJSON !== undefined) {
                     Object.keys(response.responseJSON.data.params).forEach(element => {
+                        console.log('element >>> ', element);
                         jQuery('#classModal input[name="' + element + '"]').addClass('is-invalid');
                         jQuery('#classModal textarea[name="' + element + '"]').addClass('is-invalid');
+                        jQuery('#classModal select[name="' + element + '"]').addClass('is-invalid');
+                        if (element === "schedule") {
+                            jQuery(".invalid-feedback-" + element).show();
+                        }
                     });
                 }
             });
         
         });
+
+
+        // ==== [start] Students Selection =================
+        jQuery("#select-all-students").on('change', function(e) {
+            if (jQuery("#select-all-students:checked").length) {
+                jQuery(".select-student-check").prop('checked', true);
+                jQuery("#studentsDropdownMenu span").text(jQuery(".select-student-check:checked").length);
+            } else {
+                jQuery(".select-student-check").prop('checked', false);
+                jQuery("#studentsDropdownMenu span").text('--- Select ---');
+            }
+        });
+        
+        jQuery(".select-student-check").on('change', function(e) {
+            jQuery("#select-all-students").prop('checked', false);
+            if (jQuery(".select-student-check:checked").length) {
+                jQuery("#studentsDropdownMenu span").text(jQuery(".select-student-check:checked").length);
+            } else {
+                jQuery("#studentsDropdownMenu span").text('--- Select ---');
+            }
+        });
+        // ==== [end] Students Selection =================
+
     });
 </script>

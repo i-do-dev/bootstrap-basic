@@ -296,7 +296,7 @@ $students = lxp_get_school_students($teacher_school_id);
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
     
-    <?php get_template_part('lxp/teacher-class-modal', 'student-modal', array("school_post" => $school_post)); ?>
+    <?php get_template_part('lxp/teacher-class-modal', 'student-modal', array("school_post" => $school_post, 'students' => $students)); ?>
 </body>
 
 </html>
