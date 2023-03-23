@@ -28,3 +28,30 @@ global $treks_src;
         </section>
     </section>
 </div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+
+        let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+        let apiUrl = host + '/wp-json/lms/v1/';
+
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            selectable: true,
+            initialView: 'timeGridWeek',
+            slotDuration: '01:00',            
+            events: apiUrl + "get/all/trek/events?user_id=" + <?php echo get_current_user_id() ?> ,
+            eventClassNames: function(arg) {
+                let segment_class = "segment-default-event";
+                if (arg.event.extendedProps.hasOwnProperty("segment")) {
+                    segment_class = arg.event.extendedProps.segment + "-event";
+                }
+                return segment_class;
+            },
+            select: function( selectionInfo ) {
+                console.log("selectionInfo === ", selectionInfo);
+            }
+        });
+        calendar.render();
+    });
+</script>
