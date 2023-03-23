@@ -134,7 +134,7 @@ function lxp_get_teacher_classes($lxp_class_teacher_id)
     return $school_query->get_posts();
 }
 
-function lxp_get_all_student_classes($student_id)
+function lxp_get_student_all_classes($student_id)
 {
     $school_query = new WP_Query( array( 
         'post_type' => TL_CLASS_CPT, 
@@ -142,6 +142,19 @@ function lxp_get_all_student_classes($student_id)
         'posts_per_page'   => -1,        
         'meta_query' => array(
             array('key' => 'lxp_student_ids', 'value' => $student_id, 'compare' => '=')
+        )
+    ) );
+    return $school_query->get_posts();
+}
+
+function lxp_get_all_teachers_classes($teachers_ids)
+{
+    $school_query = new WP_Query( array( 
+        'post_type' => TL_CLASS_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_class_teacher_id', 'value' => $teachers_ids, 'compare' => 'IN')
         )
     ) );
     return $school_query->get_posts();

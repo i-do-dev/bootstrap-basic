@@ -230,8 +230,8 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
                                                 <?php 
                                                     $schedule = (array)json_decode(get_post_meta($class->ID, 'schedule', true));
                                                     foreach (array_keys($schedule) as $day) {
-                                                        $start = $schedule[$day]->start;
-                                                        $end = $schedule[$day]->end;
+                                                        $start = date('h:i a', strtotime($schedule[$day]->start));
+                                                        $end = date('h:i a', strtotime($schedule[$day]->end));
                                                     ?>
                                                         <span><?php echo ucwords($day) ?> / <?php echo $start; ?> - <?php echo $end; ?></span>
                                                     <?php } ?>

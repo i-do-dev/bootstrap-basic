@@ -220,7 +220,7 @@ $students = lxp_get_school_students($teacher_school_id);
                                             <div class="table-status"><?php echo $student_admin->user_email?></div>
                                         </td>
                                         <td>
-                                            <?php echo count(lxp_get_all_student_classes($student->ID)); ?>
+                                            <?php echo count(lxp_get_student_all_classes($student->ID)); ?>
                                         </td>
                                         <td class="grade">
                                             <?php 

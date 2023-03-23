@@ -4,6 +4,8 @@ global $treks_src;
 $school_post = lxp_get_user_school_post();
 $teachers = lxp_get_school_teachers($school_post->ID);
 $students = lxp_get_school_students($school_post->ID);
+$school_teachers_ids = array_map(function ($teacher) { return $teacher->ID; }, $teachers);
+$classes = lxp_get_all_teachers_classes($school_teachers_ids);
 ?>
 
 <!DOCTYPE html>
@@ -97,7 +99,7 @@ $students = lxp_get_school_students($school_post->ID);
                     </div>
                     <div class="card">
                         <img src="<?php echo $treks_src; ?>/assets/img/classes.svg" alt="logo" />
-                        <h3 class="numbers-heading">0</h3>
+                        <h3 class="numbers-heading"><?php echo count($classes); ?></h3>
                         <p class="name-text">Classes</p>
                     </div>
                     <div class="card">
@@ -155,6 +157,7 @@ $students = lxp_get_school_students($school_post->ID);
                     <div class="tab-content">
                         <?php get_template_part('lxp/school-dashboard-teachers-tab', 'teacher-tab', array('teachers' => $teachers)); ?>
                         <?php get_template_part('lxp/school-dashboard-students-tab', 'student-tab', array('students' => $students)); ?>
+                        <?php get_template_part('lxp/school-dashboard-classes-tab', 'class-tab', array('classes' => $classes)); ?>
                     </div>
                 </section>
             </section>
