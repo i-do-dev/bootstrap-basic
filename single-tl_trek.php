@@ -404,7 +404,7 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
                   <a href="#" onclick="fetch_trek_section_assigned_students(<?php echo $trek_section->id; ?>, <?php echo get_current_user_id(); ?>)"><span class="segment-student-count"><?php echo count(trek_section_assigned_students($trek_section->id)); ?></span> Students</a>
                 </div>
                 <div class="">
-                  <button onclick="fetch_trek_assignments_calendar(<?php echo $trek_section->id; ?>, <?php echo get_current_user_id(); ?>)"  class="primary-btn lx-space">Assign</button>
+                  <button onclick="assign(<?php echo get_the_ID(); ?>,<?php echo $trek_section->id; ?>)"  class="primary-btn lx-space">Assign</button>
                 </div>
               </section>
               <br />
@@ -470,6 +470,12 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
       crossorigin="anonymous"
     ></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js'></script>
+
+    <script type="text/javascript">
+      function assign(trek_id, section_id) {
+        window.location = "<?php echo site_url("assignment"); ?>" + "?trek=" + trek_id + "&segment=" + section_id;
+      }
+    </script>
 
     <script type="text/javascript">
 

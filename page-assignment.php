@@ -4,7 +4,7 @@ get_template_part('lxp/functions');
 lxp_login_check();
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 $userdata = get_userdata(get_current_user_id());
-
+$trek_post = isset($_GET['trek']) && isset($_GET['segment']) ? get_post($_GET['trek']) : null;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,6 +28,9 @@ $userdata = get_userdata(get_current_user_id());
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js'></script>
 
     <style type="text/css">
+        #back-btn {
+            width: 80px;
+        }
         .fc .fc-timegrid-slot {
             height: 3.5em !important;
         }

@@ -70,5 +70,6 @@ global $treks_src;
             }
         });
         calendar.render();
+        window.calendar = calendar;
     });
 </script>

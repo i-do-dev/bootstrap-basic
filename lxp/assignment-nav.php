@@ -1,12 +1,16 @@
 <?php
 global $treks_src;
+global $trek_post;
 ?>
 <section class="welcome-section assignment-section">
-    <button class="back-btn">
-        <img src="<?php echo $treks_src; ?>/assets/img/back.svg" alt="logo" />
-        <p class="back-btn-text">Back</p>
-    </button>
-
+    <div id="back-btn">
+        <?php if ($trek_post) { ?>
+                <button class="back-btn" id="go_back" onclick="go_back('<?php echo site_url($trek_post->post_name); ?>')">
+                    <img src="<?php echo $treks_src; ?>/assets/img/back.svg" alt="logo" />
+                    <p class="back-btn-text">Back</p>
+                </button>
+        <?php } ?>
+    </div>
     <!-- Assignment Tabs -->
     <nav class="nav-section select-section">
         <ul class="treks_ul select-ul" id="myTab" role="tablist">
@@ -46,8 +50,12 @@ global $treks_src;
                 console.log('event.target >>> ', jQuery(event.target).attr('id'));
                 
                 switch (jQuery(event.target).attr('id')) {
-                    case 'step-2-tab':
+                    case 'step-1-tab':
+                        window.calendar.render();
+                        break;
+                    case 'step-2-tab':                        
                         set_assignment_date();
+                        window.back_tab = bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-1-tab'));
                         break;
                     default:
                         break;
@@ -58,6 +66,7 @@ global $treks_src;
 
             });
         });
+
     });
 
     function set_assignment_date() {
@@ -73,5 +82,9 @@ global $treks_src;
         jQuery("#assignment_date").text(date);
         jQuery("#assignment_time_start").text(time_start);
         jQuery("#assignment_time_end").text(time_end);
+    }
+
+    function go_back(url) {
+        window.location = url;
     }
 </script>

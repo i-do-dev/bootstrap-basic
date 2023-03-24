@@ -20,10 +20,10 @@ global $treks_src;
                             <p class="date-time to-text">To</p>
                             <p class="date-time" id="assignment_time_end"></p>
                         </div>
-                        <label class="to-text all-day-label">
+                        <!-- <label class="to-text all-day-label">
                             <input class="form-check-input" type="checkbox" />
                             All day
-                        </label>
+                        </label> -->
                     </div>
                 </div>
             </div>
