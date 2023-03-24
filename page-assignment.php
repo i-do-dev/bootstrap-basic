@@ -29,16 +29,43 @@ $userdata = get_userdata(get_current_user_id());
 
     <style type="text/css">
         .fc .fc-timegrid-slot {
-            height: 5em !important;
+            height: 3.5em !important;
         }
+        .fc-event {
+            cursor: pointer;
+        }
+        .lxp-event-title {
+            font-family: var(--bs-body-font-family);
+            margin-bottom: 0.1em !important;
+            font-size: var(--bs-body-font-size);
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .lxp-event-sub-title {
+            font-family: var(--bs-body-font-family);
+            margin-bottom: 0.1em !important;
+            font-size: 0.7rem !important;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .recall-segment-event-title,.recall-segment-event-sub-title { color: #ca2738; }
+        .overview-segment-event-title,.overview-segment-event-sub-title { color: #4c4c4c; }
+        .apply-segment-event-title,.apply-segment-event-sub-title { color: #6f8929; }
+        .practice-a-segment-event-title,.practice-a-segment-event-sub-title { color: #167394; }
+        .practice-b-segment-event-title,.practice-b-segment-event-sub-title { color: #167394; }
+
         .recall-event {
-           background: #f4d4d7 !important;
-           border-top: #f4d4d7 !important;
-           border-right: #f4d4d7 !important;
-           border-bottom: #f4d4d7 !important;
+           background: #fae9eb !important;
+           border-top: #fae9eb !important;
+           border-right: #fae9eb !important;
+           border-bottom: #fae9eb !important;
            border-left: 4px solid #ca2738 !important;
            border-radius: 0 !important;
            padding-left: 6px !important;
+           padding-top: 5px !important;
         }
         .practice-a-event {
             background: #d2edf6 !important;
@@ -48,6 +75,7 @@ $userdata = get_userdata(get_current_user_id());
             border-left: 4px solid #1fa5d4 !important;
             border-radius: 0 !important;
             padding-left: 6px !important;
+            padding-top: 5px !important;
         }
         .practice-b-event {
             background: #d2edf6 !important;
@@ -57,6 +85,7 @@ $userdata = get_userdata(get_current_user_id());
             border-left: 4px solid #1fa5d4 !important;
             border-radius: 0 !important;
             padding-left: 6px !important;
+            padding-top: 5px !important;
         }
         
         .apply-event {
@@ -67,6 +96,7 @@ $userdata = get_userdata(get_current_user_id());
             border-left: 4px solid #9fc33b !important;
             border-radius: 0 !important;
             padding-left: 6px !important;
+            padding-top: 5px !important;
         }
 
         .overview-event {
@@ -77,7 +107,9 @@ $userdata = get_userdata(get_current_user_id());
             border-left: 4px solid #979797 !important;
             border-radius: 0 !important;
             padding-left: 6px !important;
+            padding-top: 5px !important;
         }
+
     </style>
 </head>
 

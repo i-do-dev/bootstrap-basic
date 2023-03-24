@@ -48,6 +48,22 @@ global $treks_src;
                 }
                 return segment_class;
             },
+            eventContent: function(arg) {
+                let trek_segment_el = document.createElement('p');
+                trek_segment_el.innerHTML = arg.event.title;
+                let event_title_class  = arg.event.extendedProps.segment + "-segment-event-title";
+                trek_segment_el.classList.add(event_title_class);
+                trek_segment_el.classList.add("lxp-event-title");
+                
+                let trek_el = document.createElement('p');
+                trek_el.innerHTML = arg.event.extendedProps.trek;
+                let event_sub_title_class = arg.event.extendedProps.segment + "-segment-event-sub-title"
+                trek_el.classList.add(event_sub_title_class);
+                trek_el.classList.add("lxp-event-sub-title");
+
+                let event_dom_nodes = [trek_segment_el, trek_el];
+                return {domNodes: event_dom_nodes};
+            },
             select: function( selectionInfo ) {
                 console.log("selectionInfo === ", selectionInfo);
             }
