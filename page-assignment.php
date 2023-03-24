@@ -64,7 +64,7 @@ $userdata = get_userdata(get_current_user_id());
            border-bottom: #fae9eb !important;
            border-left: 4px solid #ca2738 !important;
            border-radius: 0 !important;
-           padding-left: 6px !important;
+           padding-left: 5px !important;
            padding-top: 5px !important;
         }
         .practice-a-event {
@@ -74,7 +74,7 @@ $userdata = get_userdata(get_current_user_id());
             border-bottom: #d2edf6 !important;
             border-left: 4px solid #1fa5d4 !important;
             border-radius: 0 !important;
-            padding-left: 6px !important;
+            padding-left: 5px !important;
             padding-top: 5px !important;
         }
         .practice-b-event {
@@ -84,7 +84,7 @@ $userdata = get_userdata(get_current_user_id());
             border-bottom: #d2edf6 !important;
             border-left: 4px solid #1fa5d4 !important;
             border-radius: 0 !important;
-            padding-left: 6px !important;
+            padding-left: 5px !important;
             padding-top: 5px !important;
         }
         
@@ -95,7 +95,7 @@ $userdata = get_userdata(get_current_user_id());
             border-bottom: #ecf3d8 !important;
             border-left: 4px solid #9fc33b !important;
             border-radius: 0 !important;
-            padding-left: 6px !important;
+            padding-left: 5px !important;
             padding-top: 5px !important;
         }
 
@@ -106,7 +106,7 @@ $userdata = get_userdata(get_current_user_id());
             border-bottom: #eaeaea !important;
             border-left: 4px solid #979797 !important;
             border-radius: 0 !important;
-            padding-left: 6px !important;
+            padding-left: 5px !important;
             padding-top: 5px !important;
         }
 
@@ -163,6 +163,7 @@ $userdata = get_userdata(get_current_user_id());
         <!-- 3rd Tab -->
         <?php get_template_part('lxp/assignment-tab-3', 'assignment-tab-3'); ?>
     </div>
+    
 </body>
 
 </html>

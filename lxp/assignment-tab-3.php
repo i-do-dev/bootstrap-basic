@@ -1,7 +1,7 @@
 <?php
 global $treks_src;
 ?>
-<div class="tab-pane fade show" id="groups-tab-pane" role="tabpanel" aria-labelledby="groups-tab" tabindex="2">
+<div class="tab-pane fade show" id="step-3-tab-pane" role="tabpanel" aria-labelledby="step-3-tab" tabindex="2">
 
     <!-- New Assignment -->
     <section class="calendar-container select-assignment-section third-tab-section">

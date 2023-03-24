@@ -1,7 +1,7 @@
 <?php
 global $treks_src;
 ?>
-<div class="tab-pane fade show active2" id="classes-tab-pane" role="tabpanel" aria-labelledby="classes-tab" tabindex="1">
+<div class="tab-pane fade show" id="step-2-tab-pane" role="tabpanel" aria-labelledby="setp-2-tab" tabindex="1">
 
     <!-- New Assignment Calendar Section -->
     <section class="calendar-container select-assignment-section">
@@ -15,10 +15,10 @@ global $treks_src;
                     <img src="<?php echo $treks_src; ?>/assets/img/clock-outline.svg" alt="logo" />
                     <div class="time-date-box days-box">
                         <div class="time-date-box">
-                            <p class="date-time">Thursday, February 23</p>
-                            <p class="date-time">09:00 am</p>
+                            <p class="date-time"><span id="assignment_day"></span>, <span id="assignment_month"></span> <span id="assignment_date"></span></p>
+                            <p class="date-time" id="assignment_time_start"></p>
                             <p class="date-time to-text">To</p>
-                            <p class="date-time">10:00 am</p>
+                            <p class="date-time" id="assignment_time_end"></p>
                         </div>
                         <label class="to-text all-day-label">
                             <input class="form-check-input" type="checkbox" />

@@ -1,7 +1,7 @@
 <?php
 global $treks_src;
 ?>
-<div class="tab-pane fade show active" id="teachers-tab-pane" role="tabpanel" aria-labelledby="teachers-tab" tabindex="0">
+<div class="tab-pane fade show active" id="step-1-tab-pane" role="tabpanel" aria-labelledby="step-1-tab" tabindex="0">
     <!-- New Assignment Day Week Month Buttons -->
     <section class="assignment-section new-assignment-section">
         <h3 class="new-assignment-heading">New Assignment</h3>
@@ -64,8 +64,9 @@ global $treks_src;
                 let event_dom_nodes = [trek_segment_el, trek_el];
                 return {domNodes: event_dom_nodes};
             },
-            select: function( selectionInfo ) {
-                console.log("selectionInfo === ", selectionInfo);
+            select: function( calendarSelectionInfo ) {
+                window.calendarSelectionInfo = calendarSelectionInfo;
+                bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-2-tab')).show();
             }
         });
         calendar.render();
