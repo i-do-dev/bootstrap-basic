@@ -87,4 +87,8 @@ global $trek_post;
     function go_back(url) {
         window.location = url;
     }
+
+    function go_previous() {
+        window.back_tab.show();
+    }
 </script>

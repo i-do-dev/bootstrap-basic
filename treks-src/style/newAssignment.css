@@ -477,6 +477,13 @@
 .pa-body-detail span {
   color: #1fa5d4;
 }
+
+.overview-poly-body .tags-body-polygon {
+  background: #979797;
+}
+.overview-poly-body .tags-body-detail span {
+  color: #979797;
+}
 /* Select Class Period Student Styling */
 .class-student-box .select-all {
   border: none;
