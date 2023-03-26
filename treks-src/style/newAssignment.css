@@ -431,6 +431,27 @@
   border-radius: 8px;
   padding: 4px;
 }
+.apply-poly-body .tags-body-polygon{
+  background-color: #9fc33b;
+}
+.apply-poly-body .tags-body-detail span{
+  color: #9fc33b !important;
+}
+.practice-b-poly-body .tags-body-detail span {
+  color: #1fa5d4 !important;
+}
+.practice-a-poly-body .tags-body-detail span {
+  color: #1fa5d4 !important;
+}
+.overview-trek-box {
+  margin-bottom: 8px;
+  padding: 12px 8px 12px 12px;
+}
+.apply-trek-box {
+  background: rgba(159, 195, 59, 0.16) !important;
+  margin-bottom: 8px;
+  padding: 12px 8px 12px 12px;
+}
 .recall-trek-box {
   background: rgba(202, 39, 56, 0.16);
   margin-bottom: 8px;
@@ -438,6 +459,17 @@
 }
 .practice-trek-box {
   background: rgba(31, 165, 212, 0.16);
+  margin-bottom: 8px;
+  padding: 12px 8px 12px 12px;
+}
+.practice-a-trek-box {
+  background: rgba(31, 165, 212, 0.16);
+  margin-bottom: 8px;
+  padding: 12px 8px 12px 12px;
+}
+.practice-b-trek-box {
+  background: rgba(31, 165, 212, 0.16);
+  margin-bottom: 8px;
   padding: 12px 8px 12px 12px;
 }
 .tags-body {
@@ -474,7 +506,19 @@
 .pa-poly-body .tags-body-polygon {
   background: #1fa5d4;
 }
+.practice-a-poly-body .tags-body-polygon {
+  background: #1fa5d4;
+}
+.practice-b-poly-body .tags-body-polygon {
+  background: #1fa5d4;
+}
 .pa-body-detail span {
+  color: #1fa5d4;
+}
+.pratice-a-body-detail span {
+  color: #1fa5d4;
+}
+.pratice-b-body-detail span {
   color: #1fa5d4;
 }
 

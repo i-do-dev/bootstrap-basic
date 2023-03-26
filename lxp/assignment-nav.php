@@ -57,6 +57,9 @@ global $trek_post;
                         set_assignment_date();
                         window.back_tab = bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-1-tab'));
                         break;
+                    case 'step-3-tab':                        
+                        window.back_tab = bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-2-tab'));
+                        break;
                     default:
                         break;
                 }

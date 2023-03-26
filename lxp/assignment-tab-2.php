@@ -1,9 +1,9 @@
 <?php
 global $treks_src, $trek_post;
-$select_trek_title = $trek_post ? $trek_post->post_title : "Select a TREK";
+$select_trek_title = !boolval($trek_post) ? "Select a TREK" : $trek_post->post_title;
 $trek_id = $trek_post ? $trek_post->ID : 0;
 global $wpdb;
-$trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections WHERE trek_id={$trek_post->ID} ORDER BY sort");
+$trek_sections = boolval($trek_post) ? $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections WHERE trek_id={$trek_post->ID} ORDER BY sort") : [];
 $overview = array_values(array_filter($trek_sections, function ($trek_section) { return $trek_section->title === "Overview"; }));
 $recall = array_values(array_filter($trek_sections, function ($trek_section) { return $trek_section->title === "Recall"; }));
 $practice_a = array_values(array_filter($trek_sections, function ($trek_section) { return $trek_section->title === "Practice A"; }));
@@ -28,7 +28,7 @@ $treks = get_posts($args);
             <h3 class="new-assignment-heading">New Assignment</h3>
             <div class="select-calendar-box">
                 <h4 class="new-assignment-heading select-calendar-heading">Calendar</h4>
-                <div class="calendar-time-date">
+                <div class="calendar-time-date <?php echo boolval($trek_post) ? 'third-tab-date-time' : '' ?>">
                     <img src="<?php echo $treks_src; ?>/assets/img/clock-outline.svg" alt="logo" />
                     <div class="time-date-box days-box">
                         <div class="time-date-box">
@@ -43,6 +43,40 @@ $treks = get_posts($args);
                         </label> -->
                     </div>
                 </div>
+                
+                <?php if (boolval($trek_post)) { ?>
+                    <!-- TREK -->
+                    <h4 class="new-assignment-heading select-calendar-heading third-calendar-heading">TREK</h4>
+                    <div class="third-trek-box">
+                        <div class="third-card-box">
+                            <img src="<?php echo $treks_src; ?>/assets/img/interdependence-logo.svg" alt="img" />
+                            <p class="interdependence-text"><?php echo $trek_post->post_title ?></p>
+                        </div>
+                        <!-- <img class="cursor-img" src="<?php echo $treks_src; ?>/assets/img/delete.svg" alt="img" /> -->
+                    </div>
+                    <!-- horizontal line -->
+                    <div class="horizontal-line"></div>
+                    <!-- RPA Segment -->
+                    <h4 class="new-assignment-heading select-calendar-heading">RPA Segments</h4>
+                    <div id="rpa_segments_container">
+                        <?php 
+                            $trek_section = get_trek_section_by_id($_GET['segment']);
+                            $trek_notation = implode('-', explode(' ', strtolower($trek_section->title)));
+                        ?>
+                            <div class="third-trek-box <?php echo $trek_notation; ?>-trek-box">
+                                <!-- Selected Section -->
+                                <div class="tags-body <?php echo $trek_notation; ?>-poly-body">
+                                    <div class="tags-body-polygon">
+                                        <span><?php echo $trek_section->title[0]; ?></span>
+                                    </div>
+                                    <div class="tags-body-detail">
+                                        <span><?php echo $trek_section->title; ?></span>
+                                    </div>
+                                </div>
+                                <!-- <img class="cursor-img" src="<?php //echo $treks_src; ?>/assets/img/delete.svg" alt="img" /> -->
+                            </div>
+                        <?php } ?>
+                    </div>
             </div>
         </div>
 
@@ -184,7 +218,7 @@ $treks = get_posts($args);
         <div class="input_section">
             <div class="btn_box profile_buttons">
                 <button class="btn profile_btn" type="button" aria-label="Close" onclick="go_previous()">Previous</button>
-                <button class="btn profile_btn" oncli>Continue</button>
+                <button class="btn profile_btn" onclick="go_step_3()">Continue</button>
             </div>
         </div>
     </section>
@@ -199,8 +233,29 @@ $treks = get_posts($args);
             } else {
                 jQuery('#select-segment-title').text("Select a RPA segment");
             }
+
+            jQuery("#rpa_segments_container").html(
+                jQuery("input[name='segments[]']:checked").get()
+                .map( trek_section_checked => trek_sections_html(window.trek_sections_json.filter(section => section.id == jQuery(trek_section_checked).val())[0]) )
+                .join("\n")
+            );
         });
     });
+
+    function trek_sections_html(section) {
+        let notation = section.title.toLowerCase().split(' ').join('-');
+        return `
+        <div class="third-trek-box ` + notation + `-trek-box">          
+            <div class="tags-body ` + notation + `-poly-body">
+                <div class="tags-body-polygon">
+                    <span>` + section.title[0] + `</span>
+                </div>
+                <div class="tags-body-detail">
+                    <span>` + section.title + `</span>
+                </div>
+            </div>
+        </div>`;
+    }
 
     function set_trek_id(trek_id) {
         jQuery('#trek_id').val(trek_id);
@@ -209,4 +264,7 @@ $treks = get_posts($args);
     function go_step_3() {
         bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-3-tab')).show();
     }
+
+    window.trek_sections_json = <?php echo json_encode($trek_sections); ?>;
+    
 </script>

@@ -160,4 +160,9 @@ function lxp_get_all_teachers_classes($teachers_ids)
     return $school_query->get_posts();
 }
 
+function get_trek_section_by_id($section_id)
+{
+    global $wpdb;
+    return $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id={$section_id}");
+}
 ?>

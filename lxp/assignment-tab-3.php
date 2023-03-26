@@ -211,8 +211,7 @@ global $treks_src;
     <section class="calendar-container select-assignment-section btns-container">
         <div class="input_section">
             <div class="btn_box profile_buttons">
-                <button class="btn profile_btn" type="button" data-bs-dismiss="modal"
-                    aria-label="Close">Cancel</button>
+                <button class="btn profile_btn" type="button" onclick="go_previous()">Previous</button>
                 <button class="btn profile_btn">Continue</button>
             </div>
         </div>
