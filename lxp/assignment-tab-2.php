@@ -24,7 +24,7 @@ $treks = get_posts($args);
     <section class="calendar-container select-assignment-section">
 
         <!-- New Assignment -->
-        <div class="select-trek-box">
+        <div class="select-trek-box" id="new_assignment_data_1">
             <h3 class="new-assignment-heading">New Assignment</h3>
             <div class="select-calendar-box">
                 <h4 class="new-assignment-heading select-calendar-heading">Calendar</h4>
@@ -76,7 +76,35 @@ $treks = get_posts($args);
                                 <!-- <img class="cursor-img" src="<?php //echo $treks_src; ?>/assets/img/delete.svg" alt="img" /> -->
                             </div>
                         <?php } ?>
+                    </div> 
+                    
+                    <!-- horizontal line -->
+                <div class="horizontal-line"></div>
+
+                <!-- Number of Students -->
+                <h4 class="new-assignment-heading select-calendar-heading">Students</h4>
+
+                <!-- Student Period and Grade-->
+                <div class="time-date-box days-box">
+                    <div class="time-date-box">
+                        <!-- <p class="date-time student-period">Science 3rd period</p>
+                        <p class="date-time student-period">5th grade</p> -->
+                        <p class="date-time student-period"><span class="student_count">0</span> students</p>
                     </div>
+                </div>
+
+                <!-- Select Student Profile logos -->
+                <div class="select-students-logos">
+                    <!-- <img class="" src="<?php //echo $treks_src; ?>/assets/img/class-student.svg" alt="logo" />
+                    <img class="student-logo" src="<?php //echo $treks_src; ?>/assets/img/class-student.svg" alt="logo" />
+                    <img class="student-logo" src="<?php //echo $treks_src; ?>/assets/img/class-student.svg" alt="logo" />
+                    <img class="student-logo" src="<?php //echo $treks_src; ?>/assets/img/class-student.svg" alt="logo" />
+                    <img class="student-logo" src="<?php //echo $treks_src; ?>/assets/img/class-student.svg" alt="logo" />
+                    <img class="student-logo" src="<?php //echo $treks_src; ?>/assets/img/class-student.svg" alt="logo" />
+                    <img class="student-logo" src="<?php //echo $treks_src; ?>/assets/img/class-student.svg" alt="logo" />
+                    <img class="student-logo" src="<?php //echo $treks_src; ?>/assets/img/class-student.svg" alt="logo" /> -->
+                </div>
+
             </div>
         </div>
 
@@ -127,6 +155,9 @@ $treks = get_posts($args);
                         </button> -->
                         
                     </div>
+                </div>
+                <div class="invalid-feedback" id="trek_select_error">
+                    Please select TREK
                 </div>
             </div>
             <div class="search_box">
@@ -210,6 +241,9 @@ $treks = get_posts($args);
                     </div>
                 </div>
             </div>
+            <div class="invalid-feedback" id="trek_section_select_error">
+                Please select Segment(s)
+            </div>
         </div>
     </section>
 
@@ -262,7 +296,25 @@ $treks = get_posts($args);
     }
 
     function go_step_3() {
-        bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-3-tab')).show();
+        ok = true;
+        if (!parseInt(jQuery('#trek_id').val())) {
+            jQuery('#trek_select_error').show();
+            ok = false;
+        } else {
+            jQuery('#trek_select_error').hide();
+        }
+
+        let segments_count = jQuery("input[name='segments[]']:checked").length;
+        if (segments_count) {
+            jQuery('#trek_section_select_error').hide();    
+        } else {
+            jQuery('#trek_section_select_error').show();
+            ok = false;
+        }
+        
+        if (ok) {
+            bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-3-tab')).show();
+        }
     }
 
     window.trek_sections_json = <?php echo json_encode($trek_sections); ?>;
