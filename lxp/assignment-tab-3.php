@@ -4,6 +4,7 @@ $userdata = get_userdata(get_current_user_id());
 $teacher_post = lxp_get_teacher_post($userdata->data->ID);
 $classes = lxp_get_teacher_classes($teacher_post->ID);
 ?>
+<input type="hidden" name="teacher_id" id="teacher_id" value="<?php echo $teacher_post->ID; ?>" />
 <div class="tab-pane fade show" id="step-3-tab-pane" role="tabpanel" aria-labelledby="step-3-tab" tabindex="2">
 
     <!-- New Assignment -->
@@ -120,17 +121,20 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
                     </div>
                 </div>
             </div>
-
+            <div class="invalid-feedback" id="class_select_error">
+                Please select class
+            </div>
+            
             <!-- Select a class Period -->
             <div class="search_box">
-                <label class="trek-label">Class</label>
+                <label class="trek-label">Students</label>
                 <div class="dropdown period-box">
                     <button class="input_dropdown dropdown-button second-drop-button" type="button"
-                        id="dropdownMenu2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Science 3rd period
+                        id="studentsDD" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span id="select-students-label">Select students</span>
                         <img class="rotate-arrow" src="<?php echo $treks_src; ?>/assets/img/down-arrow.svg" alt="logo" />
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <div class="dropdown-menu" aria-labelledby="studentsDD">
                         <!-- Select All -->
                         <button class="dropdown-item dropdown-item2 practice-button">
                             <!-- Select Student -->
@@ -147,6 +151,9 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
                     </div>
                 </div>
             </div>
+            <div class="invalid-feedback" id="students_select_error">
+                Please select students
+            </div>
         </div>
 
     </section>
@@ -156,15 +163,17 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
         <div class="input_section">
             <div class="btn_box profile_buttons">
                 <button class="btn profile_btn" type="button" onclick="go_previous()">Previous</button>
-                <button class="btn profile_btn">Continue</button>
+                <button class="btn profile_btn" id="assignment-create-btn">Create</button>
             </div>
         </div>
     </section>
 </div>
 
 <script type="text/javascript">
-
-    window.classes = <?php echo json_encode($classes); ?>
+    let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+    let apiUrl = host + '/wp-json/lms/v1/';
+    window.selected_students_ids = [];
+    window.classes = <?php echo json_encode($classes); ?>;
 
     function class_select(class_id) {
         jQuery('#class_id').val(class_id);
@@ -174,8 +183,6 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
     }
 
     function fetch_class_student(class_id) {
-        let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
-        let apiUrl = host + '/wp-json/lms/v1/';
         $.ajax({
             method: "POST",
             enctype: 'multipart/form-data',
@@ -207,18 +214,87 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
     
     function class_students_select_event_init() {
         jQuery("input[name='student_ids[]']").on('change', function(e) {
-            window.selected_students_ids = jQuery("input[name='student_ids[]']:checked").get().map(student_checkbox => jQuery(student_checkbox).val());
+            onStudentsCheckboxSelect();
         });
     } 
     
+    function onStudentsCheckboxSelect() {
+        window.selected_students_ids = jQuery("input[name='student_ids[]']:checked").get().map(student_checkbox => jQuery(student_checkbox).val());
+        let selected_students_label = window.selected_students_ids.length > 0 ? window.selected_students_ids.length : "Select students";
+        jQuery("#select-students-label").text(selected_students_label);
+        jQuery(".students_count_label").text(window.selected_students_ids.length);
+        set_student_logos();
+    }
+
+    function set_student_logos() {
+        let logos_html = window.selected_students_ids.map(student_id => `<img class="student-logo" src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="logo" />`).join('\n');
+        jQuery('.select-students-logos').html(logos_html);
+    }
+
+    function create_assignment() {
+
+        let ok = true;
+        if (!parseInt(jQuery("#class_id").val())) {
+            ok = false;
+            jQuery("#class_select_error").show();
+        } else {
+            jQuery("#class_select_error").hide();
+        }
+
+        if (window.selected_students_ids.length == 0) {
+            ok = false;
+            jQuery("#students_select_error").show();
+        } else {
+            jQuery("#students_select_error").hide();
+        }
+
+        if (ok) {
+            let trek_id = jQuery("#trek_id").val()
+            let segments_ids = jQuery("input[name='segments[]']:checked").get().map(segment => jQuery(segment).val());
+            let class_id = jQuery('#class_id').val();
+            let teacher_id = jQuery('#teacher_id').val();
+
+            let formData = new FormData();
+            formData.append('trek_id', trek_id);
+            formData.append('segments_ids', JSON.stringify(segments_ids));
+            formData.append('class_id', class_id);
+            formData.append('student_ids', JSON.stringify(window.selected_students_ids));
+            formData.append('teacher_id', teacher_id);
+            formData.append('assignment_post_id', '0');
+            formData.append('calendar_selection_info', JSON.stringify(window.calendarSelectionInfo));
+
+            $.ajax({
+                method: "POST",
+                enctype: 'multipart/form-data',
+                url: apiUrl + "assignments/save",
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+            }).done(function( response ) {
+                
+            }).fail(function (response) {
+                
+            });
+            
+            alert("Create it!");
+        }
+    }
+
     jQuery(document).ready(function() {
+
         jQuery("#select-all-students").on('change', function(e) {
             if (jQuery(this).prop('checked')) {
                 jQuery("input[name='student_ids[]']").prop('checked', true);
             } else {
                 jQuery("input[name='student_ids[]']").prop('checked', false);
             }
-            window.selected_students_ids = jQuery("input[name='student_ids[]']:checked").get().map(student_checkbox => jQuery(student_checkbox).val());
+            onStudentsCheckboxSelect();
+        });
+
+        jQuery("#assignment-create-btn").on('click', function(e) {
+            create_assignment();
         });
     });
+
 </script>

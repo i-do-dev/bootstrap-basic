@@ -37,10 +37,11 @@ global $treks_src;
 
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
+            timeZone: 'UTC',
             selectable: true,
             initialView: 'timeGridWeek',
             slotDuration: '01:00',            
-            events: apiUrl + "get/all/trek/events?user_id=" + <?php echo get_current_user_id() ?> ,
+            events: apiUrl + "assignments/calendar/events/?user_id=" + <?php echo get_current_user_id(); ?> ,
             eventClassNames: function(arg) {
                 let segment_class = "segment-default-event";
                 if (arg.event.extendedProps.hasOwnProperty("segment")) {

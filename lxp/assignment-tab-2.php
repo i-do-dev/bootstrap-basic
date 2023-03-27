@@ -89,7 +89,7 @@ $treks = get_posts($args);
                     <div class="time-date-box">
                         <!-- <p class="date-time student-period">Science 3rd period</p>
                         <p class="date-time student-period">5th grade</p> -->
-                        <p class="date-time student-period"><span class="student_count">0</span> students</p>
+                        <p class="date-time student-period"><span class="student_count students_count_label">0</span> students</p>
                     </div>
                 </div>
 
