@@ -272,12 +272,12 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
                 contentType: false,
                 cache: false,
             }).done(function( response ) {
-                
+                bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-1-tab')).show();
+                window.calendar.refetchEvents();
+                console.log("assignment created successfully.");
             }).fail(function (response) {
-                
-            });
-            
-            alert("Create it!");
+                console.error(response);
+            });            
         }
     }
 
