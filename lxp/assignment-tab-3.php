@@ -263,6 +263,8 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
             formData.append('assignment_post_id', '0');
             formData.append('calendar_selection_info', JSON.stringify(window.calendarSelectionInfo));
 
+            jQuery("#assignment-create-btn").attr("disabled", "disabled");
+
             $.ajax({
                 method: "POST",
                 enctype: 'multipart/form-data',
@@ -272,11 +274,14 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
                 contentType: false,
                 cache: false,
             }).done(function( response ) {
+                resetWizard();
                 bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-1-tab')).show();
                 window.calendar.refetchEvents();
                 console.log("assignment created successfully.");
+                jQuery("#assignment-create-btn").removeAttr("disabled");
             }).fail(function (response) {
                 console.error(response);
+                jQuery("#assignment-create-btn").removeAttr("disabled");
             });            
         }
     }
@@ -297,4 +302,14 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
         });
     });
 
+    function resetWizard() {
+        jQuery("#class_title").text("Select a class");
+        jQuery("#class_id").val("");
+        jQuery("#select-students-label").text("Select students");
+        jQuery("#select-all-students").prop("checked", false);
+        jQuery("#students-container").empty();
+        window.selected_students_ids = [];
+        jQuery('.select-students-logos').html("");
+        jQuery('.students_count_label').text("0");
+    }
 </script>
