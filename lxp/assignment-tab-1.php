@@ -80,6 +80,39 @@ global $treks_src;
                 let event_dom_nodes = [trek_segment_el, trek_el];
                 return {domNodes: event_dom_nodes};
             },
+            eventClick: function(eventClickInfo) {
+                window.eventClickInfo = eventClickInfo;
+                console.log('eventClickInfo == ', eventClickInfo);
+                jQuery('#student-progress-trek-title').text(eventClickInfo.event.extendedProps.trek);
+                jQuery('#student-progress-trek-segment').text(eventClickInfo.event.title);
+                jQuery('#student-progress-trek-segment-char').text(eventClickInfo.event.title[0]);
+
+                switch (eventClickInfo.event.title) {
+                    case 'Overview':
+                        segmentColor = "#979797";
+                        break;
+                    case 'Recall':
+                        segmentColor = "#ca2738";
+                        break;
+                    case 'Practice A':
+                        segmentColor = "#1fa5d4";
+                        break;
+                    case 'Practice B':
+                        segmentColor = "#1fa5d4";
+                        break;
+                    case 'Apply':
+                        segmentColor = "#9fc33b";
+                        break;
+                    default:
+                        segmentColor = "#ca2738";
+                        break;
+                }
+
+                jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-tab-polygon').css('background-color', segmentColor);
+                jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon-name, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-user-name').css('color', segmentColor);
+
+                window.studentProgressModalObj.show();
+            },
             select: function( calendarSelectionInfo ) {
                 window.calendarSelectionInfo = calendarSelectionInfo;
                 bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-2-tab')).show();
