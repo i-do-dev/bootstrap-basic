@@ -5,20 +5,20 @@ global $treks_src;
     <!-- New Assignment Day Week Month Buttons -->
     <section class="assignment-section new-assignment-section">
         <h3 class="new-assignment-heading">New Assignment</h3>
-        <div class="button-box">
+        <!-- <div class="button-box">
             <button class="assignment-button day-button">Day</button>
             <button class="assignment-button week-button active">Week</button>
             <button class="assignment-button month-button">Month</button>
-        </div>
+        </div> -->
     </section>
     <!-- Calendar Section -->
     <section class="new-assignment-section calendar-container">
         <section class="assignment-section calendar-section">
-            <p class="month-text month-date-text">February 19 - 25, 2023</p>
+            <p class="month-text month-date-text"></p>
             <div class="previous-last-box">
-                <img class="cursor-img" src="<?php echo $treks_src; ?>/assets/img/left-arrow.svg" alt="arrow" />
-                <p class="month-text">February</p>
-                <img class="cursor-img" src="<?php echo $treks_src; ?>/assets/img/right-arrow.svg" alt="arrow" />
+                <img class="cursor-img" src="<?php echo $treks_src; ?>/assets/img/left-arrow.svg" alt="arrow" onclick="calendar_prev()" />
+                <p class="month-text" id="month-text">February</p>
+                <img class="cursor-img" src="<?php echo $treks_src; ?>/assets/img/right-arrow.svg" alt="arrow" onclick="calendar_next()" />
             </div>
         </section>
     </section>
@@ -40,7 +40,8 @@ global $treks_src;
             timeZone: 'UTC',
             selectable: true,
             initialView: 'timeGridWeek',
-            slotDuration: '01:00',            
+            slotDuration: '01:00',
+            headerToolbar: false,            
             events: apiUrl + "assignments/calendar/events/?user_id=" + <?php echo get_current_user_id(); ?> ,
             eventClassNames: function(arg) {
                 let segment_class = "segment-default-event";
@@ -68,9 +69,28 @@ global $treks_src;
             select: function( calendarSelectionInfo ) {
                 window.calendarSelectionInfo = calendarSelectionInfo;
                 bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-2-tab')).show();
+            },
+            viewDidMount: function(viewObject) {
+                jQuery('.month-date-text').text(viewObject.view.getCurrentData().viewTitle);
+                let month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(viewObject.view.currentStart);
+                jQuery("#month-text").text(month);
             }
         });
         calendar.render();
         window.calendar = calendar;
     });
+
+    function calendar_next() {
+        window.calendar.next();
+        jQuery('.month-date-text').text(window.calendar.view.getCurrentData().viewTitle);
+        let month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(window.calendar.view.currentStart);
+        jQuery("#month-text").text(month);
+    }
+    function calendar_prev() {
+        window.calendar.prev();
+        jQuery('.month-date-text').text(window.calendar.view.getCurrentData().viewTitle);
+        let month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(window.calendar.view.currentStart);
+        jQuery("#month-text").text(month);
+    }
+    
 </script>
