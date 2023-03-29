@@ -80,7 +80,7 @@ $trek_post = isset($_GET['trek']) && isset($_GET['segment']) ? get_post($_GET['t
         <?php get_template_part('lxp/assignment-tab-3', 'assignment-tab-3'); ?>
     </div>
     
-    <?php get_template_part('lxp/teacher-student-progress-modal', 'teacher-student-progress-modal'); ?>
+    <?php get_template_part('lxp/assignment-stats-modal', 'assignment-stats-modal'); ?>
 </body>
 
 </html>

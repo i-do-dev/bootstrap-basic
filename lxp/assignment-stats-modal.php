@@ -1,12 +1,12 @@
 <?php global $treks_src; ?>
-<div class="modal fade students-modal" id="studentProgressModal" tabindex="-1" aria-labelledby="studentProgressModalLabel"
+<div class="modal fade students-modal" id="assignmentStatsModal" tabindex="-1" aria-labelledby="assignmentStatsModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
         <div class="modal-header">
             <div class="modal-header-title">
             <img src="<?php echo $treks_src; ?>/assets/img/black-group.svg" alt="rocket" />
-            <h2 class="modal-title" id="studentProgressModalLabel">Student Progress</h2>
+            <h2 class="modal-title" id="assignmentStatsModalLabel">Student Progress</h2>
             </div>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -24,7 +24,14 @@
                 <h3 class="inter-tab-polygon-name" id="student-progress-trek-segment"></h3>
             </div>
             </div>
-            <div class="students-table">
+
+            <div class="text-center" id="student-modal-loader" style="height: 200px;">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+
+            <div class="students-table" id="student-modal-table">
             <table class="table">
                 <thead>
                 <tr>
@@ -35,6 +42,7 @@
                 </tr>
                 </thead>
                 <tbody>
+<!--                     
                 <tr>
                     <td>
                     <div class="table-user">
@@ -83,6 +91,7 @@
                     <td>10 /10</td>
                     <td>80</td>
                 </tr>
+ -->
                 </tbody>
             </table>
             </div>
@@ -93,9 +102,8 @@
 
 <script type="text/javascript">
     jQuery(document).ready(function() {
-        var studentProgressModal = document.getElementById('studentProgressModal');
-        studentProgressModalObj = new bootstrap.Modal(studentProgressModal);
-        window.studentProgressModalObj = studentProgressModalObj;
-
+        var assignmentStatsModal = document.getElementById('assignmentStatsModal');
+        assignmentStatsModalObj = new bootstrap.Modal(assignmentStatsModal);
+        window.assignmentStatsModalObj = assignmentStatsModalObj;
     });
 </script>

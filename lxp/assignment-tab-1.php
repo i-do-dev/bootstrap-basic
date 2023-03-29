@@ -81,12 +81,9 @@ global $treks_src;
                 return {domNodes: event_dom_nodes};
             },
             eventClick: function(eventClickInfo) {
-                window.eventClickInfo = eventClickInfo;
-                console.log('eventClickInfo == ', eventClickInfo);
                 jQuery('#student-progress-trek-title').text(eventClickInfo.event.extendedProps.trek);
                 jQuery('#student-progress-trek-segment').text(eventClickInfo.event.title);
                 jQuery('#student-progress-trek-segment-char').text(eventClickInfo.event.title[0]);
-
                 switch (eventClickInfo.event.title) {
                     case 'Overview':
                         segmentColor = "#979797";
@@ -107,11 +104,10 @@ global $treks_src;
                         segmentColor = "#ca2738";
                         break;
                 }
-
                 jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-tab-polygon').css('background-color', segmentColor);
                 jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon-name, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-user-name').css('color', segmentColor);
-
-                window.studentProgressModalObj.show();
+                fetch_assignment_stats(eventClickInfo.event.id);
+                window.assignmentStatsModalObj.show();
             },
             select: function( calendarSelectionInfo ) {
                 window.calendarSelectionInfo = calendarSelectionInfo;
@@ -138,6 +134,46 @@ global $treks_src;
         jQuery('#month-date-text').text(window.calendar.view.getCurrentData().viewTitle);
         let month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(window.calendar.view.currentStart);
         jQuery("#month-text").text(month);
+    }
+
+    function fetch_assignment_stats(assignment_id) {
+        jQuery("#student-modal-loader").show();
+        jQuery("#student-modal-table").hide();
+        let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+        let apiUrl = host + '/wp-json/lms/v1/';
+        jQuery.ajax({
+            method: "POST",
+            enctype: 'multipart/form-data',
+            url: apiUrl + "assignment/stats",
+            data: {assignment_id}
+        }).done(function( response ) {
+            jQuery("#student-modal-table tbody").html( response.data.map(student => student_assignment_stat_row_html(student)).join('\n') );
+            jQuery("#student-modal-loader").hide();
+            jQuery("#student-modal-table").show();
+        }).fail(function (response) {
+            console.error("Can not load teacher");
+        });
+    }
+
+    function student_assignment_stat_row_html(student) {
+        return `
+            <tr>
+                <td>
+                <div class="table-user">
+                    <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="user" />
+                    <div class="user-about">
+                    <h5>` + student.name + `</h5>
+                    <p>` +  JSON.parse(student.grades).join(', ') + `</p>
+                    </div>
+                </div>
+                </td>
+                <td>
+                <div class="table-status">` + student.status + `</div>
+                </td>
+                <td>` + student.progress + `</td>
+                <td>` + student.score + `</td>
+            </tr>
+        `;
     }
     
 </script>
