@@ -88,3 +88,7 @@ a.fc-col-header-cell-cushion {
     padding-left: 5px !important;
     padding-top: 5px !important;
 }
+
+.fc-scrollgrid-section-header .fc-scroller {
+    overflow: hidden !important;
+}

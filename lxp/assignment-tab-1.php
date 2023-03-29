@@ -14,11 +14,21 @@ global $treks_src;
     <!-- Calendar Section -->
     <section class="new-assignment-section calendar-container">
         <section class="assignment-section calendar-section">
-            <p class="month-text month-date-text" id="month-date-text"></p>
+            <div class="row">
+                <div class="col col-md-2">
+                    <img class="cursor-img" src="<?php echo $treks_src; ?>/assets/img/left-arrow.svg" alt="arrow" onclick="calendar_prev()" />
+                </div>
+                <div class="col col-md-8">
+                    <p class="month-text month-date-text" id="month-date-text" style="padding-top: 5px;"></p>
+                </div>
+                <div class="col col-md-2">
+                    <img class="cursor-img" src="<?php echo $treks_src; ?>/assets/img/right-arrow.svg" alt="arrow" onclick="calendar_next()" />
+                </div>
+            </div>
             <div class="previous-last-box">
-                <img class="cursor-img" src="<?php echo $treks_src; ?>/assets/img/left-arrow.svg" alt="arrow" onclick="calendar_prev()" />
+                <!-- <img class="cursor-img" src="<?php // echo $treks_src; ?>/assets/img/left-arrow.svg" alt="arrow" onclick="calendar_prev()" /> -->
                 <p class="month-text" id="month-text">February</p>
-                <img class="cursor-img" src="<?php echo $treks_src; ?>/assets/img/right-arrow.svg" alt="arrow" onclick="calendar_next()" />
+                <!-- <img class="cursor-img" src="<?php // echo $treks_src; ?>/assets/img/right-arrow.svg" alt="arrow" onclick="calendar_next()" /> -->
             </div>
         </section>
     </section>
