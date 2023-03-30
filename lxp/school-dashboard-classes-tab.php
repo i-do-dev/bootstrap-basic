@@ -77,7 +77,7 @@ $classes = $args["classes"];
                                     <?php } ?>
                             </div>
                         </td>
-                        <td>0</td>
+                        <td><?php echo count(lxp_get_class_assignments($class->ID)); ?></td>
                         <td class="grade">
                             <span><?php echo get_post_meta($class->ID, 'grade', true); ?></span>
                         </td>

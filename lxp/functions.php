@@ -165,4 +165,44 @@ function get_trek_section_by_id($section_id)
     global $wpdb;
     return $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id={$section_id}");
 }
+
+function lxp_get_class_assignments($class_id)
+{
+    $school_query = new WP_Query( array( 
+        'post_type' => TL_ASSIGNMENT_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'class_id', 'value' => $class_id, 'compare' => '=')
+        )
+    ) );
+    return $school_query->get_posts();
+}
+
+function lxp_get_all_teachers_assignments($teachers_ids)
+{
+    $school_query = new WP_Query( array( 
+        'post_type' => TL_ASSIGNMENT_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_assignment_teacher_id', 'value' => $teachers_ids, 'compare' => 'IN')
+        )
+    ) );
+    return $school_query->get_posts();
+}
+
+function lxp_get_teacher_assignments($teacher_id, $count = -1)
+{
+    $school_query = new WP_Query( array( 
+        'post_type' => TL_ASSIGNMENT_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => $count,        
+        'meta_query' => array(
+            array('key' => 'lxp_assignment_teacher_id', 'value' => $teacher_id, 'compare' => 'IN')
+        )
+    ) );
+    return $school_query->get_posts();
+}
+
 ?>

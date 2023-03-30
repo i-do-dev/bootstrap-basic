@@ -117,3 +117,13 @@ nav.navbar {
 .nav_container {
   margin-bottom: 0;
 }
+
+#logout-link {
+  display: block;
+  font-family: var(--main-secondary-font);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16px;
+  color: #979797;
+}

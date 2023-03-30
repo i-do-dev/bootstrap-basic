@@ -6,6 +6,7 @@ $teachers = lxp_get_school_teachers($school_post->ID);
 $students = lxp_get_school_students($school_post->ID);
 $school_teachers_ids = array_map(function ($teacher) { return $teacher->ID; }, $teachers);
 $classes = lxp_get_all_teachers_classes($school_teachers_ids);
+$assignments = lxp_get_all_teachers_assignments($school_teachers_ids);
 ?>
 
 <!DOCTYPE html>
@@ -22,6 +23,7 @@ $classes = lxp_get_all_teachers_classes($school_teachers_ids);
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolAdminTeachers.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/addNewTeacherModal.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/calendar.css" />
+    <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
     <style type="text/css">
@@ -114,7 +116,7 @@ $classes = lxp_get_all_teachers_classes($school_teachers_ids);
                     </div>
                     <div class="card">
                         <img src="<?php echo $treks_src; ?>/assets/img/assignment.svg" alt="logo" />
-                        <h3 class="numbers-heading">0</h3>
+                        <h3 class="numbers-heading"><?php echo count($assignments); ?></h3>
                         <p class="name-text">Assignments</p>
                     </div>
 

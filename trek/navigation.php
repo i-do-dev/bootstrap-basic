@@ -36,7 +36,7 @@
 
     <li>
       <img src="<?php echo $treks_src; ?>/assets/img/nav_reports.svg" />
-      <a href="/">Reports</a>
+      <a href="<?php echo site_url(); ?>">Reports</a>
     </li>
   </ul>
 </nav>

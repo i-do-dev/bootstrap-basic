@@ -22,6 +22,7 @@ $district_schools_teachers = lxp_get_all_schools_teachers($district_schools_ids)
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolAdminStudents.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/adminTeacher.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/adminInternalTeacherView.css" />
+    <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
 </head>
@@ -197,7 +198,7 @@ $district_schools_teachers = lxp_get_all_schools_teachers($district_schools_ids)
                                         <td>
                                             <div class="table-status"><?php echo $teacher_admin->user_email?></div>
                                         </td>
-                                        <td>0</td>
+                                        <td><?php echo count(lxp_get_teacher_classes($teacher->ID)); ?></td>
                                         <td><?php echo $teacher->ID; ?></td>
                                         <td><?php echo get_post(get_post_meta($teacher->ID, "lxp_teacher_school_id", true))->post_title; ?></td>
                                         <td>Texas</td>

@@ -677,3 +677,19 @@ body {
   line-height: 24px;
   color: #979797;
 }
+
+.polygonshape-recall {
+  background-color: rgb(202, 39, 56) !important;
+}
+
+.polygonshape-overview {
+  background-color: rgb(151, 151, 151) !important;
+}
+
+.polygonshape-apply {
+  background-color: rgb(159, 195, 59) !important;
+}
+
+.polygonshape-practice-a,.polygonshape-practice-a {
+  background-color: rgb(31, 165, 212) !important;
+}

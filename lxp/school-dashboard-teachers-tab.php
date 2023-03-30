@@ -69,7 +69,7 @@ $teachers = $args["teachers"];
                         <td>
                             <div class="table-status"><?php echo $teacher_admin->user_email?></div>
                         </td>
-                        <td>0</td>
+                        <td><?php echo count(lxp_get_teacher_classes($teacher->ID)); ?></td>
                         <td class="grade">
                             <?php 
                                 $teacher_grades = json_decode(get_post_meta($teacher->ID, 'grades', true));

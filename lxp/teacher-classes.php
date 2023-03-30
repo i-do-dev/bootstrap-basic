@@ -26,6 +26,7 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/adminInternalTeacherView.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/teacherStudentsClasses.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/newAssignment.css" />
+    <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
     
@@ -237,7 +238,7 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
                                                     <?php } ?>
                                             </div>
                                         </td>
-                                        <td>0</td>
+                                        <td><?php echo count(lxp_get_class_assignments($class->ID)); ?></td>
                                         <td class="grade">
                                             <span><?php echo get_post_meta($class->ID, 'grade', true); ?></span>
                                         </td>

@@ -17,8 +17,8 @@ if (is_user_logged_in()) {
   <!-- User short detail -->
   <div class="user-detail">
     <span class="user-detail-name"><?php echo $user ? $user->data->display_name : "Kristin Watson"; ?></span>
-    <span>Science teacher</span>
-    <a href="<?php echo wp_logout_url("login"); ?>">Logout</a>
+    <!-- <span>Science teacher</span> -->
+    <a id="logout-link" href="<?php echo wp_logout_url("login"); ?>">Logout</a>
   </div>
   <!-- Arrow for open menu -->
   <div class="user-options">

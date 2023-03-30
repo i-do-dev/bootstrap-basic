@@ -1,4 +1,5 @@
 <?php
+get_template_part('lxp/functions');
 global $treks_src;
 
 // Start the loop.
@@ -19,6 +20,9 @@ if ( get_userdata(get_current_user_id())->user_email === "guest@rpatreks.com" ) 
 
 $treks = get_posts($args);
 while (have_posts()) : the_post();
+
+$teacher_post = lxp_get_teacher_post( get_userdata(get_current_user_id())->ID );
+$assignments = lxp_get_teacher_assignments($teacher_post->ID, 3);
 ?>
 
 <!DOCTYPE html>
@@ -31,9 +35,10 @@ while (have_posts()) : the_post();
   <title><?php the_title(); ?></title>
   <link href="<?php echo $treks_src; ?>/style/main.css" rel="stylesheet" />
   <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
+  <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
     integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
-
+  <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
     <style type="text/css">
       .treks-card {
         width: 300px !important;
@@ -89,36 +94,36 @@ while (have_posts()) : the_post();
     </nav>
 
     <!-- Reminders: section-->
-    <section class="reminder-section">
+<!--     <section class="reminder-section">
       <div class="reminder-section-div">
-        <!-- reminder title -->
+        
         <div class="reminder-title reminder-detail">
-          <img src="<?php echo $treks_src; ?>/assets/img/rm_calendar.svg" />
+          <img src="<?php // echo $treks_src; ?>/assets/img/rm_calendar.svg" />
           <span>Reminders:</span>
         </div>
-        <!-- Physical Properties -->
+        
         <div class="reminder-detail reminder-vli">
           <span>Physical Properties Thu 9:00 AM</span>
         </div>
-        <!-- Forces & Experimental Design  -->
+        
         <div class="reminder-detail reminder-vli">
           <span>Forces & Experimental Design Fri 10:00 AM</span>
         </div>
-        <!-- Physics  -->
+        
         <div class="reminder-detail">
           <span>Physics Fri 1:00 PM</span>
         </div>
-        <!-- Mathematics Mon  -->
+        
         <div class="reminder-detail">
           <span>Mathematics Mon 11:00 AM</span>
         </div>
-        <!-- Arrow down
+        
         <div class="reminder-arrow">
           <img src="<?php echo $treks_src; ?>/assets/img/rm_arrow down.svg" />
-        </div> -->
+        </div>
       </div>
     </section>
-
+ -->
     <!-- Recent TREKs -->
     <section class="recent-treks-section">
       <div class="recent-treks-section-div">
@@ -126,7 +131,7 @@ while (have_posts()) : the_post();
         <div class="recent-treks-header section-div-header">
           <h2>My TREKs</h2>
           <div>
-            <a href="#">See All</a>
+            <a href="<?php echo site_url('treks'); ?>">See All</a>
           </div>
         </div>
         <!-- TREKs cards -->
@@ -158,9 +163,9 @@ while (have_posts()) : the_post();
       <div class="pending-assignments-section-div">
         <!--  header -->
         <div class="pending-assignments-header section-div-header">
-          <h2>Pending Assignments</h2>
+          <h2>Assignments</h2>
           <div>
-            <a href="#">See All</a>
+            <a href="<?php echo site_url('calendar');?>">See All</a>
           </div>
         </div>
         <!--  table -->
@@ -175,7 +180,33 @@ while (have_posts()) : the_post();
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <?php 
+                foreach ($assignments as $assignment) { 
+                  $class_post = get_post(get_post_meta($assignment->ID, 'class_id', true));
+                  $trek_section_id = get_post_meta($assignment->ID, 'trek_section_id', true);
+                  global $wpdb;
+                  $trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id={$trek_section_id}");
+                  $trek = get_post(get_post_meta($assignment->ID, 'trek_id', true));
+                  $segment = implode("-", explode(" ", strtolower($trek_section->title))) ;
+              ?>
+                <tr>
+                  <td><?php echo $class_post->post_title; ?></td>
+                  <td>
+                    <div class="assignments-table-cs-td-poly">
+                      <div class="polygon-shap polygonshape-<?php echo $segment; ?>">
+                        <span><?php echo $trek_section->title[0]; ?></span>
+                      </div>
+                      <div>
+                        <span><?php echo $trek->post_title; ?></span>
+                        <span><?php echo $trek_section->title; ?></span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>---</td>
+                  <td>0/0</td>
+                </tr>  
+              <?php } ?>
+<!--               <tr>
                 <td>Elephants</td>
                 <td>
                   <div class="assignments-table-cs-td-poly">
@@ -206,7 +237,7 @@ while (have_posts()) : the_post();
                 </td>
                 <td>Jan 21, 2023</td>
                 <td>25/30</td>
-              </tr>
+              </tr> -->
             </tbody>
           </table>
         </div>
