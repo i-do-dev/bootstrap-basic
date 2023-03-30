@@ -27,6 +27,7 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
     crossorigin="anonymous"></script>
   <script src="<?php echo $treks_src; ?>/js/Animated-Circular-Progress-Bar-with-jQuery-Canvas-Circle-Progress/dist/circle-progress.js"></script>
   <script src="<?php echo $treks_src; ?>/js/custom.js"></script>
+  <script src="<?php echo $treks_src; ?>/js/webshim/js-webshim/minified/polyfiller.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
     crossorigin="anonymous"></script>
@@ -35,6 +36,10 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 
   <style type="text/css">
     .calendar-container .calendar-flex-box .calendar-main {
+      height: auto !important;
+    }
+
+    .calendar-container .calendar-flex-box .calendar-right-box .small-calendar {
       height: auto !important;
     }
   </style>
@@ -94,7 +99,16 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
       </div>
       <div class="calendar-right-box">
         <div class="small-calendar">
-          <div id="calendar-monthly"></div>
+          <div id="calendar-monthly">
+            <form action="#" class="ws-validate">
+              <div class="form-row">
+                  <input type="date" class="hide-replaced" />
+              </div>
+              <div class="form-row">
+                  <input type="submit" />
+              </div>
+            </form>
+          </div>
         </div>
         <div class="rpa-segments-box">
           <h5 class="rpa-heading">RPA Segments</h5>
@@ -219,7 +233,33 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
           });
           calendar.render();
           window.calendar = calendar;
+          init_monthly_calendar();
       });
+
+      function init_monthly_calendar() {
+        webshim.setOptions('forms-ext', {
+              replaceUI: 'auto',
+              types: 'date',
+              date: {
+                  startView: 2,
+                  inlinePicker: true,
+                  classes: 'hide-inputbtns'
+              }
+          });
+          webshim.setOptions('forms', {
+              lazyCustomMessages: true
+          });
+          //start polyfilling
+          webshim.polyfill('forms forms-ext');
+          const date = new Date();
+          //YYYY-MM-DD format
+          const dateString = date.toISOString().split("T")[0];
+          jQuery("#calendar-monthly input[type='date']").val(dateString);
+
+          jQuery("#calendar-monthly input[type='date']").on("change", function() {
+            window.calendar.gotoDate(jQuery(this).val());
+          });
+      }
 
       function calendar_next() {
           window.calendar.next();
