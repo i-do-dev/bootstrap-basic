@@ -1,5 +1,5 @@
 <?php
-get_template_part('lxp/functions');
+// get_template_part('lxp/functions');
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 global $userdata;
 $teacher_post = lxp_get_teacher_post($userdata->data->ID);

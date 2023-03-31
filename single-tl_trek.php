@@ -1,6 +1,8 @@
 <?php
-get_template_part('trek/functions');
+get_template_part('lxp/functions');
 lxp_login_check();
+global $userdata;
+$teacher_post = lxp_get_teacher_post($userdata->data->ID);
 
 //$treks_src = plugin_dir_url( __FILE__ ) . 'treks-src';
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
@@ -43,6 +45,11 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
     />
 
     <style type="text/css">
+      .header-notification-user .copy-anchor
+      {
+        display: none;
+      }
+      
       .trek-section-hide {
         display: none;
       }
@@ -401,7 +408,15 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
               <section class="trk-assign-section">
                 <div class="trk-assign-section-div">
                   <p>Assigned to &nbsp;</p>
-                  <a href="#" onclick="fetch_trek_section_assigned_students(<?php echo $trek_section->id; ?>, <?php echo get_current_user_id(); ?>)"><span class="segment-student-count"><?php echo count(trek_section_assigned_students($trek_section->id)); ?></span> Students</a>
+                  <?php 
+                    $assignments = lxp_get_trek_segment_assignment($post->ID,  $trek_section->id, $teacher_post->ID); 
+                    $all_assignments_students_ids = array_map(function($assignment) { return get_post_meta($assignment->ID, 'lxp_student_ids'); }, $assignments);
+                    $all_students_ids = array();
+                    foreach ($all_assignments_students_ids as $students_ids) { foreach ($students_ids as $student_id) { array_push($all_students_ids, $student_id); } }
+                    $all_students_ids = array_values(array_unique($all_students_ids));
+                  ?>
+                  <script>var student_ids_<?php echo $trek_section->id;?> = <?php echo json_encode($all_students_ids); ?>; </script>
+                  <a href="#" onclick="fetch_students(student_ids_<?php echo $trek_section->id;?>, '<?php echo $post->post_title; ?>', '<?php echo $trek_section->title; ?>')"><span class="segment-student-count"><?php echo count($all_students_ids); ?></span> Students</a>
                 </div>
                 <div class="">
                   <button onclick="assign(<?php echo get_the_ID(); ?>,<?php echo $trek_section->id; ?>)"  class="primary-btn lx-space">Assign</button>
@@ -621,12 +636,6 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
         jQuery(modalBody).html('<div class="alert alert-primary" role="alert">Loading Students ....</div>');
       });
 
-      function fetch_trek_section_assigned_students(trek_section_id, teacher_id) {
-        window.trek_section_id = trek_section_id;
-        window.teacher_id = teacher_id;
-        studentModalObj.show();
-      }
-
       function studentModelHTML(students, trek_section_id, teacher_id) {
         html = '<ul class="list-group">'
           students.forEach(student => {
@@ -837,6 +846,83 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
 
       function assign_modal_close() {
         bootstrap.Modal.getInstance(document.getElementById('calendarModal')).hide();
+      }
+    </script>
+
+    <?php get_template_part('lxp/assignment-stats-modal', 'assignment-stats-modal'); ?>
+
+    <script type="text/javascript">
+      function fetch_students(students_ids, trek_title, trek_segment) {
+        jQuery("#student-modal-loader").show();
+        jQuery("#student-modal-table").hide();
+        format_modal_elements(trek_title, trek_segment);
+        window.assignmentStatsModalObj.show();
+
+        let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+        let apiUrl = host + '/wp-json/lms/v1/';
+        jQuery.ajax({
+          method: "POST",
+          url: apiUrl + "students/list",
+          data: { students_ids }
+        }).done(function( response ) {
+          jQuery("#student-modal-table tbody").html( response.data.map(student => student_assignment_stat_row_html(student)).join('\n') );
+          jQuery("#student-modal-loader").hide();
+          jQuery("#student-modal-table").show();
+          console.log('response >>> ', response);
+        });
+        console.log('students_ids >> ', students_ids);
+        /* window.trek_section_id = trek_section_id;
+        window.teacher_id = teacher_id;
+        studentModalObj.show(); */
+      }
+
+      function format_modal_elements(trek_title, trek_segment) {
+        jQuery('#student-progress-trek-title').text(trek_title);
+        jQuery('#student-progress-trek-segment').text(trek_segment);
+        jQuery('#student-progress-trek-segment-char').text(trek_segment[0]);
+        switch (trek_segment) {
+            case 'Overview':
+                segmentColor = "#979797";
+                break;
+            case 'Recall':
+                segmentColor = "#ca2738";
+                break;
+            case 'Practice A':
+                segmentColor = "#1fa5d4";
+                break;
+            case 'Practice B':
+                segmentColor = "#1fa5d4";
+                break;
+            case 'Apply':
+                segmentColor = "#9fc33b";
+                break;
+            default:
+                segmentColor = "#ca2738";
+                break;
+        }
+        jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-tab-polygon').css('background-color', segmentColor);
+        jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon-name, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-user-name').css('color', segmentColor);
+      }
+
+      function student_assignment_stat_row_html(student) {
+          return `
+              <tr>
+                  <td>
+                  <div class="table-user">
+                      <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="user" />
+                      <div class="user-about">
+                      <h5>` + student.name + `</h5>
+                      <p>` +  JSON.parse(student.grades).join(', ') + `</p>
+                      </div>
+                  </div>
+                  </td>
+                  <td>
+                  <div class="table-status">` + student.status + `</div>
+                  </td>
+                  <td>` + student.progress + `</td>
+                  <td>` + student.score + `</td>
+              </tr>
+          `;
       }
     </script>
   </body>

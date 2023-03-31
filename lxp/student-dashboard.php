@@ -1,5 +1,5 @@
 <?php
-get_template_part('lxp/functions');
+// get_template_part('lxp/functions');
 global $treks_src;
 $userdata = get_userdata(get_current_user_id());
 ?>

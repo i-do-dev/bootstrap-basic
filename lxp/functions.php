@@ -1,4 +1,13 @@
 <?php
+function lxp_login_check()
+{
+  if (!is_user_logged_in()) {
+    global $wp;
+    $url = "http" . (isset($_SERVER["HTTPS"]) ? "s" : "") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    wp_redirect(site_url('login') . '?redirect=' . urlencode($url));
+  }
+}
+
 function lxp_get_user_school_post($user_id = 0)
 {
     $user_id = intval($user_id) > 0 ? $user_id : get_current_user_id();
@@ -203,6 +212,21 @@ function lxp_get_teacher_assignments($teacher_id, $count = -1)
         )
     ) );
     return $school_query->get_posts();
+}
+
+function lxp_get_trek_segment_assignment($trek_id,  $trek_section_id, $lxp_assignment_teacher_id)
+{
+    $assignments_query = new WP_Query( array( 
+        'post_type' => TL_ASSIGNMENT_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'trek_id', 'value' => $trek_id, 'compare' => '='),
+            array('key' => 'trek_section_id', 'value' => $trek_section_id, 'compare' => '='),
+            array('key' => 'lxp_assignment_teacher_id', 'value' => $lxp_assignment_teacher_id, 'compare' => '=')
+        )
+    ) );
+    return $assignments_query->get_posts();
 }
 
 ?>

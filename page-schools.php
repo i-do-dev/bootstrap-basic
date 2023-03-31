@@ -1,5 +1,4 @@
 <?php
-get_template_part('trek/functions');
 get_template_part('lxp/functions');
 lxp_login_check();
 $district_post = lxp_get_user_district_post();

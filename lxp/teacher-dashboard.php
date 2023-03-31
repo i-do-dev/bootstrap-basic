@@ -1,5 +1,5 @@
 <?php
-get_template_part('lxp/functions');
+// get_template_part('lxp/functions');
 global $treks_src;
 
 // Start the loop.

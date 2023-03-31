@@ -1,5 +1,5 @@
 <?php
-get_template_part('trek/functions');
+get_template_part('lxp/functions');
 lxp_login_check();
 
 // $treks_src = plugin_dir_url(__FILE__) . '../treks-src';

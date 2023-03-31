@@ -1,5 +1,5 @@
 <?php
-get_template_part('lxp/functions');
+// get_template_part('lxp/functions');
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 $district_post = lxp_get_user_district_post();
 $district_schools = lxp_get_district_schools($district_post->ID);
