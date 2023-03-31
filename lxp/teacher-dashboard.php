@@ -22,6 +22,9 @@ $treks = get_posts($args);
 while (have_posts()) : the_post();
 
 $teacher_post = lxp_get_teacher_post( get_userdata(get_current_user_id())->ID );
+if (is_null($teacher_post)) {
+  die("Teacher is not associated with any school. contact admin. <a href='". wp_logout_url("login") ."'>Logout</a>");
+}
 $assignments = lxp_get_teacher_assignments($teacher_post->ID, 3);
 ?>
 
