@@ -87,6 +87,10 @@ function lxp_get_school_students($school_id)
 
 function lxp_get_all_schools_teachers($school_ids)
 {
+    if (empty($school_ids)) {
+        return array();
+    }
+    
     $school_query = new WP_Query( array( 
         'post_type' => TL_TEACHER_CPT, 
         'post_status' => array( 'publish' ),
@@ -102,6 +106,11 @@ function lxp_get_all_schools_teachers($school_ids)
 
 function lxp_get_all_schools_students($school_ids)
 {
+
+    if (empty($school_ids)) {
+        return array();
+    }
+    
     $school_query = new WP_Query( array( 
         'post_type' => TL_STUDENT_CPT, 
         'post_status' => array( 'publish' ),
@@ -158,6 +167,10 @@ function lxp_get_student_all_classes($student_id)
 
 function lxp_get_all_teachers_classes($teachers_ids)
 {
+    if (empty($teachers_ids)) {
+        return array();
+    }
+
     $school_query = new WP_Query( array( 
         'post_type' => TL_CLASS_CPT, 
         'post_status' => array( 'publish' ),
@@ -190,6 +203,11 @@ function lxp_get_class_assignments($class_id)
 
 function lxp_get_all_teachers_assignments($teachers_ids)
 {
+
+    if (empty($teachers_ids)) {
+        return array();
+    }
+
     $school_query = new WP_Query( array( 
         'post_type' => TL_ASSIGNMENT_CPT, 
         'post_status' => array( 'publish' ),
