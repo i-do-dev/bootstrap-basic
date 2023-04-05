@@ -39,6 +39,7 @@
                     <th>Status</th>
                     <th>Progress</th>
                     <th>Score (%)</th>
+                    <th>Grade</th>
                 </tr>
                 </thead>
                 <tbody>

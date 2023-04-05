@@ -916,6 +916,7 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
                   </td>
                   <td>` + student.progress + `</td>
                   <td>` + student.score + `</td>
+                  <td><a href='<?php echo site_url("calendar"); ?>' target="_blank"><img src="<?php echo $treks_src; ?>/assets/img/review-icon.svg" alt="svg" width="30" /></a></td>
               </tr>
           `;
       }

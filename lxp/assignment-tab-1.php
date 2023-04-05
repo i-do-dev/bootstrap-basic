@@ -157,7 +157,7 @@ global $treks_src;
             url: apiUrl + "assignment/stats",
             data: {assignment_id}
         }).done(function( response ) {
-            jQuery("#student-modal-table tbody").html( response.data.map(student => student_assignment_stat_row_html(student)).join('\n') );
+            jQuery("#student-modal-table tbody").html( response.data.map(student => student_assignment_stat_row_html(student, assignment_id)).join('\n') );
             jQuery("#student-modal-loader").hide();
             jQuery("#student-modal-table").show();
         }).fail(function (response) {
@@ -165,7 +165,7 @@ global $treks_src;
         });
     }
 
-    function student_assignment_stat_row_html(student) {
+    function student_assignment_stat_row_html(student, assignment_id) {
         return `
             <tr>
                 <td>
@@ -182,6 +182,7 @@ global $treks_src;
                 </td>
                 <td>` + student.progress + `</td>
                 <td>` + student.score + `</td>
+                <td><a href='<?php echo site_url("grade-assignment"); ?>?assignment=` + assignment_id + `' target="_blank"><img src="<?php echo $treks_src; ?>/assets/img/review-icon.svg" alt="svg" width="30" /></a></td>
             </tr>
         `;
     }
