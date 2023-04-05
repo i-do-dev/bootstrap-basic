@@ -301,7 +301,7 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
                       <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="user" />
                       <div class="user-about">
                       <h5>` + student.name + `</h5>
-                      <p>` +  JSON.parse(student.grades).join(', ') + `</p>
+                      <p>` +  (student.grades && student.grades.length > 0 ? JSON.parse(student.grades).join(', ') : ``) + `</p>
                       </div>
                   </div>
                   </td>

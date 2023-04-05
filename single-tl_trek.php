@@ -868,12 +868,7 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
           jQuery("#student-modal-table tbody").html( response.data.map(student => student_assignment_stat_row_html(student)).join('\n') );
           jQuery("#student-modal-loader").hide();
           jQuery("#student-modal-table").show();
-          console.log('response >>> ', response);
         });
-        console.log('students_ids >> ', students_ids);
-        /* window.trek_section_id = trek_section_id;
-        window.teacher_id = teacher_id;
-        studentModalObj.show(); */
       }
 
       function format_modal_elements(trek_title, trek_segment) {
@@ -912,7 +907,7 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
                       <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="user" />
                       <div class="user-about">
                       <h5>` + student.name + `</h5>
-                      <p>` +  JSON.parse(student.grades).join(', ') + `</p>
+                      <p>` +  (student.grades && student.grades.length > 0 ? JSON.parse(student.grades).join(', ') : ``) + `</p>
                       </div>
                   </div>
                   </td>
