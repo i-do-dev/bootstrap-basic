@@ -42,6 +42,23 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
       body {
         background-color: #f6f7fa !important;
       }
+
+      .grade-box-slide {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 8px 24px;
+        width: 100%;
+        border-radius: 20px;
+        font-family: 'Arial';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 24px;
+        margin: 0 0 8px;
+        color: #757575;
+        background: #eaedf1;
+      }
     </style>
   </head>
 
@@ -394,7 +411,23 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
               $queryParam = "&slideNumber=" . $_GET['slide'];
             }
             ?>
-              <iframe style="border: none;width: 100%;height: 706px;" class="" src="<?php echo site_url() ?>?lti-platform&post=<?php echo $trek_lesson->ID ?>&id=<?php echo $attrId ?><?php echo $queryParam ?>" allowfullscreen></iframe>
+              <div class="tab-content" id="myTabContent">
+              <div class="container">
+                <div class="row">
+                  <div class="col col-md-8">
+                    <iframe style="border: none;width: 100%;height: 395px;" class="" src="<?php echo site_url() ?>?lti-platform&post=<?php echo $trek_lesson->ID ?>&id=<?php echo $attrId ?><?php echo $queryParam ?>" allowfullscreen></iframe>
+                  </div>
+                  <div class="col col-md-4">
+                      <div class="grade-boxx">
+                          <span class="grade-box-slide">Slide 1</span>
+                          <!-- <p>What Is Happening?</p> -->
+                          <!-- <h2 class="gray_grade">1/1</h2> -->
+                          <button class="grade_btn" onclick="grade(1)">Grade</button>
+                      </div>
+                  </div>
+                </div>
+              </div>
+              </div>
           <?php } else {
             get_template_part("lxp/teacher-grade");            
           }
