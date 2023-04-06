@@ -247,4 +247,32 @@ function lxp_get_trek_segment_assignment($trek_id,  $trek_section_id, $lxp_assig
     return $assignments_query->get_posts();
 }
 
+function lxp_get_assignment($assignment_id) {
+    $assignment = get_post($assignment_id);
+    $assignment->grade = get_post_meta($assignment_id, 'grade', true);
+    $assignment->lxp_assignment_teacher_id = get_post_meta($assignment_id, 'lxp_assignment_teacher_id', true);
+    $assignment->lxp_student_ids = get_post_meta($assignment_id, 'lxp_student_ids');
+    $assignment->trek_section_id = get_post_meta($assignment_id, 'trek_section_id', true);
+    $assignment->trek_id = get_post_meta($assignment_id, 'trek_id', true);
+    $assignment->start_date = get_post_meta($assignment_id, 'start_date', true);
+    $assignment->schedule = json_decode(get_post_meta($assignment_id, 'schedule', true));
+    return $assignment;
+}
+
+function lxp_get_students($students_ids) {
+    $students = array_map(function ($student_id)
+    {
+        $student = get_post($student_id);
+        $student->grades = get_post_meta($student_id, 'grades', true);
+        $admin = get_userdata(get_post_meta($student_id, 'lxp_student_admin_id', true));
+        $student->admin_first_name = get_user_meta($admin->ID, 'first_name', true);
+        $student->admin_last_name = get_user_meta($admin->ID, 'last_name', true);
+        $student->name = $admin->data->display_name;
+        $student->status = "In progress";
+        $student->score = "0%";
+        $student->progress = "0/0";
+        return $student;
+    }, $students_ids);
+    return $students;
+}
 ?>

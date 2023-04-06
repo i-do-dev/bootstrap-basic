@@ -182,7 +182,7 @@ global $treks_src;
                 </td>
                 <td>` + student.progress + `</td>
                 <td>` + student.score + `</td>
-                <td><a href='<?php echo site_url("grade-assignment"); ?>?assignment=` + assignment_id + `' target="_blank"><img src="<?php echo $treks_src; ?>/assets/img/review-icon.svg" alt="svg" width="30" /></a></td>
+                <td><a href='<?php echo site_url("grade-assignment"); ?>?assignment=` + assignment_id + `&student=` + student.ID + `' target="_blank"><img src="<?php echo $treks_src; ?>/assets/img/review-icon.svg" alt="svg" width="30" /></a></td>
             </tr>
         `;
     }
