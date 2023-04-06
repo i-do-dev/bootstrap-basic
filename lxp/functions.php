@@ -275,4 +275,17 @@ function lxp_get_students($students_ids) {
     }, $students_ids);
     return $students;
 }
+
+function lxp_get_trek_digital_journals($trek_id) {
+    $courseId =  get_post_meta($trek_id, 'tl_course_id', true);
+    $journal_query = new WP_Query( array( 
+        'post_type' => "tl_lesson", 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'tl_course_id', 'value' => $courseId, 'compare' => '=')
+        )
+    ) );
+    return $journal_query->get_posts();
+}
 ?>

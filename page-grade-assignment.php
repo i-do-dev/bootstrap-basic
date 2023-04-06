@@ -384,22 +384,18 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
         <!-- Tabs Table -->
         <?php 
           if ( isset($_GET['action']) && $_GET['action'] == 'grade' ) {
-            $args = array(
-              'posts_per_page'   => -1,
-              'post_type'        => 'tl_lesson',
-              'meta_query' => array(
-                array(
-                  'key'   => 'tl_course_id',
-                  'value' =>  $trek->ID
-                )
-              )
-            );
-            $lessons = get_posts($args);
-            var_dump($lessons); die();
-            $digital_journal_link = null;
-            foreach($lessons as $lesson){ if (trim($trek_section->title) === trim($lesson->post_title)) { $digital_journal_link = get_permalink($lesson->ID); }; }
-            echo "Grade";
-          } else {
+            $lessons = lxp_get_trek_digital_journals($trek->ID);
+            $trek_lesson = null;
+            foreach($lessons as $lesson){ if (trim($trek_section->title) === trim($lesson->post_title)) { $trek_lesson = $lesson; }; }
+            $lti_post_attr_id = get_post_meta($trek_lesson->ID, 'lti_post_attr_id', true);
+            $attrId = $lti_post_attr_id ? $lti_post_attr_id : 0;
+            $queryParam = '';
+            if (isset($_GET['slide'])) {
+              $queryParam = "&slideNumber=" . $_GET['slide'];
+            }
+            ?>
+              <iframe style="border: none;width: 100%;height: 706px;" class="" src="<?php echo site_url() ?>?lti-platform&post=<?php echo $trek_lesson->ID ?>&id=<?php echo $attrId ?><?php echo $queryParam ?>" allowfullscreen></iframe>
+          <?php } else {
             get_template_part("lxp/teacher-grade");            
           }
         ?>
