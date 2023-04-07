@@ -15,6 +15,9 @@ $students = lxp_get_students($assignment->lxp_student_ids);
 $trek = get_post($assignment->trek_id);
 $trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id={$assignment->trek_section_id}");
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
+$slide_current = isset($_GET['slide']) ? $_GET['slide'] : 0;
+$student_assignment_grade = lxp_get_student_assignment_grade($_GET['student'], $_GET['assignment'], $slide_current);
+$student_assignment_grade = intval($student_assignment_grade) > 0 ? $student_assignment_grade : 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -58,6 +61,29 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
         margin: 0 0 8px;
         color: #757575;
         background: #eaedf1;
+      }
+
+      .grade-box-btn {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 8px 40px;
+          font-family: 'Nunito';
+          font-style: normal;
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 24px;
+          margin: 0 auto;
+          color: #0b5d7a;
+          background-color: transparent;
+          border: 1px solid #0b5d7a;
+          border-radius: 8px;
+          margin-top: 10px;
+      }
+
+      .grade-box {
+        margin-left: 50px;
+        margin-right: 50px;
       }
     </style>
   </head>
@@ -168,7 +194,7 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
           <h2>Students</h2>
           <ul class="treks_ul" id="myTab" role="tablist">
             <?php foreach ($students as  $student) { ?>
-              <li>
+              <li onclick="switch_student(<?php echo $student->ID; ?>)">
                 <div
                   class="nav-link tab_btn <?php echo $student->ID == $student_id ? 'active' : ''; ?>"
                   id="two-tab"
@@ -418,11 +444,40 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
                     <iframe style="border: none;width: 100%;height: 395px;" class="" src="<?php echo site_url() ?>?lti-platform&post=<?php echo $trek_lesson->ID ?>&id=<?php echo $attrId ?><?php echo $queryParam ?>" allowfullscreen></iframe>
                   </div>
                   <div class="col col-md-4">
-                      <div class="grade-boxx">
-                          <span class="grade-box-slide">Slide 1</span>
+                      <div class="grade-box">
+                          <span class="grade-box-slide">Slide <?php echo $_GET['slide']; ?></span>
                           <!-- <p>What Is Happening?</p> -->
                           <!-- <h2 class="gray_grade">1/1</h2> -->
-                          <button class="grade_btn" onclick="grade(1)">Grade</button>
+                          <!-- input grade select control -->
+                          <div class="invalid-feedback" id="grade_select_error">
+                              Please select grade
+                          </div>
+                          <div class="grade-select">
+                            <select name="grade" id="grade" class="form-select">
+                              <option value="0" selected>Select Grade</option>
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                              <option value="6">6</option>
+                              <option value="7">7</option>
+                              <option value="8">8</option>
+                              <option value="9">9</option>
+                              <option value="10">10</option>
+                              <option value="11">11</option>
+                              <option value="12">12</option>
+                              <option value="13">13</option>
+                              <option value="14">14</option>
+                              <option value="15">15</option>
+                              <option value="16">16</option>
+                              <option value="17">17</option>
+                              <option value="18">18</option>
+                              <option value="19">19</option>
+                              <option value="20">20</option>
+                            </select>
+                          <button class="grade-box-btn" onclick="assign_grade(<?php echo $_GET['slide']; ?>, jQuery('#grade').val())">Grade</button>
+                          <button class="grade-box-btn" onclick="back()">Back</button>
                       </div>
                   </div>
                 </div>
@@ -453,6 +508,50 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
       function grade(slide) {
         window.location.href = location.origin + location.pathname + "?assignment=<?php echo $_GET['assignment']; ?>&student=<?php echo $_GET['student']; ?>" + "&action=grade&slide=" + slide;
       }
+
+      // function assign_grade() assign grade and selected grade to student
+      function assign_grade(slide, grade) {
+
+        if (grade == 0) {
+          jQuery('#grade_select_error').show();
+          return false;
+        }
+        jQuery('#grade_select_error').hide();
+
+        let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+        let apiUrl = host + '/wp-json/lms/v1/';
+        $.ajax({
+          url: apiUrl + 'student/assign_grade',
+          type: "POST",
+          data: {
+            "assignment": "<?php echo $_GET['assignment']; ?>",
+            "student": "<?php echo $_GET['student']; ?>",
+            "slide": slide,
+            "grade": grade
+          },
+          success: function (response) {
+            back();
+          },
+          error: function (error) {
+            console.log(error);
+          }
+        });
+      }
+      
+      function back() {
+        window.location.href = window.location.origin + window.location.pathname + "?assignment=<?php echo $_GET['assignment']; ?>&student=<?php echo $_GET['student']; ?>";
+      }
+
+      function switch_student(student_post_id) {
+        window.location.href = window.location.origin + window.location.pathname + "?assignment=<?php echo $_GET['assignment']; ?>&student=" + student_post_id;
+      }
+
+      jQuery(document).ready(function () {
+        var student_assignment_grade = <?php echo $student_assignment_grade; ?>;
+        if (student_assignment_grade) {
+          jQuery("#grade").val(student_assignment_grade);
+        }
+      });
     </script>    
   </body>
 </html>

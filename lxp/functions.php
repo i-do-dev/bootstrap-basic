@@ -288,4 +288,11 @@ function lxp_get_trek_digital_journals($trek_id) {
     ) );
     return $journal_query->get_posts();
 }
+
+// function lxp_get_student_assignment_grade to get grade for student with slid number
+function lxp_get_student_assignment_grade($student_post_id, $assignment_post_id, $slide) {
+    $assignment_grade_key = "assignment_" . $assignment_post_id . "_slide_" . $slide . "_grade";
+    return get_post_meta($student_post_id, $assignment_grade_key, true);
+}
+
 ?>

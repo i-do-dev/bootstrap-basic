@@ -22,143 +22,104 @@ global $treks_src;
         
         <div class="carousel-item active">
             <div class="slider_cards_flex">
-            
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 1</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(1)">Grade</button>
-            </div>
-
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 2</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(2)">Grade</button>
-            </div>
-            
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 3</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(3)">Grade</button>
-            </div>
-            
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 4</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(4)">Grade</button>
-            </div>
+                <?php 
+                    foreach (range(1, 4) as $slide) { 
+                    $grade = intval(lxp_get_student_assignment_grade($_GET['student'], $_GET['assignment'], $slide));
+                    $green_class = $grade > 0 ? 'green_slide' : '';
+                ?>
+                    <div class="student_grade_card">
+                        <span class="student_slide gray_slide <?php echo $green_class; ?>">Slide <?php echo $slide; ?></span>
+                        <!-- <p>What Is Happening?</p> -->
+                        <!-- <h2 class="gray_grade">1/1</h2> -->
+                        <button class="grade_btn" onclick="grade(<?php echo $slide; ?>)">Grade</button>
+                        <?php if($grade > 0) { ?>
+                            <img src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" />
+                        <?php } ?>
+                    </div>
+                <?php } ?>
 
             </div>
         </div>
-        
         <div class="carousel-item">
             <div class="slider_cards_flex">
-            
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 5</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(5)">Grade</button>
-            </div>
-
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 6</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(6)">Grade</button>
-            </div>
-            
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 7</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(7)">Grade</button>
-            </div>
-            
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 8</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(8)">Grade</button>
-            </div>
+                <?php 
+                    foreach (range(5, 8) as $slide) { 
+                    $grade = intval(lxp_get_student_assignment_grade($_GET['student'], $_GET['assignment'], $slide));
+                    $green_class = $grade > 0 ? 'green_slide' : '';
+                ?>
+                    <div class="student_grade_card">
+                        <span class="student_slide gray_slide <?php echo $green_class; ?>">Slide <?php echo $slide; ?></span>
+                        <!-- <p>What Is Happening?</p> -->
+                        <!-- <h2 class="gray_grade">1/1</h2> -->
+                        <button class="grade_btn" onclick="grade(<?php echo $slide; ?>)">Grade</button>
+                        <?php if($grade > 0) { ?>
+                            <img src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" />
+                        <?php } ?>
+                    </div>
+                <?php } ?>
 
             </div>
         </div>
-        
-        
         <div class="carousel-item">
             <div class="slider_cards_flex">
-            
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 9</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(9)">Grade</button>
-            </div>
-
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 10</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(10)">Grade</button>
-            </div>
-            
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 11</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(11)">Grade</button>
-            </div>
-            
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 12</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(12)">Grade</button>
-            </div>
+                <?php 
+                    foreach (range(9, 12) as $slide) { 
+                    $grade = intval(lxp_get_student_assignment_grade($_GET['student'], $_GET['assignment'], $slide));
+                    $green_class = $grade > 0 ? 'green_slide' : '';
+                ?>
+                    <div class="student_grade_card">
+                        <span class="student_slide gray_slide <?php echo $green_class; ?>">Slide <?php echo $slide; ?></span>
+                        <!-- <p>What Is Happening?</p> -->
+                        <!-- <h2 class="gray_grade">1/1</h2> -->
+                        <button class="grade_btn" onclick="grade(<?php echo $slide; ?>)">Grade</button>
+                        <?php if($grade > 0) { ?>
+                            <img src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" />
+                        <?php } ?>
+                    </div>
+                <?php } ?>
 
             </div>
         </div>
-
-        
-        
         <div class="carousel-item">
             <div class="slider_cards_flex">
-            
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 13</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(13)">Grade</button>
-            </div>
-
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 14</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(14)">Grade</button>
-            </div>
-            
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 15</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(15)">Grade</button>
-            </div>
-            
-            <div class="student_grade_card">
-                <span class="student_slide gray_slide">Slide 16</span>
-                <!-- <p>What Is Happening?</p> -->
-                <!-- <h2 class="gray_grade">1/1</h2> -->
-                <button class="grade_btn" onclick="grade(16)">Grade</button>
-            </div>
+                <?php 
+                    foreach (range(13, 16) as $slide) { 
+                    $grade = intval(lxp_get_student_assignment_grade($_GET['student'], $_GET['assignment'], $slide));
+                    $green_class = $grade > 0 ? 'green_slide' : '';
+                ?>
+                    <div class="student_grade_card">
+                        <span class="student_slide gray_slide <?php echo $green_class; ?>">Slide <?php echo $slide; ?></span>
+                        <!-- <p>What Is Happening?</p> -->
+                        <!-- <h2 class="gray_grade">1/1</h2> -->
+                        <button class="grade_btn" onclick="grade(<?php echo $slide; ?>)">Grade</button>
+                        <?php if($grade > 0) { ?>
+                            <img src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" />
+                        <?php } ?>
+                    </div>
+                <?php } ?>
 
             </div>
         </div>
+        <div class="carousel-item">
+            <div class="slider_cards_flex">
+                <?php 
+                    foreach (range(17, 20) as $slide) { 
+                    $grade = intval(lxp_get_student_assignment_grade($_GET['student'], $_GET['assignment'], $slide));
+                    $green_class = $grade > 0 ? 'green_slide' : '';
+                ?>
+                    <div class="student_grade_card">
+                        <span class="student_slide gray_slide <?php echo $green_class; ?>">Slide <?php echo $slide; ?></span>
+                        <!-- <p>What Is Happening?</p> -->
+                        <!-- <h2 class="gray_grade">1/1</h2> -->
+                        <button class="grade_btn" onclick="grade(<?php echo $slide; ?>)">Grade</button>
+                        <?php if($grade > 0) { ?>
+                            <img src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" />
+                        <?php } ?>
+                    </div>
+                <?php } ?>
 
+            </div>
+        </div>
 
 
 
