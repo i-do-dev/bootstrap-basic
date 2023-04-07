@@ -295,4 +295,19 @@ function lxp_get_student_assignment_grade($student_post_id, $assignment_post_id,
     return get_post_meta($student_post_id, $assignment_grade_key, true);
 }
 
+function lxp_get_student_post($student_id)
+{
+    $school_query = new WP_Query( array( 
+        'post_type' => TL_STUDENT_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_student_admin_id', 'value' => $student_id, 'compare' => '=')
+        )
+    ) );
+    
+    $posts = $school_query->get_posts();
+    return count($posts) > 0 ? $posts[0] : null;
+}
+
 ?>

@@ -1,142 +1,342 @@
 <?php
-// get_template_part('lxp/functions');
 global $treks_src;
 $userdata = get_userdata(get_current_user_id());
+$student_post = lxp_get_student_post(get_current_user_id());
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard</title>
+    <title>Student/Dashboard</title>
     <link href="<?php echo $treks_src; ?>/style/main.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
-    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/adminDashboard.css" />
-    <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
-</head>
+    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/studentDashboard.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+  </head>
 
-<body>
-
-    <!-- Header Section -->
+  <body>
     <nav class="navbar navbar-expand-lg bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <div class="header-logo-search">
-                    <!-- logo -->
-                    <div class="header-logo">
-                        <img src="<?php echo $treks_src; ?>/assets/img/header_logo.svg" alt="svg" />
-                    </div>
-                </div>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <div class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <div class="header-logo-search">
-                        <!-- searching input -->
-                        <div class="header-search">
-                            <img src="<?php echo $treks_src; ?>/assets/img/header_search.svg" alt="svg" />
-                            <input placeholder="Search" />
-                        </div>
-                    </div>
-                </div>
-                <div class="d-flex" role="search">
-                    <div class="header-notification-user">
-                        <?php get_template_part('trek/user-profile-block'); ?>
-                    </div>
-                </div>
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <div class="header-logo-search">
+            <!-- logo -->
+            <div class="header-logo">
+              <img src="<?php echo $treks_src; ?>/assets/img/header_logo.svg" alt="svg" />
             </div>
+          </div>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <div class="navbar-nav me-auto mb-2 mb-lg-0">
+            <div class="header-logo-search">
+              <!-- searching input -->
+              <div class="header-search">
+                <img src="<?php echo $treks_src; ?>/assets/img/header_search.svg" alt="svg" />
+                <input placeholder="Search" />
+              </div>
+            </div>
+          </div>
+          <div class="d-flex" role="search">
+            <div class="header-notification-user">
+                <?php get_template_part('trek/user-profile-block'); ?>
+            </div>
+          </div>
         </div>
+      </div>
     </nav>
 
-    <!-- Nav Section -->
+    <!-- Basic Container -->
     <section class="main-container">
-        <nav class="nav-section">
-            <?php // get_template_part('lxp/admin-nav'); ?>
-        </nav>
+      <!-- Nav Section -->
+      <nav class="nav-section">
+        <ul>
+          <li class="nav-section-selected">
+            <img src="<?php echo $treks_src; ?>/assets/img/nav_dashboard-dots.svg" />
+            <a href="/">Dashboard</a>
+          </li>
+          <li>
+            <img src="<?php echo $treks_src; ?>/assets/img/nav_Treks.svg" />
+            <a href="/">TREKs</a>
+          </li>
+          <li>
+            <img src="<?php echo $treks_src; ?>/assets/img/calendar.svg" />
+            <a href="/">Calendar</a>
+          </li>
+          <li>
+            <img src="<?php echo $treks_src; ?>/assets/img/nav_students.svg" />
+            <a href="/">Students</a>
+          </li>
+          <li>
+            <img src="<?php echo $treks_src; ?>/assets/img/nav_reports.svg" />
+            <a href="/">Reports</a>
+          </li>
+        </ul>
+      </nav>
     </section>
 
-    <!-- Welcome: section-->
-    <div class="welcome-section">
-        <h2 class="welcome-heading">Welcome <?php echo $userdata->display_name; ?>!</h2>
-        <p class="welcome-text">Here's how your academic system looks like</p>
-    </div>
+    <!-- main body section -->
 
-    <!-- Total Schools: section-->
-    <section class="school-section">
-        <div class="cards-box">
-            <div class="card">
-                Under Development
-            </div>
+    <section class="main-student-dashboard">
+      <!-- welcome student  -->
+
+      <section class="welcome-student">
+        <div class="student-about">
+          <img src="<?php echo $treks_src; ?>/assets/img/welcome.png" alt="welcome" />
+
+          <div class="stu-about">
+            <h1>Welcome <?php echo $userdata->display_name; ?>!</h1>
+            <p>Here's how your learning system looks like</p>
+          </div>
         </div>
-    </section>
 
-    <!-- Recent TREKs -->
-    <!-- <section class="recent-treks-section">
+        <!-- Tags -->
+        <div class="detail-prep-tags">
+          <!-- 
+          <div class="tags-body recall-poly-body">
+            <div class="tags-body-polygon">
+              <span>R</span>
+            </div>
+            <div class="tags-body-detail">
+              <p>8/12</p>
+              <span>Recall</span>
+            </div>
+          </div>
+          <div class="tags-body pa-poly-body">
+            <div class="tags-body-polygon">
+              <span>P</span>
+            </div>
+            <div class="tags-body-detail">
+              <p>8/12</p>
+              <span>Practice A</span>
+            </div>
+          </div>
+          <div class="tags-body pb-poly-body">
+            <div class="tags-body-polygon">
+              <span>P</span>
+            </div>
+            <div class="tags-body-detail">
+              <p>8/12</p>
+              <span>Practice B</span>
+            </div>
+          </div>
+          <div class="tags-body apply-poly-body">
+            <div class="tags-body-polygon">
+              <span>A</span>
+            </div>
+            <div class="tags-body-detail">
+              <p>8/12</p>
+              <span>Apply</span>
+            </div>
+          </div>
+           -->
+        </div>
+      </section>
+
+      <!-- Recent TREKs -->
+      <section class="recent-treks-section stu-treks">
         <div class="recent-treks-section-div">
-            
-            <div class="recent-treks-header section-div-header">
-                <h2>Top TREKs</h2>
-                <div>
-                    <a href="#">See All</a>
-                </div>
+          <!--  TREKs header-->
+          <div class="recent-treks-header section-div-header">
+            <h2>TREKs</h2>
+            <div>
+              <a href="#">See All</a>
             </div>
-            
-            <div class="recent-treks-cards-list">
-                
-                
-                <div class="recent-treks-card-body">
-                    <div>
-                        <img src="<?php // echo $treks_src; ?>/assets/img/admin_rec_tre_img1.svg" />
-                    </div>
-                    <div>
-                        <h3>5.12A Interdependence</h3>
-                        <span>Due date: May 17, 2023</span>
-                    </div>
-                </div>
-
-                
-                <div class="recent-treks-card-body">
-                    <div>
-                        <img src="<?php // echo $treks_src; ?>/assets/img/admin_rec_tre_img2.svg" />
-                    </div>
-                    <div>
-                        <h3>5.7B Forces & Experimental Design</h3>
-                        <span>Due date: May 17, 2023</span>
-                    </div>
-                </div>
-
-                
-                <div class="recent-treks-card-body">
-                    <div>
-                        <img src="<?php // echo $treks_src; ?>/assets/img/admin_rec_tre_img3.svg" />
-                    </div>
-                    <div>
-                        <h3>5.6A Physical Properties</h3>
-                        <span>Due date: May 17, 2023</span>
-                    </div>
-                </div>
+          </div>
+          <!-- TREKs cards -->
+          <div class="recent-treks-cards-list">
+            <!-- each cards  -->
+            <!-- card 1 -->
+            <div class="recent-treks-card-body">
+              <div>
+                <img src="<?php echo $treks_src; ?>/assets/img/rec_tre_img1.svg" />
+              </div>
+              <div>
+                <h3>5.12A Interdependence</h3>
+                <span>Due date: May 17, 2023</span>
+              </div>
             </div>
+
+            <!-- card 2 -->
+            <div class="recent-treks-card-body">
+              <div>
+                <img src="<?php echo $treks_src; ?>/assets/img/rec_tre_img2.svg" />
+              </div>
+              <div>
+                <h3>5.7B Forces & Experimental Design</h3>
+                <span>Due date: May 17, 2023</span>
+              </div>
+            </div>
+
+            <!-- card 3 -->
+            <div class="recent-treks-card-body">
+              <div>
+                <img src="<?php echo $treks_src; ?>/assets/img/rec_tre_img3.svg" />
+              </div>
+              <div>
+                <h3>5.6A Physical Properties</h3>
+                <span>Due date: May 17, 2023</span>
+              </div>
+            </div>
+          </div>
         </div>
-    </section> -->
+      </section>
 
+      <!-- Assignments section  -->
+      <section class="assignments-section">
+        <!--  header -->
+        <div class="heading">
+          <h2>Assignments</h2>
+        </div>
+        <!-- assignments card -->
+        <div class="assignments_label_card">
+          <div class="assig_card">
+            <label class="bg-gray">To Do</label>
+            <h1 class="border-gray">4</h1>
+          </div>
 
+          <div class="assig_card">
+            <label class="bg-orange">In Progress</label>
+            <h1 class="border-orange">8</h1>
+          </div>
+          <div class="assig_card">
+            <label class="bg-green">Completed</label>
+            <h1 class="border-green">18</h1>
+          </div>
+        </div>
+      </section>
 
-    <script src="https://code.jquery.com/jquery-3.6.3.js"
-        integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+      <!--repots  -->
+
+      <div class="dropdown report-dropdown">
+        <button
+          class="input_dropdown dropdown-button"
+          type="button"
+          id="dropdownMenu2"
+          data-bs-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          Reports
+          <img src="<?php echo $treks_src; ?>/assets/img/down-arrow.svg" alt="logo" />
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+          <div class="report-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>TREK</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Teacher</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="assignments-table-cs-td-poly">
+                      <div class="polygon-shap">
+                        <span>P</span>
+                      </div>
+                      <div>
+                        <span>Physical Properties</span>
+                        <span>Practice B</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Jan 21, 2023</td>
+                  <td><span class="grade-label grade-report">Grade</span></td>
+
+                  <td>
+                    <div class="teacher">
+                      <img src="<?php echo $treks_src; ?>/assets/img/header_avatar.svg" alt="" />
+                      <h3>Theresa Doe</h3>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="assignments-table-cs-td-poly">
+                      <div class="polygon-shap">
+                        <span>P</span>
+                      </div>
+                      <div>
+                        <span>Physical Properties</span>
+                        <span>Practice B</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Jan 21, 2023</td>
+                  <td><span class="grade-label pending-report">Pending</span></td>
+
+                  <td>
+                    <div class="teacher">
+                      <img src="<?php echo $treks_src; ?>/assets/img/header_avatar.svg" alt="" />
+                      <h3>Theresa Doe</h3>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="assignments-table-cs-td-poly">
+                      <div class="polygon-shap reviewed-shap">
+                        <span>R</span>
+                      </div>
+                      <div>
+                        <span>Physical Properties</span>
+                        <span>Practice B</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Jan 21, 2023</td>
+                  <td>
+                    <div class="d-flex">
+                      <span class="grade-label reviewed-report">Reviewed</span>
+                      <img src="<?php echo $treks_src; ?>/assets/img/warning-icon.svg " alt="" />
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="teacher">
+                      <img src="<?php echo $treks_src; ?>/assets/img/header_avatar.svg" alt="" />
+                      <h3>Theresa Doe</h3>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <script
-        src="<?php echo $treks_src; ?>/js/Animated-Circular-Progress-Bar-with-jQuery-Canvas-Circle-Progress/dist/circle-progress.js"></script>
+      src="https://code.jquery.com/jquery-3.6.3.js"
+      integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+      crossorigin="anonymous"
+    ></script>
+    <script src="<?php echo $treks_src; ?>/js/Animated-Circular-Progress-Bar-with-jQuery-Canvas-Circle-Progress/dist/circle-progress.js"></script>
     <script src="<?php echo $treks_src; ?>/js/custom.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
-</body>
-
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
