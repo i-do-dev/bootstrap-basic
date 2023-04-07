@@ -440,7 +440,7 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
                     $headingColor = "#9fc33b";
                   }
                 ?>
-                <h1 class="trek-main-heading" id="<?php echo implode('_', explode(' ', $trek_section->title));?>" style="color:<?php echo $headingColor?>"><?php echo $trek_section->title;?></h1>                
+                <h1 class="trek-main-heading" id="<?php echo implode('_', explode(' ', $trek_section->title));?>" style="color:<?php echo $headingColor?>"><?php echo $trek_section->title;?> <?php echo strtolower($trek_section->title) !== 'overview' ? 'Teacher Instructions' : ''; ?></h1>                
               </div>
               
               <!-- digital journal link -->
