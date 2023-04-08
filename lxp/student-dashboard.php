@@ -238,15 +238,28 @@ $treks = lxp_get_assignments_treks($assignments);
                       $trek_section_id = get_post_meta($assignment->ID, "trek_section_id", true);
                       // get trek section by trek_section_id using $wpdb row function
                       $trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id = $trek_section_id");
+                      if ($trek_section->title === 'Overview') {
+                          $segmentColor = "#979797";
+                      } else if ($trek_section->title === 'Recall') {
+                          $segmentColor = "#ca2738";
+                      } else if ($trek_section->title === 'Practice A') {
+                          $segmentColor = "#1fa5d4";
+                      } else if ($trek_section->title === 'Practice B') {
+                          $segmentColor = "#1fa5d4";
+                      } else if ($trek_section->title === 'Apply') {
+                          $segmentColor = "#9fc33b";
+                      } else {
+                          $segmentColor = "#979797";
+                      }
                   ?>
                   <tr>
                     <td>
                       <div class="assignments-table-cs-td-poly">
-                        <div class="polygon-shap">
+                        <div class="polygon-shap" style="background-color: <?php echo $segmentColor; ?>">
                           <span><?php echo $trek_section->title[0]; ?></span>
                         </div>
                         <div>
-                          <span><?php echo $trek_section->title; ?></span>
+                          <span style="color: <?php echo $segmentColor; ?>"><?php echo $trek_section->title; ?></span>
                           <span><?php echo $trek->post_title; ?></span>
                         </div>
                       </div>

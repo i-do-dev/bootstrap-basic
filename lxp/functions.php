@@ -310,4 +310,25 @@ function lxp_get_student_post($student_id)
     return count($posts) > 0 ? $posts[0] : null;
 }
 
+// function lxp_get_student_assignments to get all student assignments using WPQuery object and return array of assignments
+function lxp_get_student_assignments($student_post_id)
+{
+    $school_query = new WP_Query( array( 
+        'post_type' => TL_ASSIGNMENT_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_student_ids', 'value' => $student_post_id, 'compare' => 'IN')
+        )
+    ) );
+    return $school_query->get_posts();
+}
+
+function lxp_get_assignments_treks($assignments)
+{
+    $treks = array_map(function ($assignment) { return get_post($assignment->trek_id)->ID; }, $assignments);
+    $query = new WP_Query( array( 'post_type' => TL_TREK_CPT , 'posts_per_page'   => -1, 'post_status' => array( 'publish' ), 'post__in' => array_values(array_unique($treks)), 'orderby' => 'ID', 'order' => 'ASC' ) );
+    return $query->get_posts();
+}
+
 ?>
