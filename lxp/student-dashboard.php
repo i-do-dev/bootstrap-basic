@@ -2,6 +2,8 @@
 global $treks_src;
 $userdata = get_userdata(get_current_user_id());
 $student_post = lxp_get_student_post(get_current_user_id());
+$assignments = lxp_get_student_assignments($student_post->ID);
+$treks = lxp_get_assignments_treks($assignments);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,6 +21,20 @@ $student_post = lxp_get_student_post(get_current_user_id());
       integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
       crossorigin="anonymous"
     />
+
+    <style type="text/css">
+      .treks-card {
+        width: 300px !important;
+      }
+      .treks-card-link {
+        text-decoration: none !important;
+      }
+
+      body {
+          background-color: #f6f7fa !important;
+      }
+    </style>
+
   </head>
 
   <body>
@@ -66,29 +82,9 @@ $student_post = lxp_get_student_post(get_current_user_id());
     <section class="main-container">
       <!-- Nav Section -->
       <nav class="nav-section">
-        <ul>
-          <li class="nav-section-selected">
-            <img src="<?php echo $treks_src; ?>/assets/img/nav_dashboard-dots.svg" />
-            <a href="/">Dashboard</a>
-          </li>
-          <li>
-            <img src="<?php echo $treks_src; ?>/assets/img/nav_Treks.svg" />
-            <a href="/">TREKs</a>
-          </li>
-          <li>
-            <img src="<?php echo $treks_src; ?>/assets/img/calendar.svg" />
-            <a href="/">Calendar</a>
-          </li>
-          <li>
-            <img src="<?php echo $treks_src; ?>/assets/img/nav_students.svg" />
-            <a href="/">Students</a>
-          </li>
-          <li>
-            <img src="<?php echo $treks_src; ?>/assets/img/nav_reports.svg" />
-            <a href="/">Reports</a>
-          </li>
-        </ul>
+        <?php get_template_part('trek/navigation-student'); ?>
       </nav>
+
     </section>
 
     <!-- main body section -->
@@ -162,38 +158,20 @@ $student_post = lxp_get_student_post(get_current_user_id());
           <!-- TREKs cards -->
           <div class="recent-treks-cards-list">
             <!-- each cards  -->
-            <!-- card 1 -->
-            <div class="recent-treks-card-body">
-              <div>
-                <img src="<?php echo $treks_src; ?>/assets/img/rec_tre_img1.svg" />
-              </div>
-              <div>
-                <h3>5.12A Interdependence</h3>
-                <span>Due date: May 17, 2023</span>
-              </div>
-            </div>
-
-            <!-- card 2 -->
-            <div class="recent-treks-card-body">
-              <div>
-                <img src="<?php echo $treks_src; ?>/assets/img/rec_tre_img2.svg" />
-              </div>
-              <div>
-                <h3>5.7B Forces & Experimental Design</h3>
-                <span>Due date: May 17, 2023</span>
-              </div>
-            </div>
-
-            <!-- card 3 -->
-            <div class="recent-treks-card-body">
-              <div>
-                <img src="<?php echo $treks_src; ?>/assets/img/rec_tre_img3.svg" />
-              </div>
-              <div>
-                <h3>5.6A Physical Properties</h3>
-                <span>Due date: May 17, 2023</span>
-              </div>
-            </div>
+            <?php foreach ($treks as $trek) { ?>
+              <!-- card -->
+              <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
+                <div class="recent-treks-card-body treks-card">
+                  <div>
+                    <?php echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
+                  </div>
+                  <div>
+                    <h3><?php echo get_the_title($trek->ID); ?></h3>
+                    <span>Due date: May 17, 2023</span>
+                  </div>
+                </div>
+              </a>
+            <?php } ?>
           </div>
         </div>
       </section>
@@ -208,16 +186,16 @@ $student_post = lxp_get_student_post(get_current_user_id());
         <div class="assignments_label_card">
           <div class="assig_card">
             <label class="bg-gray">To Do</label>
-            <h1 class="border-gray">4</h1>
+            <h1 class="border-gray">0</h1>
           </div>
 
           <div class="assig_card">
             <label class="bg-orange">In Progress</label>
-            <h1 class="border-orange">8</h1>
+            <h1 class="border-orange"><?php echo count($assignments); ?></h1>
           </div>
           <div class="assig_card">
             <label class="bg-green">Completed</label>
-            <h1 class="border-green">18</h1>
+            <h1 class="border-green">0</h1>
           </div>
         </div>
       </section>
@@ -225,17 +203,18 @@ $student_post = lxp_get_student_post(get_current_user_id());
       <!--repots  -->
 
       <div class="dropdown report-dropdown">
-        <button
+        <div
           class="input_dropdown dropdown-button"
           type="button"
           id="dropdownMenu2"
           data-bs-toggle="dropdown"
           aria-haspopup="true"
-          aria-expanded="false"
+          aria-expanded="true"
+          data-bs-auto-close="false"
         >
           Reports
           <img src="<?php echo $treks_src; ?>/assets/img/down-arrow.svg" alt="logo" />
-        </button>
+        </div>
         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
           <div class="report-table">
             <table>
@@ -248,77 +227,57 @@ $student_post = lxp_get_student_post(get_current_user_id());
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <div class="assignments-table-cs-td-poly">
-                      <div class="polygon-shap">
-                        <span>P</span>
+                <!-- tr to iterate over assignments -->
+                  <?php 
+                    foreach ($assignments as $assignment) { 
+                      // gget assignment trek_id meta data
+                      $trek_id = get_post_meta($assignment->ID, "trek_id", true);
+                      // get trek by trek_id
+                      $trek = get_post($trek_id);
+                      // get assignment trek_section_id meta data
+                      $trek_section_id = get_post_meta($assignment->ID, "trek_section_id", true);
+                      // get trek section by trek_section_id using $wpdb row function
+                      $trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id = $trek_section_id");
+                  ?>
+                  <tr>
+                    <td>
+                      <div class="assignments-table-cs-td-poly">
+                        <div class="polygon-shap">
+                          <span><?php echo $trek_section->title[0]; ?></span>
+                        </div>
+                        <div>
+                          <span><?php echo $trek_section->title; ?></span>
+                          <span><?php echo $trek->post_title; ?></span>
+                        </div>
                       </div>
-                      <div>
-                        <span>Physical Properties</span>
-                        <span>Practice B</span>
+                    </td>
+                    <td>
+                      <?php
+                      // get start_date metadata from assignment and format it by month, date and year
+                      $start_date = get_post_meta($assignment->ID, "start_date", true);
+                      $start_date = date("M d, Y", strtotime($start_date));
+                      echo $start_date;
+                      ?>
+                    </td>
+                    <td><span class="grade-label pending-report">Pending</span></td>
+                    <td>
+                      <div class="teacher">
+                        <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="student" />
+                        <h3>
+                          <?php
+                          // get assignment lxp_assignment_teacher_id metadata as $teacher_post_id
+                          $teacher_post_id = get_post_meta($assignment->ID, "lxp_assignment_teacher_id", true);
+                          // get teacher lxp_teacher_admin_id metadata as $teacher_admin_id
+                          $teacher_admin_id = get_post_meta($teacher_post_id, "lxp_teacher_admin_id", true);
+                          // get teacher user data by $teacher_admin_id as $teacher_user
+                          $teacher_user = get_userdata($teacher_admin_id);
+                          echo $teacher_user->display_name;
+                          ?>
+                        </h3>
                       </div>
-                    </div>
-                  </td>
-                  <td>Jan 21, 2023</td>
-                  <td><span class="grade-label grade-report">Grade</span></td>
-
-                  <td>
-                    <div class="teacher">
-                      <img src="<?php echo $treks_src; ?>/assets/img/header_avatar.svg" alt="" />
-                      <h3>Theresa Doe</h3>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="assignments-table-cs-td-poly">
-                      <div class="polygon-shap">
-                        <span>P</span>
-                      </div>
-                      <div>
-                        <span>Physical Properties</span>
-                        <span>Practice B</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Jan 21, 2023</td>
-                  <td><span class="grade-label pending-report">Pending</span></td>
-
-                  <td>
-                    <div class="teacher">
-                      <img src="<?php echo $treks_src; ?>/assets/img/header_avatar.svg" alt="" />
-                      <h3>Theresa Doe</h3>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="assignments-table-cs-td-poly">
-                      <div class="polygon-shap reviewed-shap">
-                        <span>R</span>
-                      </div>
-                      <div>
-                        <span>Physical Properties</span>
-                        <span>Practice B</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Jan 21, 2023</td>
-                  <td>
-                    <div class="d-flex">
-                      <span class="grade-label reviewed-report">Reviewed</span>
-                      <img src="<?php echo $treks_src; ?>/assets/img/warning-icon.svg " alt="" />
-                    </div>
-                  </td>
-
-                  <td>
-                    <div class="teacher">
-                      <img src="<?php echo $treks_src; ?>/assets/img/header_avatar.svg" alt="" />
-                      <h3>Theresa Doe</h3>
-                    </div>
-                  </td>
-                </tr>
+                    </td>
+                  </tr>
+                <?php } ?>
               </tbody>
             </table>
           </div>
@@ -338,5 +297,12 @@ $student_post = lxp_get_student_post(get_current_user_id());
       integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
       crossorigin="anonymous"
     ></script>
+
+    <script type="text/javascript">
+      jQuery(document).ready(function () {
+        window.report_dropdown = new bootstrap.Dropdown(document.getElementById('dropdownMenu2'));
+        report_dropdown.show();
+      });
+    </script>
   </body>
 </html>
