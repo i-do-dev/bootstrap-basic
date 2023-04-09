@@ -73,7 +73,7 @@ while (have_posts()) : the_post();
         <!-- Nav Section -->
         <div class="main-container nav_container">
             <nav class="nav-section nav_section_treks">
-                <?php get_template_part('trek/navigation') ?>
+                <?php get_template_part('trek/navigation-student') ?>
             </nav>
         </div>
         <!-- Recent Filters & TREKs flex -->
@@ -96,9 +96,6 @@ while (have_posts()) : the_post();
                     </div>
                     <div class="treks_bottom_border">
                         <h3 class="filter_treks_heading">Strand</h3>
-                    </div>
-                    <div class="treks_bottom_border">
-                        <h3 class="filter_treks_heading">BackPack</h3>
                     </div>
                 </div>
             </section>

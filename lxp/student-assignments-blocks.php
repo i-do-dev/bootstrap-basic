@@ -1,8 +1,15 @@
 <?php
 global $wpdb;
-$userdata = get_userdata(get_current_user_id());
-$student_post = lxp_get_student_post(get_current_user_id());
-$assignments = lxp_get_student_assignments($student_post->ID);
+$userdata = isset($args['userdata']) ? $args['userdata'] : get_userdata(get_current_user_id());
+$student_post = isset($args['student_post']) ? $args['student_post'] : lxp_get_student_post(get_current_user_id());
+$assignments = isset($args['assignments']) ? $args['assignments'] : lxp_get_student_assignments($student_post->ID);
+
+if (isset($args['trek_post_id'])) {
+    // $assignments filter by trek id
+    $assignments = array_filter($assignments, function ($assignment) use ($args) {
+        return $assignment->trek_id == $args['trek_post_id'];
+    });
+}
 
 foreach ($assignments as $assignment) {
     $trek = get_post($assignment->trek_id);
@@ -36,8 +43,8 @@ foreach ($assignments as $assignment) {
             </div>
             </div>
             <div class="tag-assig-tetaul">
-            <h3><?php echo $trek->post_title; ?></h3>
-            <p style="color: <?php echo $segmentColor; ?>"><?php echo $trek_section->title; ?></p>
+            <h3 style="color: <?php echo $segmentColor; ?>"><?php echo $trek_section->title; ?></h3>
+            <p><?php echo $trek->post_title; ?></p>
             </div>
         </div>
         <div class="progress" style="height: 4px">

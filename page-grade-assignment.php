@@ -140,7 +140,7 @@ $student_assignment_grade = intval($student_assignment_grade) > 0 ? $student_ass
     <section class="main_assignment_section">
       <!-- back button -->
       <section class="assigmint_back_button">
-        <a href="<?php echo site_url("calendar"); ?>">
+        <a href="<?php echo site_url("dashboard"); ?>">
           <span> <img src="<?php echo $treks_src; ?>/assets/img/back.svg" alt="" /> </span> Back
         </a>
       </section>

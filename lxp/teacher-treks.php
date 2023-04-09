@@ -108,9 +108,6 @@ while (have_posts()) : the_post();
                     <div class="treks_bottom_border">
                         <h3 class="filter_treks_heading">Strand</h3>
                     </div>
-                    <div class="treks_bottom_border">
-                        <h3 class="filter_treks_heading">BackPack</h3>
-                    </div>
                 </div>
             </section>
             <!-- Recent TREKs -->

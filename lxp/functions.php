@@ -331,4 +331,18 @@ function lxp_get_assignments_treks($assignments)
     return $query->get_posts();
 }
 
+function lxp_assignment_stats($assignment_id) {
+    $students_ids = get_post_meta($assignment_id, 'lxp_student_ids');
+    $q = new WP_Query( array( "post_type" => TL_STUDENT_CPT, 'posts_per_page'   => -1, "post__in" => $students_ids ) );
+    $students_posts = $q->get_posts();
+    $students = array_map(function ($student) { 
+        $lxp_student_admin_id = get_post_meta($student->ID, 'lxp_student_admin_id', true);
+        $userdata = get_userdata($lxp_student_admin_id);
+        $grades = get_post_meta($student->ID, 'grades', true);
+        $data = array("ID" => $student->ID, "name" => $userdata->data->display_name, "status" => "In progress", "progress" => "0/10", "score" => "0", "grades" => $grades);
+        return $data;
+    } , $students_posts);
+    return $students;
+}
+
 ?>

@@ -451,7 +451,10 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
         <div class="student-over-tab-content">
           <div class="tab-pane">
             <div class="stu-assig-cards">
-              <?php get_template_part('lxp/student-assignments-blocks') ?>
+              <?php 
+                $trek_post_id = $post->ID;
+                get_template_part('lxp/student-assignments-blocks', null, array('trek_post_id' => $trek_post_id));
+              ?>
             </div>
           </div>
         </div>

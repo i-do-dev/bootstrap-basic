@@ -272,7 +272,19 @@ $treks = lxp_get_assignments_treks($assignments);
                       echo $start_date;
                       ?>
                     </td>
-                    <td><span class="grade-label pending-report">Pending</span></td>
+                    <td>
+                      <?php 
+                      $slides = ["Overview" => 1, "Recall" => 2, "Practice A" => 3, "Practice B" => 4, "Apply" => 5];
+                      $assignment_grade_key = "assignment_" . $assignment->ID . "_slide_" . $slides[$trek_section->title] . "_grade";
+                      // get student metadata for $assignment_grade_key
+                      $assignment_grade = get_post_meta($student_post->ID, $assignment_grade_key, true);
+                      ?>
+                      <?php if (intval($assignment_grade) > 0) {?>
+                        <span class="grade-label grade-report">Grade</span>
+                      <?php } else { ?>
+                        <span class="grade-label pending-report"> Pending </span>
+                      <?php } ?>
+                    </td>
                     <td>
                       <div class="teacher">
                         <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="student" />

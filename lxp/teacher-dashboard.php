@@ -5,7 +5,7 @@ global $treks_src;
 // Start the loop.
 $courseId =  isset($_GET['courseid']) ? $_GET['courseid'] : get_post_meta($post->ID, 'tl_course_id', true);
 $args = array(
-	'posts_per_page'   => -1,
+	'posts_per_page'   => 3,
 	'post_type'        => 'tl_trek',
   'order' => 'asc',
 );
@@ -25,7 +25,7 @@ $teacher_post = lxp_get_teacher_post( get_userdata(get_current_user_id())->ID );
 if (is_null($teacher_post)) {
   die("Teacher is not associated with any school. contact admin. <a href='". wp_logout_url("login") ."'>Logout</a>");
 }
-$assignments = lxp_get_teacher_assignments($teacher_post->ID, 3);
+$assignments = lxp_get_teacher_assignments($teacher_post->ID);
 ?>
 
 <!DOCTYPE html>
@@ -42,12 +42,21 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID, 3);
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
     integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
   <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
+  <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+    crossorigin="anonymous"></script>
+
     <style type="text/css">
       .treks-card {
         width: 300px !important;
       }
       .treks-card-link {
         text-decoration: none !important;
+      }
+      .polygon-shap {
+        padding-top: 12px !important;
+      }
+      .student-stats-link {
+        padding-left: 10px !important;
       }
     </style>
 </head>
@@ -166,7 +175,7 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID, 3);
       <div class="pending-assignments-section-div">
         <!--  header -->
         <div class="pending-assignments-header section-div-header">
-          <h2>Assignments</h2>
+          <h2>Pending Assignments</h2>
           <div>
             <a href="<?php echo site_url('calendar');?>">See All</a>
           </div>
@@ -177,9 +186,10 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID, 3);
             <thead>
               <tr>
                 <th>Class</th>
-                <th>Assignments</th>
+                <th>TREK</th>
+                <th>Segment</th>
                 <th>Due Date</th>
-                <th>Pending</th>
+                <th>Student Progress</th>
               </tr>
             </thead>
             <tbody>
@@ -194,19 +204,30 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID, 3);
               ?>
                 <tr>
                   <td><?php echo $class_post->post_title; ?></td>
+                  <td><?php echo $trek->post_title; ?></td>
                   <td>
                     <div class="assignments-table-cs-td-poly">
                       <div class="polygon-shap polygonshape-<?php echo $segment; ?>">
                         <span><?php echo $trek_section->title[0]; ?></span>
                       </div>
                       <div>
-                        <span><?php echo $trek->post_title; ?></span>
                         <span><?php echo $trek_section->title; ?></span>
                       </div>
                     </div>
                   </td>
-                  <td>---</td>
-                  <td>0/0</td>
+                  <td>
+                    <?php
+                      $start_date = get_post_meta($assignment->ID, "start_date", true);
+                      $start_date = date("M d, Y", strtotime($start_date));
+                      echo $start_date;
+                    ?>
+                  </td>
+                  <td>
+                    <?php
+                      $student_stats = lxp_assignment_stats($assignment->ID);
+                    ?>
+                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>')">0/<?php echo count($student_stats); ?></a></div>
+                  </td>
                 </tr>  
               <?php } ?>
 <!--               <tr>
@@ -295,14 +316,85 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID, 3);
     </section>
      -->
   </section>
+  <?php get_template_part('lxp/assignment-stats-modal', 'assignment-stats-modal'); ?>
 
-  <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
-    crossorigin="anonymous"></script>
   <script src="<?php echo $treks_src; ?>/js/Animated-Circular-Progress-Bar-with-jQuery-Canvas-Circle-Progress/dist/circle-progress.js"></script>
   <script src="<?php echo $treks_src; ?>/js/custom.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
     crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+    function fetch_assignment_stats(assignment_id, trek, segment) {
+
+      jQuery('#student-progress-trek-title').text(trek);
+      jQuery('#student-progress-trek-segment').text(segment);
+      jQuery('#student-progress-trek-segment-char').text(segment[0]);
+      var segmentColor = "#979797";
+      switch (segment) {
+          case 'Overview':
+              segmentColor = "#979797";
+              break;
+          case 'Recall':
+              segmentColor = "#ca2738";
+              break;
+          case 'Practice A':
+              segmentColor = "#1fa5d4";
+              break;
+          case 'Practice B':
+              segmentColor = "#1fa5d4";
+              break;
+          case 'Apply':
+              segmentColor = "#9fc33b";
+              break;
+          default:
+              segmentColor = "#979797";
+              break;
+      }
+      jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-tab-polygon').css('background-color', segmentColor);
+      jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon-name, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-user-name').css('color', segmentColor);
+      
+      window.assignmentStatsModalObj.show();
+      jQuery("#student-modal-loader").show();
+      jQuery("#student-modal-table").hide();
+      let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+      let apiUrl = host + '/wp-json/lms/v1/';
+      jQuery.ajax({
+          method: "POST",
+          enctype: 'multipart/form-data',
+          url: apiUrl + "assignment/stats",
+          data: {assignment_id}
+      }).done(function( response ) {
+          jQuery("#student-modal-table tbody").html( response.data.map(student => student_assignment_stat_row_html(student, assignment_id)).join('\n') );
+          jQuery("#student-modal-loader").hide();
+          jQuery("#student-modal-table").show();
+      }).fail(function (response) {
+          console.error("Can not load teacher");
+      });
+    }
+
+    function student_assignment_stat_row_html(student, assignment_id) {
+      return `
+          <tr>
+              <td>
+              <div class="table-user">
+                  <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="user" />
+                  <div class="user-about">
+                  <h5>` + student.name + `</h5>
+                  <p>` +  (student.grades && student.grades.length > 0 ? JSON.parse(student.grades).join(', ') : ``) + `</p>
+                  </div>
+              </div>
+              </td>
+              <td>
+              <div class="table-status">` + student.status + `</div>
+              </td>
+              <td>` + student.progress + `</td>
+              <td>` + student.score + `</td>
+              <td><a href='<?php echo site_url("grade-assignment"); ?>?assignment=` + assignment_id + `&student=` + student.ID + `'><img src="<?php echo $treks_src; ?>/assets/img/review-icon.svg" alt="svg" width="30" /></a></td>
+          </tr>
+      `;
+    }
+  </script>
 </body>
 
 </html>
