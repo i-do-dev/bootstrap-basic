@@ -58,9 +58,6 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
       .student-stats-link {
         padding-left: 10px !important;
       }
-      .student-stats-link {
-        padding-left: 10px !important;
-      }
       .student-progress-link {
         color: #000000 !important;
         text-decoration: none !important;
@@ -144,40 +141,6 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
       </div>
     </section>
  -->
-    <!-- Recent TREKs -->
-    <section class="recent-treks-section">
-      <div class="recent-treks-section-div">
-        <!--  TREKs header-->
-        <div class="recent-treks-header section-div-header">
-          <h2>My TREKs</h2>
-          <div>
-            <a href="<?php echo site_url('treks'); ?>">See All</a>
-          </div>
-        </div>
-        <!-- TREKs cards -->
-        <div class="recent-treks-cards-list">
-          <!-- each cards  -->
-          <?php
-          foreach($treks as $trek) {
-          ?>
-          <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
-            <div class="recent-treks-card-body treks-card">
-                <div>
-                  <?php echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
-                </div>
-                <div>
-                  <h3><?php echo get_the_title($trek->ID); ?></h3>
-                  <span>Due date: May 17, 2023</span>
-                </div>
-              </div>
-          </a>
-          <?php
-          }
-          ?>
-        </div>
-      </div>
-    </section>
-
     <!--Pending Assignments  -->
     <section class="pending-assignments-section">
       <div class="pending-assignments-section-div">
@@ -185,7 +148,7 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
         <div class="pending-assignments-header section-div-header">
           <h2>Pending Assignments</h2>
           <div>
-            <a href="<?php echo site_url('calendar');?>">See All</a>
+            <!-- <a href="<?php echo site_url('calendar');?>">See All</a> -->
           </div>
         </div>
         <!--  table -->

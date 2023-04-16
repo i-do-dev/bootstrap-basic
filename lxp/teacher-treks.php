@@ -89,10 +89,10 @@ while (have_posts()) : the_post();
         </div>
         <!-- Recent Filters & TREKs flex -->
         <div class="filter_treks_flx">
-            <!-- Recent Filters -->
+            <!-- 
             <section class="recent-treks-section filter_treks_section">
                 <div class="recent-treks-section-div recent_filter_treks_div">
-                    <!--  TREKs header-->
+                    
                     <div class="section-div-header filter_section">
                         <div class="filter_bx">
                             <img src="<?php echo $treks_src; ?>/assets/img/filter-logo.svg" />
@@ -110,8 +110,9 @@ while (have_posts()) : the_post();
                     </div>
                 </div>
             </section>
+             -->
             <!-- Recent TREKs -->
-            <section class="recent-treks-section filter_treks_section filter_my_treks_sec">
+            <section class="recent-treks-section filter_treks_section filter_my_treks_sec" style="width: 80%; margin: 0 auto;">
                 <div class="recent-treks-section-div">
                     <!--  TREKs header-->
                     <div class="section-div-header">
@@ -124,7 +125,7 @@ while (have_posts()) : the_post();
                                     data-bs-target="#all-tab-pane" type="button" role="tab" aria-controls="all-tab-pane"
                                     aria-selected="true">All</button>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <button class="nav-link" id="to-tab" data-bs-toggle="tab"
                                     data-bs-target="#todo-tab-pane" type="button" role="tab"
                                     aria-controls="todo-tab-pane" aria-selected="true">To Do</button>
@@ -138,7 +139,7 @@ while (have_posts()) : the_post();
                                 <button class="nav-link" id="completed-tab" data-bs-toggle="tab"
                                     data-bs-target="#completed-tab-pane" type="button" role="tab"
                                     aria-controls="completed-tab-pane" aria-selected="true">Completed</button>
-                            </li>
+                            </li> -->
                         </ul>
                         <div class="treks_inner_flx">
                             <img src="<?php echo $treks_src; ?>/assets/img/filter-right-logo.svg" />

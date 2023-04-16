@@ -148,7 +148,7 @@ $toolUrl = $toolUrl . $queryParam;
 				</div>
 			</div>
 			<p class="interpendence_text"><?php echo $trekTitle ?></p>
-			<p class="practice_text student_text">Digital Student Journal</p>
+			<p class="practice_text student_text">Digital Student Journal &nbsp;<span><a id="dsj_link" href="#"><img class="copy-anchor-icon-img" src="<?php echo $treks_src; ?>/assets/img/link_icon.png" width="18" height="18" /></a></span></p>
 			<iframe style="border: none;width: 100%;height: 706px;" class="" src="<?php echo site_url() ?>?lti-platform&post=<?php echo $post->ID ?>&id=<?php echo $attrId ?><?php echo $queryParam ?>" allowfullscreen></iframe>
 		</section>
 	</section>
@@ -157,6 +157,25 @@ $toolUrl = $toolUrl . $queryParam;
 	<script src="<?php echo $treks_src; ?>/js/Animated-Circular-Progress-Bar-with-jQuery-Canvas-Circle-Progress/dist/circle-progress.js"></script>
 	<script src="<?php echo $treks_src; ?>/js/custom.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			jQuery("#dsj_link").on('click',function(e){
+				e.preventDefault();
+                document.addEventListener('copy', function(e) {
+                    e.clipboardData.setData('text/plain', jQuery('#dsj_link').attr('href'));
+                    e.preventDefault();
+                }, true);
+                document.execCommand('copy');  
+			});
+		});
+
+		window.addEventListener('message', function (event) {
+			if (typeof event.data === 'object' && event.data.hasOwnProperty('currentSlide')) {
+				let dsj_copy_link = location.origin + location.pathname + '?slide='+ event.data.currentSlide;
+				jQuery('#dsj_link').attr('href', dsj_copy_link);
+			}
+		});
+	</script>
 </body>
 
 </html>
