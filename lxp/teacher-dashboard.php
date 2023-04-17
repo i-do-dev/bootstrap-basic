@@ -7,6 +7,8 @@ $courseId =  isset($_GET['courseid']) ? $_GET['courseid'] : get_post_meta($post-
 $args = array(
 	'posts_per_page'   => 3,
 	'post_type'        => 'tl_trek',
+  'meta_key'        => 'sort',
+  'orderby'        => 'meta_value_num',
   'order' => 'asc',
 );
 
