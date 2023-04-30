@@ -243,7 +243,9 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
         cursor: pointer;
       }
 
-
+      #trek-save-button {
+        border: 0px;
+      }
     </style>
   </head>
   <body>
@@ -358,8 +360,27 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
           <!-- TREKs detail -->
           <div class="my-trk-detail-prep">
             <!-- Title -->
-            <div class="detail-prep-title">
-              <h2><?php the_title(); ?></h2>
+            <div class="row">
+              <div class="col col-10">
+                <div class="detail-prep-title">
+                  <h2><?php the_title(); ?></h2>
+                </div>
+              </div>
+              <div class="col col-2 text-end">
+                <?php
+                  $trek_saved = get_post_meta($teacher_post->ID, 'treks_saved');
+                  $is_saved = in_array($post->ID, $trek_saved);
+                ?>
+                <button id="trek-save-button" onclick="set_trek_saved(<?php echo !$is_saved; ?>)">
+                  <?php
+                    if ($is_saved) {
+                  ?>
+                    <img width="35" height="35" src="<?php echo $treks_src; ?>/assets/img/trek-save-filled-icon.svg" alt="svg" />
+                  <?php } else { ?>
+                    <img width="35" height="35" src="<?php echo $treks_src; ?>/assets/img/trek-save-icon.svg" alt="svg" />
+                  <?php } ?>
+                </button>
+              </div>
             </div>
             <!-- Description -->
             <div class="detail-prep-desc">
@@ -918,6 +939,23 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
                   <td><a href='<?php echo site_url("calendar"); ?>' target="_blank"><img src="<?php echo $treks_src; ?>/assets/img/review-icon.svg" alt="svg" width="30" /></a></td>
               </tr>
           `;
+      }
+
+      // teacher trek set 'is_saved' to true or false
+      function set_trek_saved(is_saved) {
+        let trek_id = <?php echo $post->ID; ?>;
+        let teacher_post_id = <?php echo $teacher_post->ID; ?>;
+        let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+        let apiUrl = host + '/wp-json/lms/v1/';
+        $.ajax({
+          method: "POST",
+          url: apiUrl + "teacher/treks/saved",
+          data: { trek_id, is_saved, teacher_post_id }
+        }).done(function( response ) {
+          if (response.success) {
+            window.location.reload();
+          }
+        });
       }
     </script>
   </body>

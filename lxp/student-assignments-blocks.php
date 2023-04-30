@@ -32,6 +32,7 @@ foreach ($assignments as $assignment) {
     $lessons = get_posts($args);
     $digital_journal_link = null;
     foreach($lessons as $lesson){ if (trim($trek_section->title) === trim($lesson->post_title)) { $digital_journal_link = get_permalink($lesson->ID); }; }
+    $digital_journal_link = $digital_journal_link . '?assignment_id=' . $assignment->ID;
 ?>
 
 <a href="<?php echo $digital_journal_link; ?>" class="student-assignment-block" target="_blank">

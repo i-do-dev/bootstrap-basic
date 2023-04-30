@@ -345,4 +345,55 @@ function lxp_assignment_stats($assignment_id) {
     return $students;
 }
 
+function lxp_get_teacher_saved_treks($teacher_post_id, $treks_saved_ids)
+{
+    // get teacher post type 'treks_saved' metadata
+    $treks_saved_ids = get_post_meta($teacher_post_id, 'treks_saved');
+    $query = new WP_Query( array( 'post_type' => TL_TREK_CPT , 'posts_per_page'   => -1, 'post_status' => array( 'publish' ), 'post__in' => array_values(array_unique($treks_saved_ids)), 'meta_key' => 'sort', 'orderby' => 'meta_value_num', 'order' => 'ASC' ) );
+    return $query->get_posts();
+}
+
+// function to get assignment submission post type by assignment id using WPQuery object which returns array of posts.
+function lxp_get_assignment_submissions($assignment_id, $student_post_id)
+{
+    $query = new WP_Query( array( 'post_type' => TL_ASSIGNMENT_SUBMISSION_CPT , 'posts_per_page'   => -1, 'post_status' => array( 'publish' ), 
+                                'meta_query' => array(
+                                    array('key' => 'lxp_assignment_id', 'value' => $assignment_id, 'compare' => '='),
+                                    array('key' => 'lxp_student_id', 'value' => $student_post_id, 'compare' => '=')
+                                )
+                            )
+                        );
+    $assignment_submission_posts = $query->get_posts();
+
+    if ($assignment_submission_posts) {
+        $assignment_submission_post = $assignment_submission_posts[0];
+        $assignment_submission_post_data = array(
+            'ID' => $assignment_submission_post->ID,
+            'lxp_assignment_id' => get_post_meta($assignment_submission_post->ID, 'lxp_assignment_id', true),
+            'lxp_student_id' => get_post_meta($assignment_submission_post->ID, 'lxp_student_id', true),
+            'lti_user_id' => get_post_meta($assignment_submission_post->ID, 'lti_user_id', true),
+            'submission_id' => get_post_meta($assignment_submission_post->ID, 'submission_id', true),
+            'score_min' => get_post_meta($assignment_submission_post->ID, 'score_min', true),
+            'score_max' => get_post_meta($assignment_submission_post->ID, 'score_max', true),
+            'score_raw' => get_post_meta($assignment_submission_post->ID, 'score_raw', true),
+            'score_scaled' => get_post_meta($assignment_submission_post->ID, 'score_scaled', true),
+            'completion' => boolval(get_post_meta($assignment_submission_post->ID, 'completion', true)),
+            'duration' => get_post_meta($assignment_submission_post->ID, 'duration', true)
+        );
+        return $assignment_submission_post_data;
+    } else {
+        return null;
+    }
+}
+
+function lxp_user_assignment_attempted($assignment_id, $user_id) {
+    $query = new WP_Query( array( 'post_type' => TL_ASSIGNMENT_CPT , 'posts_per_page'   => -1, 'post_status' => array( 'publish' ), 'p' => $assignment_id,
+                                'meta_query' => array(
+                                    array('key' => 'attempted_students', 'value' => $user_id, 'compare' => 'IN')
+                                )
+                            )
+                        );
+    $assignment_posts = $query->get_posts();
+    return count($assignment_posts) > 0 ? true : false;
+}
 ?>

@@ -1,6 +1,7 @@
 <?php
 // get_template_part('lxp/functions');
 global $treks_src;
+$teacher_post = lxp_get_teacher_post( get_userdata(get_current_user_id())->ID );
 
 // Start the loop.
 $courseId =  isset($_GET['courseid']) ? $_GET['courseid'] : get_post_meta($post->ID, 'tl_course_id', true);
@@ -9,8 +10,13 @@ $args = array(
 	'post_type'        => 'tl_trek',
   'meta_key'        => 'sort',
   'orderby'        => 'meta_value_num',
-  'order' => 'asc',
+  'order' => 'asc'
 );
+
+$treks_saved = get_post_meta($teacher_post->ID, 'treks_saved');
+if ($treks_saved) {
+  $args['post__not_in'] = $treks_saved;
+}
 
 if ( get_userdata(get_current_user_id())->user_email === "guest@rpatreks.com" ) {
   $args = array(
@@ -23,11 +29,11 @@ if ( get_userdata(get_current_user_id())->user_email === "guest@rpatreks.com" ) 
 $treks = get_posts($args);
 while (have_posts()) : the_post();
 
-$teacher_post = lxp_get_teacher_post( get_userdata(get_current_user_id())->ID );
 if (is_null($teacher_post)) {
   die("Teacher is not associated with any school. contact admin. <a href='". wp_logout_url("login") ."'>Logout</a>");
 }
 $assignments = lxp_get_teacher_assignments($teacher_post->ID);
+$teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_saved);
 ?>
 
 <!DOCTYPE html>
@@ -50,6 +56,7 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
     <style type="text/css">
       .treks-card {
         width: 300px !important;
+        position: relative;
       }
       .treks-card-link {
         text-decoration: none !important;
@@ -67,7 +74,28 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
         color: #000000 !important;
         text-decoration: none !important;
       }
-      
+      /* .treks-card-saved with icon element in it in top right absolute position */
+      .treks-card-saved {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 35px;
+        height: 38px;
+        z-index: 2;
+        margin-top: 10px;
+        margin-right: 8px;
+      }
+      .treks-card-saved-back {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 20px;
+        height: 20px;
+        z-index: 1;
+        margin-top: 15px;
+        margin-right: 15px;
+        background-color: #ffffff;
+      }
     </style>
 </head>
 
@@ -159,23 +187,41 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
         <!-- TREKs cards -->
         <div class="recent-treks-cards-list">
           <!-- each cards  -->
+          
+          <?php
+          // foreach($teacher_saved_treks as $trek) {
+          ?>
+            <!-- <a href="<?php // echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
+              <div class="recent-treks-card-body treks-card">
+                  <div class="treks-card-saved"><img width="35" height="35" src="<?php // echo $treks_src; ?>/assets/img/trek-save-filled-icon.svg" alt="svg" /></div>
+                  <div class="treks-card-saved-back"></div>
+                  <div>
+                    <?php // echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
+                  </div>
+                  <div>
+                    <h3><?php // echo get_the_title($trek->ID); ?></h3>
+                    <span>Due date: May 17, 2023</span>
+                  </div>
+                </div>
+            </a> -->
+          <?php // } ?>
+          
           <?php
           foreach($treks as $trek) {
           ?>
-          <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
-            <div class="recent-treks-card-body treks-card">
-                <div>
-                  <?php echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
+            <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
+              <div class="recent-treks-card-body treks-card">
+                  <div>
+                    <?php echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
+                  </div>
+                  <div>
+                    <h3><?php echo get_the_title($trek->ID); ?></h3>
+                    <span>Due date: May 17, 2023</span>
+                  </div>
                 </div>
-                <div>
-                  <h3><?php echo get_the_title($trek->ID); ?></h3>
-                  <span>Due date: May 17, 2023</span>
-                </div>
-              </div>
-          </a>
-          <?php
-          }
-          ?>
+            </a>
+          <?php } ?>
+
         </div>
       </div>
     </section>

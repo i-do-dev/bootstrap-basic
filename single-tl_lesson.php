@@ -45,6 +45,11 @@ $queryParam = '';
 if (isset($_GET['slide'])) {
 	$queryParam = "&slideNumber=" . $_GET['slide'];
 }
+
+if (isset($_GET["assignment_id"])) {
+	$queryParam = $queryParam . "&assignment_id=" . $_GET["assignment_id"];	
+}
+
 $toolUrl = $toolUrl . $queryParam;
 ?>
 
