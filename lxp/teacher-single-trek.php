@@ -943,14 +943,16 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
 
       // teacher trek set 'is_saved' to true or false
       function set_trek_saved(is_saved) {
+        const is_saved_val = is_saved ? 1 : 0;
         let trek_id = <?php echo $post->ID; ?>;
         let teacher_post_id = <?php echo $teacher_post->ID; ?>;
         let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
         let apiUrl = host + '/wp-json/lms/v1/';
+        
         $.ajax({
           method: "POST",
           url: apiUrl + "teacher/treks/saved",
-          data: { trek_id, is_saved, teacher_post_id }
+          data: { trek_id, is_saved: is_saved_val, teacher_post_id }
         }).done(function( response ) {
           if (response.success) {
             window.location.reload();
@@ -960,4 +962,16 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
     </script>
   </body>
 </html>
-<?php endwhile; ?>
+<?php 
+endwhile; 
+$lxp_visited_treks = get_post_meta($teacher_post->ID, 'lxp_visited_treks', $post->ID);
+if (!$lxp_visited_treks) {
+  add_post_meta($teacher_post->ID, 'lxp_visited_treks', $post->ID);
+} else {
+  // delete 'lxp_visited_treks' meta key and add it again with new value
+  delete_post_meta($teacher_post->ID, 'lxp_visited_treks', $post->ID);
+  add_post_meta($teacher_post->ID, 'lxp_visited_treks', $post->ID); 
+}
+
+var_dump(get_post_meta($teacher_post->ID, 'lxp_visited_treks'));
+?>

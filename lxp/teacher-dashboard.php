@@ -5,17 +5,32 @@ $teacher_post = lxp_get_teacher_post( get_userdata(get_current_user_id())->ID );
 
 // Start the loop.
 $courseId =  isset($_GET['courseid']) ? $_GET['courseid'] : get_post_meta($post->ID, 'tl_course_id', true);
+$trek_count = 6;
 $args = array(
 	'posts_per_page'   => 3,
-	'post_type'        => 'tl_trek',
-  'meta_key'        => 'sort',
-  'orderby'        => 'meta_value_num',
-  'order' => 'asc'
+	'post_type'        => 'tl_trek'
 );
 
 $treks_saved = get_post_meta($teacher_post->ID, 'treks_saved');
 if ($treks_saved) {
   $args['post__not_in'] = $treks_saved;
+  if (is_array($treks_saved) && count($treks_saved) < $trek_count) {
+    $trek_count = $trek_count - count($treks_saved);
+    $args['posts_per_page']   = $trek_count;
+  } else {
+    $trek_count = 1;
+  }
+}
+
+$lxp_visited_treks = get_post_meta($teacher_post->ID, 'lxp_visited_treks');
+$lxp_visited_treks_to_show = is_array($lxp_visited_treks) && count($lxp_visited_treks) > 0 ? array_diff(array_reverse($lxp_visited_treks), $treks_saved) : array();
+if (count($lxp_visited_treks_to_show) > 0) {
+  $args['post__in'] = $lxp_visited_treks_to_show;
+  $args['orderby'] = 'post__in';
+} else {
+  $args['meta_key'] = 'sort';
+  $args['orderby'] = 'meta_value_num';
+  $args['order'] = 'ASC';
 }
 
 if ( get_userdata(get_current_user_id())->user_email === "guest@rpatreks.com" ) {
@@ -189,22 +204,22 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
           <!-- each cards  -->
           
           <?php
-          // foreach($teacher_saved_treks as $trek) {
+          foreach($teacher_saved_treks as $trek) {
           ?>
-            <!-- <a href="<?php // echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
+            <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
               <div class="recent-treks-card-body treks-card">
-                  <div class="treks-card-saved"><img width="35" height="35" src="<?php // echo $treks_src; ?>/assets/img/trek-save-filled-icon.svg" alt="svg" /></div>
+                  <div class="treks-card-saved"><img width="35" height="35" src="<?php echo $treks_src; ?>/assets/img/trek-save-filled-icon.svg" alt="svg" /></div>
                   <div class="treks-card-saved-back"></div>
                   <div>
-                    <?php // echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
+                    <?php echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
                   </div>
                   <div>
-                    <h3><?php // echo get_the_title($trek->ID); ?></h3>
+                    <h3><?php echo get_the_title($trek->ID); ?></h3>
                     <span>Due date: May 17, 2023</span>
                   </div>
                 </div>
-            </a> -->
-          <?php // } ?>
+            </a>
+          <?php } ?>
           
           <?php
           foreach($treks as $trek) {

@@ -347,10 +347,14 @@ function lxp_assignment_stats($assignment_id) {
 
 function lxp_get_teacher_saved_treks($teacher_post_id, $treks_saved_ids)
 {
-    // get teacher post type 'treks_saved' metadata
-    $treks_saved_ids = get_post_meta($teacher_post_id, 'treks_saved');
-    $query = new WP_Query( array( 'post_type' => TL_TREK_CPT , 'posts_per_page'   => -1, 'post_status' => array( 'publish' ), 'post__in' => array_values(array_unique($treks_saved_ids)), 'meta_key' => 'sort', 'orderby' => 'meta_value_num', 'order' => 'ASC' ) );
-    return $query->get_posts();
+    if (count($treks_saved_ids) > 0 && is_array($treks_saved_ids)) {
+        // get teacher post type 'treks_saved' metadata
+        $treks_saved_ids = get_post_meta($teacher_post_id, 'treks_saved');
+        $query = new WP_Query( array( 'post_type' => TL_TREK_CPT , 'posts_per_page'   => -1, 'post_status' => array( 'publish' ), 'post__in' => array_values(array_unique($treks_saved_ids)), 'meta_key' => 'sort', 'orderby' => 'meta_value_num', 'order' => 'ASC' ) );
+        return $query->get_posts();
+    } else {
+        return array();
+    }
 }
 
 // function to get assignment submission post type by assignment id using WPQuery object which returns array of posts.
