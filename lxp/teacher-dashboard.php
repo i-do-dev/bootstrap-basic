@@ -110,6 +110,15 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
         margin-top: 15px;
         margin-right: 15px;
         background-color: #ffffff;
+      }     
+      .bg-gray {
+          background: #757575 !important;
+      }
+      .bg-orange {
+          background: #de6c03 !important;
+      }
+      .bg-green {
+          background: #6dc200 !important;
       }
     </style>
 </head>
@@ -138,7 +147,9 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
             <!-- searching input -->
             <div class="header-search">
               <img src="<?php echo $treks_src; ?>/assets/img/header_search.svg" alt="svg" />
-              <input placeholder="Search" />
+              <form action="<?php echo site_url("search"); ?>">
+                  <input placeholder="Search" id="q" name="q" value="<?php echo isset($_GET["q"]) ? $_GET["q"]:''; ?>" />
+              </form>
             </div>
           </div>
         </div>
@@ -215,7 +226,7 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
                   </div>
                   <div>
                     <h3><?php echo get_the_title($trek->ID); ?></h3>
-                    <span>Due date: May 17, 2023</span>
+                    <!-- <span>Due date: May 17, 2023</span> -->
                   </div>
                 </div>
             </a>
@@ -259,8 +270,9 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
                 <th>Class</th>
                 <th>TREK</th>
                 <th>Segment</th>
-                <th>Due Date</th>
+                <th>Date</th>
                 <th>Student Progress</th>
+                <th>Students Completed</th>
               </tr>
             </thead>
             <tbody>
@@ -272,6 +284,16 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
                   $trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id={$trek_section_id}");
                   $trek = get_post(get_post_meta($assignment->ID, 'trek_id', true));
                   $segment = implode("-", explode(" ", strtolower($trek_section->title))) ;
+                  
+                  $student_stats = lxp_assignment_stats($assignment->ID);
+                  $statuses = array("To Do", "In Progress");
+                  $students_in_progress = array_filter($student_stats, function($studentStat) use ($statuses) {
+                    return in_array($studentStat["status"], $statuses);
+                  });
+                  $statuses = array("Completed");
+                  $students_completed = array_filter($student_stats, function($studentStat) use ($statuses) {
+                    return in_array($studentStat["status"], $statuses);
+                  });
               ?>
                 <tr>
                   <td><?php echo $class_post->post_title; ?></td>
@@ -294,10 +316,13 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
                     ?>
                   </td>
                   <td>
+                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['To Do', 'In Progress'])"><?php echo count($students_in_progress); ?>/<?php echo count($student_stats); ?></a></div>
+                  </td>
+                  <td>
                     <?php
                       $student_stats = lxp_assignment_stats($assignment->ID);
                     ?>
-                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>')">0/<?php echo count($student_stats); ?></a></div>
+                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Completed'])"><?php echo count($students_completed); ?>/<?php echo count($student_stats); ?></a></div>
                   </td>
                 </tr>  
               <?php } ?>
@@ -396,7 +421,7 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
     crossorigin="anonymous"></script>
   
   <script type="text/javascript">
-    function fetch_assignment_stats(assignment_id, trek, segment) {
+    function fetch_assignment_stats(assignment_id, trek, segment, statuses) {
 
       jQuery('#student-progress-trek-title').text(trek);
       jQuery('#student-progress-trek-segment').text(segment);
@@ -436,7 +461,8 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
           url: apiUrl + "assignment/stats",
           data: {assignment_id}
       }).done(function( response ) {
-          jQuery("#student-modal-table tbody").html( response.data.map(student => student_assignment_stat_row_html(student, assignment_id)).join('\n') );
+          const in_progress_students = response.data.filter(student => statuses.includes(student.status));
+          jQuery("#student-modal-table tbody").html( in_progress_students.map(student => student_assignment_stat_row_html(student, assignment_id)).join('\n') );
           jQuery("#student-modal-loader").hide();
           jQuery("#student-modal-table").show();
       }).fail(function (response) {
@@ -445,6 +471,18 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
     }
 
     function student_assignment_stat_row_html(student, assignment_id) {
+      let statusClass = '';
+      switch (student.status) {
+        case 'To Do':
+          statusClass = 'bg-gray';
+          break;
+        case 'In Progress':
+          statusClass = 'bg-orange';
+          break;
+        case 'Completed':
+          statusClass = 'bg-green';
+          break;
+      }
       return `
           <tr>
               <td>
@@ -452,12 +490,11 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
                   <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="user" />
                   <div class="user-about">
                   <h5><a class='student-progress-link' href='<?php echo site_url("grade-assignment"); ?>?assignment=` + assignment_id + `&student=` + student.ID + `'>` + student.name + `</a></h5>
-                  <p>` +  (student.grades && student.grades.length > 0 ? JSON.parse(student.grades).join(', ') : ``) + `</p>
                   </div>
               </div>
               </td>
               <td>
-              <div class="table-status">` + student.status + `</div>
+              <div class="table-status ` + statusClass + `">` + student.status + `</div>
               </td>
               <td><a class='student-progress-link' href='<?php echo site_url("grade-assignment"); ?>?assignment=` + assignment_id + `&student=` + student.ID + `'>` + student.progress + `</a></td>
               <td>` + student.score + `</td>

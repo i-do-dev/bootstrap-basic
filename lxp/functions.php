@@ -335,22 +335,45 @@ function lxp_assignment_stats($assignment_id) {
     $students_ids = get_post_meta($assignment_id, 'lxp_student_ids');
     $q = new WP_Query( array( "post_type" => TL_STUDENT_CPT, 'posts_per_page'   => -1, "post__in" => $students_ids ) );
     $students_posts = $q->get_posts();
-    $students = array_map(function ($student) { 
+    $students = array_map(function ($student) use ($assignment_id) {
+        $attempted = lxp_user_assignment_attempted($assignment_id, $student->ID);
+        $submission = lxp_get_assignment_submissions($assignment_id, $student->ID);
+        if ($attempted && is_null($submission)) {
+            $status = 'In Progress';
+        }else if ($attempted && !is_null($submission)) {
+            $status = 'Completed';
+        } else {
+            $status = 'To Do';
+        }
         $lxp_student_admin_id = get_post_meta($student->ID, 'lxp_student_admin_id', true);
         $userdata = get_userdata($lxp_student_admin_id);
-        $grades = get_post_meta($student->ID, 'grades', true);
-        $data = array("ID" => $student->ID, "name" => $userdata->data->display_name, "status" => "In progress", "progress" => "0/10", "score" => "0", "grades" => $grades);
+        $progress = $submission ? $submission['score_raw'] .'/'. $submission['score_max'] : '---';
+        $score = $submission ? round(($submission['score_scaled'] * 100), 2) . '%' : '---';
+        $data = array("ID" => $student->ID, "name" => $userdata->data->display_name, "status" => $status, "progress" => $progress, "score" => $score);
         return $data;
     } , $students_posts);
     return $students;
 }
 
-function lxp_get_teacher_saved_treks($teacher_post_id, $treks_saved_ids)
+function lxp_get_teacher_saved_treks($teacher_post_id, $treks_saved_ids, $strand = '', $sort='', $search='')
 {
     if (count($treks_saved_ids) > 0 && is_array($treks_saved_ids)) {
         // get teacher post type 'treks_saved' metadata
         $treks_saved_ids = get_post_meta($teacher_post_id, 'treks_saved');
-        $query = new WP_Query( array( 'post_type' => TL_TREK_CPT , 'posts_per_page'   => -1, 'post_status' => array( 'publish' ), 'post__in' => array_values(array_unique($treks_saved_ids)), 'meta_key' => 'sort', 'orderby' => 'meta_value_num', 'order' => 'ASC' ) );
+        $args = array( 'post_type' => TL_TREK_CPT , 'posts_per_page'   => -1, 'post_status' => array( 'publish' ), 'post__in' => array_values(array_unique($treks_saved_ids)), 'meta_key' => 'sort', 'orderby' => 'meta_value_num', 'order' => 'ASC' );
+        if(!($strand === '' || $strand === 'none')) {
+            $args['meta_query'] = array('key' => 'strands', 'value' => $strand, 'compare' => '=');
+        }
+
+        if(!($sort === '' || $sort === 'none')) {
+            $args['order'] = $sort;
+        }
+
+        if(!($search === '' || $search === 'none')) {
+            $args['s'] = $search;
+        }
+        
+        $query = new WP_Query( $args );
         return $query->get_posts();
     } else {
         return array();
@@ -399,5 +422,22 @@ function lxp_user_assignment_attempted($assignment_id, $user_id) {
                         );
     $assignment_posts = $query->get_posts();
     return count($assignment_posts) > 0 ? true : false;
+}
+
+function assignments_submissions($assignments, $student_post)
+{
+    $assignments_submission = array_map(function($assignment) use ($student_post) {
+        $attempted = lxp_user_assignment_attempted($assignment->ID, $student_post->ID);
+        $submission = lxp_get_assignment_submissions($assignment->ID, $student_post->ID);
+        if ($attempted && is_null($submission)) {
+            $status = 'In Progress';
+        }else if ($attempted && !is_null($submission)) {
+            $status = 'Completed';
+        } else {
+            $status = 'To Do';
+        }
+        return array( $assignment->ID => array('status' => $status, 'submission' => $submission) );
+    }, $assignments);   
+    return $assignments_submission;
 }
 ?>

@@ -67,7 +67,9 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
             <!-- searching input -->
             <div class="header-search">
               <img src="<?php echo $treks_src; ?>/assets/img/header_search.svg" alt="svg" />
-              <input placeholder="Search" />
+              <form action="<?php echo site_url("search"); ?>">
+                  <input placeholder="Search" id="q" name="q" value="<?php echo isset($_GET["q"]) ? $_GET["q"]:''; ?>" />
+              </form>
             </div>
           </div>
         </div>

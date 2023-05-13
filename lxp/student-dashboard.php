@@ -4,6 +4,26 @@ $userdata = get_userdata(get_current_user_id());
 $student_post = lxp_get_student_post(get_current_user_id());
 $assignments = lxp_get_student_assignments($student_post->ID);
 $treks = lxp_get_assignments_treks($assignments);
+$assignments_submissions = assignments_submissions($assignments, $student_post);
+
+$statuses_count = array_reduce($assignments, function($carry, $assignment) use ($assignments_submissions) {
+  $status_items = array_filter($assignments_submissions, function($submission) use ($assignment) {
+    return isset($submission[$assignment->ID]);
+  });
+  $status = count($status_items) > 0 ? array_values($status_items)[0][$assignment->ID]['status'] : 'None';
+  switch ($status) {
+    case 'In Progress':
+      $carry['inprogress']++;
+      break;
+    case 'Completed':
+      $carry['completed']++;
+      break;
+    case 'To Do':
+      $carry['todo']++;
+      break;  
+  }
+  return $carry;
+}, array('todo' => 0, 'inprogress' => 0, 'completed' => 0));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -167,7 +187,7 @@ $treks = lxp_get_assignments_treks($assignments);
                   </div>
                   <div>
                     <h3><?php echo get_the_title($trek->ID); ?></h3>
-                    <span>Due date: May 17, 2023</span>
+                    <!-- <span>Due date: May 17, 2023</span> -->
                   </div>
                 </div>
               </a>
@@ -186,16 +206,16 @@ $treks = lxp_get_assignments_treks($assignments);
         <div class="assignments_label_card">
           <div class="assig_card">
             <label class="bg-gray">To Do</label>
-            <h1 class="border-gray">0</h1>
+            <h1 class="border-gray"><?php echo $statuses_count['todo']; ?></h1>
           </div>
 
           <div class="assig_card">
             <label class="bg-orange">In Progress</label>
-            <h1 class="border-orange"><?php echo count($assignments); ?></h1>
+            <h1 class="border-orange"><?php echo $statuses_count['inprogress']; ?></h1>
           </div>
           <div class="assig_card">
             <label class="bg-green">Completed</label>
-            <h1 class="border-green">0</h1>
+            <h1 class="border-green"><?php echo $statuses_count['completed']; ?></h1>
           </div>
         </div>
       </section>
@@ -251,6 +271,11 @@ $treks = lxp_get_assignments_treks($assignments);
                       } else {
                           $segmentColor = "#979797";
                       }
+
+                      $status_items = array_filter($assignments_submissions, function($submission) use ($assignment) {
+                        return isset($submission[$assignment->ID]);
+                      });
+                      $status = count($status_items) > 0 ? array_values($status_items)[0][$assignment->ID]['status'] : 'None';
                   ?>
                   <tr>
                     <td>
@@ -282,7 +307,7 @@ $treks = lxp_get_assignments_treks($assignments);
                       <?php if (intval($assignment_grade) > 0) {?>
                         <span class="grade-label grade-report">Grade</span>
                       <?php } else { ?>
-                        <span class="grade-label pending-report"> Pending </span>
+                        <span class="grade-label pending-report"> <?php echo $status; ?> </span>
                       <?php } ?>
                     </td>
                     <td>

@@ -85,6 +85,16 @@ $student_assignment_grade = intval($student_assignment_grade) > 0 ? $student_ass
         margin-left: 50px;
         margin-right: 50px;
       }
+
+      .bg-gray {
+          background: #757575 !important;
+      }
+      .bg-orange {
+          background: #de6c03 !important;
+      }
+      .bg-green {
+          background: #6dc200 !important;
+      }
     </style>
   </head>
 
@@ -116,7 +126,9 @@ $student_assignment_grade = intval($student_assignment_grade) > 0 ? $student_ass
               <!-- searching input -->
               <div class="header-search">
                 <img src="<?php echo $treks_src; ?>/assets/img/header_search.svg" alt="svg" />
-                <input placeholder="Search" />
+                <form action="<?php echo site_url("search"); ?>">
+                    <input placeholder="Search" id="q" name="q" value="<?php echo isset($_GET["q"]) ? $_GET["q"]:''; ?>" />
+                </form>
               </div>
             </div>
           </div>
@@ -193,7 +205,23 @@ $student_assignment_grade = intval($student_assignment_grade) > 0 ? $student_ass
         <nav class="assignment_tabs">
           <h2>Students</h2>
           <ul class="treks_ul" id="myTab" role="tablist">
-            <?php foreach ($students as  $student) { ?>
+            <?php 
+              foreach ($students as  $student) { 
+                $assignment_submissions = assignments_submissions([$assignment], $student);
+                $status = count($assignment_submissions) > 0 ? $assignment_submissions[0][$assignment->ID]["status"] : 'not submitted';
+                $statusClass= '';
+                switch ($status) {
+                  case 'To Do':
+                    $statusClass = 'bg-gray';
+                    break;
+                  case 'In Progress':
+                    $statusClass = 'bg-orange';
+                    break;
+                  case 'Completed':
+                    $statusClass = 'bg-green';
+                    break;
+                }
+            ?>
               <li onclick="switch_student(<?php echo $student->ID; ?>)">
                 <div
                   class="nav-link tab_btn <?php echo $student->ID == $student_id ? 'active' : ''; ?>"
@@ -216,7 +244,7 @@ $student_assignment_grade = intval($student_assignment_grade) > 0 ? $student_ass
                       </div>
                     </div>
                     <div class="stu_tag">
-                      <span class="student_label label_red"><?php echo $student->status; ?></span>
+                      <span class="student_label label_red <?php echo $statusClass; ?>"><?php echo $status; ?></span>
                       <img src="<?php echo $treks_src; ?>/assets/img/select-arrow-up.svg" alt="" />
                     </div>
                   </div>

@@ -75,7 +75,9 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
                         <!-- searching input -->
                         <div class="header-search">
                             <img src="<?php echo $treks_src; ?>/assets/img/header_search.svg" alt="svg" />
-                            <input placeholder="Search" />
+                            <form action="<?php echo site_url("search"); ?>">
+                                <input placeholder="Search" id="q" name="q" value="<?php echo isset($_GET["q"]) ? $_GET["q"]:''; ?>" />
+                            </form>
                         </div>
                     </div>
                 </div>
