@@ -440,4 +440,45 @@ function assignments_submissions($assignments, $student_post)
     }, $assignments);   
     return $assignments_submission;
 }
+
+function get_assignment_lesson_slides($assignment_post_id) {
+
+    $trek_id = get_post_meta($assignment_post_id, 'trek_id', true);
+    $course_id = get_post_meta($trek_id, 'tl_course_id', true);
+    $trek_section_id = get_post_meta($assignment_post_id, 'trek_section_id', true);
+    global $wpdb;
+    $trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id={$trek_section_id}");	
+    $lesson_query = new WP_Query( array( 
+        'post_type' => "tl_lesson", 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'tl_course_id', 'value' => $course_id, 'compare' => '=')
+        )
+    ) );
+    $activity_id = 0;
+    foreach ($lesson_query->get_posts() as $lesson) {
+        if ($lesson->post_title == $trek_section->title) {
+            $tool_url_parts = parse_url(get_post_meta($lesson->ID, 'lti_tool_url', true));
+            if (isset($tool_url_parts['query'])) {
+                $q = [];
+                parse_str($tool_url_parts['query'], $q);
+                $activity_id = isset($q['activity']) ? $q['activity'] : 0;
+            }
+        }        
+    }
+
+    $curriki_studio_host = 'http://localhost:8383';
+    $args = array('headers' => array(
+        'Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzNDMiLCJqdGkiOiI5MDcwOTk0YmIxMDA3NGJiMjAyNjJiYjFkMzZlZmIzMjk4MGZmNTBlZjg2MjQyYWVjMGU1MmU5OTYzYTM5ZDgwODU4MDlhNTEyNTcyZDZkNyIsImlhdCI6MTY4NDA3MzQ3Ny4xNzAyODUsIm5iZiI6MTY4NDA3MzQ3Ny4xNzAyOSwiZXhwIjoxNzE1Njk1ODc3LjE2MDYxNiwic3ViIjoiMiIsInNjb3BlcyI6W119.Lvu-Ar22TFuDbCg0X1yg2dXtdUBo-3F4gXvZx_U2I4z1yEYyIbi81BVMV_KhMJhlZ77_W7oSJYFfTP6LXpMUdESoNL8rqb0POqSv4mOh2whAARfOvev34KGHijbpxXP2qgup8BIoh5yZWwKhYEP1yqrk1MdGdYlo6jEwXXn0PnpeXLdC5f-OCqCFfwJGMjhoTQENrvW50-WoQEpA5ziSAw98D1Jy6Q-KqN-PqIcTZYZ6QGOIfxyoJrSDhky8TbF_aT_QA124Q8b382VvcltOTX0m9TYBge-vQdHn3anE-J0czLTa7is6EHHOmX6DM2eobj96FtffiIsRi_DZ11EIMzbXMA1t2PgUMjybqWSPh441CSwiawSe321r4vB8bVbJXYjiBHEgHquYCmREeMpId5sgGn4ddKC8LinqVazmsIPgE6_ifW09Udp_XEPdB4bevUXtCI1KZV349a7DeI6UPj1IDA0rkxtMPzRvT-G9bghDsWjoTZU0SNDIsIdJGRvCn6KjIKu3PgA_s8T5s5tsU0VWDUO1UrKFl0_A9EsW8z2icC39qobFp-J_kFagJKihefmsMZQd3adVNjukG5XjJjL8qnGg6uYzAV7_RBdDjLjXe2Z30O1Ly576T-WqIWoof5cFAkLcRF96l7Wywg46fwkDWksw8jgiE6_-JF3uRkI'
+    ));
+    $response = wp_remote_get($curriki_studio_host . '/api/api/v1/activities/' . $activity_id . '/h5p/cp', $args);
+    $code = wp_remote_retrieve_response_code($response);
+    $data =  array();
+    if ($code === 200) {
+        $data = json_decode(wp_remote_retrieve_body($response));
+    }
+    return $data;
+}
+
 ?>

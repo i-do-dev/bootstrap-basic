@@ -95,6 +95,9 @@ $student_assignment_grade = intval($student_assignment_grade) > 0 ? $student_ass
       .bg-green {
           background: #6dc200 !important;
       }
+      .no-right-border {
+          border-right: 0px !important;
+      }
     </style>
   </head>
 
@@ -464,6 +467,8 @@ $student_assignment_grade = intval($student_assignment_grade) > 0 ? $student_ass
             if (isset($_GET['slide'])) {
               $queryParam = "&slideNumber=" . $_GET['slide'];
             }
+            $student_user_id = get_post_meta($_GET['student'], 'lxp_student_admin_id', true);
+            $queryParam .= "&student=" . $student_user_id;
             ?>
               <div class="tab-content" id="myTabContent">
               <div class="container">
@@ -512,7 +517,7 @@ $student_assignment_grade = intval($student_assignment_grade) > 0 ? $student_ass
               </div>
               </div>
           <?php } else {
-            get_template_part("lxp/teacher-grade");            
+            get_template_part("lxp/teacher-grade", "teacher-grade", array('assignment' => intval($_GET['assignment'])));            
           }
         ?>
         <!-- End Table -->

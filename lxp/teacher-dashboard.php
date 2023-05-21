@@ -2,7 +2,9 @@
 // get_template_part('lxp/functions');
 global $treks_src;
 $teacher_post = lxp_get_teacher_post( get_userdata(get_current_user_id())->ID );
-
+if (is_null($teacher_post)) {
+  die("This account is inactive. Please contact site administrator. ". '<a href="' . wp_logout_url("login") . '">Logout</a>');
+}
 // Start the loop.
 $courseId =  isset($_GET['courseid']) ? $_GET['courseid'] : get_post_meta($post->ID, 'tl_course_id', true);
 $trek_count = 6;

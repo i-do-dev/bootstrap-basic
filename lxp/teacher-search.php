@@ -202,21 +202,21 @@ while (have_posts()) : the_post();
                                 <p><?php echo $trek->post_content; ?></p>
                                 <p><i class="underline">Strand</i>: <?php echo $trek->strands; ?></p>
                             </div>
+                            <br />
                         <?php } else if (property_exists($trek, 'segment') && !is_null($trek->segment['content'])) { ?>
                             <div class="recent-treks-section-div">
                                 <h4><a href="<?php echo get_permalink($trek->ID); ?>" target="_blank"><?php echo $trek->post_title; ?></a></h4>
                                 <p><?php echo $trek->post_content; ?></p>
                                 <p><i class="underline">Segment > <?php echo $trek->segment['title']; ?></i> : ..... <?php echo $trek->segment['content']; ?>...
                             </div>
-                            </p>
+                            <br />
                         <?php } else if( !property_exists($trek, 'strands') && !property_exists($trek, 'segment') ) { ?>
                             <div class="recent-treks-section-div">
                                 <h4><a href="<?php echo get_permalink($trek->ID); ?>" target="_blank"><?php echo $trek->post_title; ?></a></h4>
                                 <p><?php echo $trek->post_content; ?></p>
                             </div>
+                            <br />
                         <?php } ?>
-                        
-                        <br />
                     <?php } ?>
                 <?php } else { ?>
                     <div class="recent-treks-section-div">
@@ -224,11 +224,11 @@ while (have_posts()) : the_post();
                     </div>
                     <br />
                 <?php } ?>
-                <!-- 
+                 
                 <div class="recent-treks-section-div" id="search-loading">
                     Loading...
                 </div>
-                 -->
+                 
             </section>
         </div>
     </section>
@@ -245,33 +245,30 @@ while (have_posts()) : the_post();
     <script type="text/javascript">
         jQuery(document).ready(function() {
             // fetch search results
-            /* 
+            let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+            let apiUrl = host + '/wp-json/lms/v1/';
             jQuery.ajax({
-                url: '<?php // echo get_rest_url(null, 'treks/v1/search'); ?>',
+                url: apiUrl + 'trek/search',
                 method: 'POST',
                 data: {
-                    search: '<?php // echo $_GET['q']; ?>',
-                },
-                success: function(response) {
-                    jQuery('#search-loading').hide();
-                    const html = `<div class='recent-treks-section-div'>
-                        <h4><a href="#">title</a></h4>
-                        <p>detail</p>
-                    </div>`;
-                    jQuery('#search-results-container').append(html);
-                    console.log('response >>> ', response);
-                },
-                error: function(error) {
-                    jQuery('#search-loading').hide();
-                    const html = `<div class='recent-treks-section-div'>
-                        <h4><a href="#">title</a></h4>
-                        <p>detail</p>
-                    </div>`;
-                    jQuery('#search-results-container').append(html);
-                    console.log('error >>> ', error);
+                    search: '<?php echo $_GET['q']; ?>',
                 }
-            });
-             */
+            }).done(function( response ) {
+                let html = response.data.map(result => {
+                    let slides = result.slides.map(slide => `<a href="` + result.lesson_link + `?slide=` + (slide + 1) + `" target="_blank">Slide ` + (slide + 1) + `</a>`);
+                    let slides_html = slides.join(', ');
+                    return `<div class='recent-treks-section-div'>
+                        <h4><a href="` + result.trek_link + `" target="_blank">` + result.trek_title + `</a></h4>
+                        <p class="underline"><i>Digital Student Journal > ` + result.lesson_title + `</i> :</p>
+                        <p>` + slides_html + `</p>
+                    </div>`;
+                });
+                jQuery("#search-loading").remove();
+                jQuery('#search-results-container').append(html.join( "<br />" ));
+            }).fail(function (response) {
+                console.error("Can not load teacher");
+            });;
+            
         })
     </script>
 </body>
