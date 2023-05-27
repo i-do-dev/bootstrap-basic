@@ -411,179 +411,22 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
       </section>
 
       
-      <?php  if ($post->post_name === "5-12a-interdependence") { ?>
-        <section class="central-cncpt-section  trek-section-Overview">
-              <br>
-              <input type="hidden" name="buttonStyle" value="overview-poly-body">
-              <!-- section heading -->
-              <div class="trek-main-heading-wrapper">
-                                <h1 class="trek-main-heading" id="Overview" style="color:#000000">Overview </h1>                
-              </div>
+      <section class="central-cncpt-section  trek-section-Overview">
+          <br>
+          <input type="hidden" name="buttonStyle" value="overview-poly-body">
+          <!-- section heading -->
+          <div class="trek-main-heading-wrapper">
+                            <h1 class="trek-main-heading" id="Overview" style="color:#000000">Overview </h1>                
+          </div>
 
-              <div class="trek-main-body-wrapper">
-                <h2><span style="font-size:16pt"><span style="font-family:Nunito,sans-serif"><span style="color:#000000"><strong>Central Concepts</strong></span></span></span></h2>
-
-<ul>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">All of life depends on basic needs including food, shelter, air, and space for habitat.&nbsp;</span></span></span></li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">All living organisms interact with other living and nonliving parts of their ecosystems.</span></span></span></li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">Living organisms rely on this integration of living and nonliving components to grow and reproduce.</span></span></span></li>
-</ul>
-
-<h2><span style="font-size:16pt"><span style="font-family:Nunito,sans-serif"><span style="color:#000000"><strong>Misconceptions</strong></span></span></span></h2>
-
-<ul>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">Dead organisms are considered organic biotic factors in ecosystems, not abiotic.</span></span></span></li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">Students need to understand that populations refer to living things and that a community is made of both the living and nonliving part of an ecosystem.</span></span></span></li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">Students should know that one ecosystem or environment can be made of many overlapping habitats. A habitat and ecosystem are not the same thing.</span></span></span></li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">When space is used as one of the needs of living things students need to understand that it includes more than an area to live but&nbsp; an area to find food, water, reproduce and raise young.</span></span></span></li>
-</ul>
-
-<h2><span style="font-size:16pt"><span style="font-family:Nunito,sans-serif"><span style="color:#000000"><strong>Segment Title &amp; Activities Description</strong></span></span></span></h2>
-
-<ul>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#ca2738"><strong>Recall</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000"><strong>Review: What Do Living Things Need?</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">Students recall prior knowledge of the basic needs of all organisms in their environment with transparent thinking.</span></span></span><br>
-	&nbsp;</li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#1fa5d4"><strong>Practice A</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000"><strong>Investigation: Rain &amp; Shine</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">Students collect and analyze data in a simulated comparative investigation to answer the research question, “How does water affect plant growth?” </span></span></span><br>
-	&nbsp;</li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#1fa5d4"><strong>Practice B</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000"><strong>In the Field: Billie the Birdwatcher</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">Students actively read and reflect as field scientists, support a second hand field investigation with Billie the Birdwatcher, and identify appropriate habitats for three North American bird species.</span></span></span><br>
-	&nbsp;</li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#9fc33b"><strong>Apply</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000"><strong>Mission: The Great Turtle Rescue</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">Students embark on a task-based problem-solving real-world scenario with a mission for a wildlife release in a nearby wildlife refuge using habitat maps adapted from Brazoria National Wildlife Refuge of coastal eastern Texas.</span></span></span></li>
-</ul>
-
-<p><span style="font-size:12pt"><span style="font-family:Roboto,sans-serif"><span style="color:#212529">&nbsp;</span></span></span></p>
-
-<h2><span style="font-size:16pt"><span style="font-family:Nunito,sans-serif"><span style="color:#000000"><strong>Integrated Standards Alignment</strong></span></span></span></h2>
-
-<p><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">All standards are based on Texas Essential Knowledge &amp; Skills statements unless otherwise noted.&nbsp;</span></span></span></p>
-
-
-<h3><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#212529"><strong>Looking Behind: Grades 3 and 4</strong></span></span></span></h3>
-<ul>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529"><strong>Science</strong></span></span></span>
-
-	<ul>
-		<li style="list-style-type:circle"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">3.12A Explain how temperature and precipitation affect animal growth and behavior through migration and hibernation and plant responses through dormancy.
-		</span></span></span></li>
-		<li style="list-style-type:circle"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">4.12A Investigate and explain how most producers can make their own food using sunlight, water, and carbon dioxide through the cycling of matter.
-		</span></span></span></li>
-	</ul>
-	</li>
-</ul>
-
-
-<h3><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#212529"><strong>Looking Ahead: Middle School</strong></span></span></span></h3>
-<ul>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529"><strong>Science</strong></span></span></span>
-
-	<ul>
-		<li style="list-style-type:circle"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">6.12A  Investigate how organisms and populations in an ecosystem depend on and may compete for biotic factors such as food and abiotic factors such as availability of light and water, range of temperatures, or soil composition.
-		</span></span></span></li>
-		<li style="list-style-type:circle"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">8.12A Explain how disruptions such as population changes, natural disasters, and human intervention impact the transfer of energy in food webs in ecosystems.
-		</span></span></span></li>
-	</ul>
-	</li>
-</ul>
-
-              </div>
-            </section>
-
-      <?php }?>
-
-      <?php  if ($post->post_name === "5-7b-forces-experimental-design") { ?>
-
-        <section class="central-cncpt-section  trek-section-Overview">
-              <br>
-              <input type="hidden" name="buttonStyle" value="overview-poly-body">
-              <!-- section heading -->
-              <div class="trek-main-heading-wrapper">
-                                <h1 class="trek-main-heading" id="Overview" style="color:#000000">Overview </h1>                
-              </div>
-
-              <div class="trek-main-body-wrapper">
-                <h2><span style="font-size:16pt"><span style="font-family:Nunito,sans-serif"><span style="color:#212529"><strong>Central Concepts</strong></span></span></span></h2>
-
-<ul>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">The forces of gravity, friction, and magnetism are directly observable and measured through experimentation.</span></span></span></li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">Motion is caused by unbalanced forces acting on objects and can be increased or decreased.&nbsp;&nbsp;</span></span></span></li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">The amount of mass has an effect on how much an object moves.&nbsp;</span></span></span></li>
-</ul>
-
-<h2><span style="font-size:16pt"><span style="font-family:Nunito,sans-serif"><span style="color:#000000"><strong>Misconceptions</strong></span></span></span></h2>
-
-<ul>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">Only Earth has gravity is not true. Gravity does not just occur on Earth but everywhere in space.</span></span></span></li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">When a moving object stops it is because it runs out of force. Objects do not contain force and cannot run out of it. Force is not the same thing as energy.</span></span></span></li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">If an object is not moving that does not mean that there are no forces acting on it. There are many forces that work on objects such as gravity, and atmospheric pressure.</span></span></span></li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">An object does not need force to keep moving. If an object does not meet resistance it will keep moving.</span></span></span></li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">All magnets work on all metals. Magnets do not work on all metals because all metals do not have iron.</span></span></span></li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">All magnets are made of iron is a misconception because they can have other elements that can strengthen them.</span></span></span></li>
-</ul>
-
-<h2><span style="font-size:16pt"><span style="font-family:Nunito,sans-serif"><span style="color:#212529"><strong>Segment Title &amp; Activities Description</strong></span></span></span></h2>
-
-<ul>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#ca2738"><strong>Recall</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529"><strong>Review: “How do we study motion?”</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">Students recall prior knowledge of the basics of physical science and how we can directly observe changes in motion when objects are pushed or pulled.</span></span></span><br>
-	&nbsp;</li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#1fa5d4"><strong>Practice A</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529"><strong>Investigation: Rocket Trajectories and STEAM Extension: Art (Optional)</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">Students collect and analyze data in a simulated experimental investigation to answer the research question, “How does changing a balloon rocket’s trajectory angle affect the distance traveled?” and an optional activity for differentiated groups developing a model to represent cause and effect. </span></span></span><br>
-	&nbsp;</li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#1fa5d4"><strong>Practice B</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529"><strong>In the Lab: Harley’s Helmet Quest</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">Students actively read and reflect as lab scientists while supporting a second hand field investigation with Harley the Helmet Researcher to help write a guideline for manufacturing stronger helmets in sports safety.</span></span></span><br>
-	&nbsp;</li>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#9fc33b"><strong>Apply</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529"><strong>Mission: Ramping Up Mobility</strong></span></span></span><br>
-	<span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#000000">Students embark on a problem-solving, real-world scenario with the mission to </span></span></span><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">determine changes in motion on wheelchairs based on mass and surfaces, then use force measurements to select the most efficient wheelchair.</span></span></span></li>
-</ul>
-
-<p><span style="font-size:12pt"><span style="font-family:Roboto,sans-serif"><span style="color:#212529">&nbsp;</span></span></span></p>
-
-<h2><span style="font-size:16pt"><span style="font-family:Nunito,sans-serif"><span style="color:#000000"><strong>Integrated Standards Alignment</strong></span></span></span></h2>
-
-<p><span style="font-size:12pt"><span style="font-family:Roboto,sans-serif"><span style="color:#212529">All standards are based on Texas Essential Knowledge &amp; Skills statements unless otherwise noted.&nbsp;</span></span></span></p>
-
-<h3><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#212529"><strong>Looking Behind: Grades 3 and 4&nbsp;</strong></span></span></span></h3>
-
-<ul>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">Science&nbsp;</span></span></span>
-
-	<ul>
-		<li style="list-style-type:circle"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">3.7A Demonstrate and describe forces acting on an object in contact or at a distance, including magnetism, gravity, and pushes and pulls.</span></span></span></li>
-		<li style="list-style-type:circle"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">3.7B Demonstrate and observe how position and motion can be changed by pushing and pulling objects such as swings, balls, and wagons.</span></span></span></li>
-		<li style="list-style-type:circle"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">4.7A Plan and conduct descriptive investigations to explore the patterns of forces such as gravity, friction, or magnetism in contact or at a distance on an object.</span></span></span></li>
-	</ul>
-	</li>
-</ul>
-
-<h3><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#212529"><strong>Looking Ahead: Middle School&nbsp;</strong></span></span></span></h3>
-
-<ul>
-	<li style="list-style-type:disc"><span style="font-size:12pt"><span style="font-family:Roboto,sans-serif"><span style="color:#212529">Science&nbsp;</span></span></span>
-
-	<ul>
-		<li style="list-style-type:circle"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">6.7A Identify and explain how forces act on objects, including gravity, friction, magnetism, applied forces, and normal forces, using real-world applications.</span></span></span></li>
-		<li style="list-style-type:circle"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">7.7C Measure, record, and interpret an object's motion using distance-time graphs.</span></span></span></li>
-		<li style="list-style-type:circle"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">8.7A Calculate and analyze how the acceleration of an object is dependent upon the net force acting on the object and the mass of the object using Newton’s Second Law of Motion</span></span></span></li>
-		<li style="list-style-type:circle"><span style="font-size:12pt"><span style="font-family:Arial"><span style="color:#212529">8.7B Investigate and describe how Newton's three laws of motion act simultaneously within systems such as in vehicle restraints, sports activities, amusement park rides, Earth's tectonic activities, and rocket launches.</span></span></span><br>
-		<span style="font-size:12pt"><span style="font-family:Roboto,sans-serif"><span style="color:#212529">&nbsp;</span></span></span></li>
-	</ul>
-	</li>
-</ul>
-              </div>
-            </section>
-            
-      <?php }?>
+          <div class="trek-main-body-wrapper">
+            <?php
+            // get 'student_section_overview' post meatadata
+            $student_section_overview = get_post_meta( $post->ID, 'student_section_overview', true );
+            echo stripslashes($student_section_overview);
+            ?>
+          </div>
+      </section>
 
       <?php 
         if ( $trek_sections ) {
@@ -610,11 +453,11 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
                     $headingColor = "#9fc33b";
                   }
                 ?>
-                <h1 class="trek-main-heading" id="<?php echo implode('_', explode(' ', $trek_section->title));?>" style="color:<?php echo $headingColor?>"><?php echo $trek_section->title;?> <?php echo strtolower($trek_section->title) !== 'overview' ? 'Teacher Instructions' : ''; ?></h1>                
+                <h1 class="trek-main-heading" id="<?php // echo implode('_', explode(' ', $trek_section->title));?>" style="color:<?php // echo $headingColor?>"><?php // echo $trek_section->title;?> <?php // echo strtolower($trek_section->title) !== 'overview' ? 'Teacher Instructions' : ''; ?></h1>                
               </div>
 
               <div class="trek-main-body-wrapper">
-                <?php echo stripslashes($trek_section->content);?>
+                <?php // echo stripslashes($trek_section->content);?>
               </div>
             </section>    -->
       <?php
