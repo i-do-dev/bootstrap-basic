@@ -324,7 +324,9 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
               <!-- searching input -->
               <div class="header-search">
                 <img src="<?php echo $treks_src; ?>/assets/img/header_search.svg" alt="svg" />
-                <input placeholder="Search" />
+                <form action="<?php echo site_url("search"); ?>">
+                  <input placeholder="Search" id="q" name="q" value="<?php echo isset($_GET["q"]) ? $_GET["q"]:''; ?>" />
+                </form>
               </div>
             </div>
           </div>

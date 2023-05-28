@@ -253,10 +253,13 @@ while (have_posts()) : the_post();
                 method: 'POST',
                 data: {
                     search: '<?php echo $_GET['q']; ?>',
+                    user_post_id: '<?php echo $student_post->ID; ?>',
+                    user_role: 'student'
                 }
             }).done(function( response ) {
                 let html = response.data.map(result => {
-                    let slides = result.slides.map(slide => `<a href="` + result.lesson_link + `?slide=` + (slide + 1) + `" target="_blank">Slide ` + (slide + 1) + `</a>`);
+                    let assignment_id_param = result.hasOwnProperty('assignment_id') ? '&assignment_id=' + result.assignment_id : '';
+                    let slides = result.slides.map(slide => `<a href="` + result.lesson_link + `?slide=` + (slide + 1) + assignment_id_param + `" target="_blank">Slide ` + (slide + 1) + `</a>`);
                     let slides_html = slides.join(', ');
                     return `<div class='recent-treks-section-div'>
                         <h4><a href="` + result.trek_link + `" target="_blank">` + result.trek_title + `</a></h4>
@@ -268,7 +271,7 @@ while (have_posts()) : the_post();
                 jQuery('#search-results-container').append(html.join( "<br />" ));
             }).fail(function (response) {
                 console.error("Can not load teacher");
-            });;
+            });
             
         })
     </script>
