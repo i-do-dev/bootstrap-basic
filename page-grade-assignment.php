@@ -584,6 +584,21 @@ $student_assignment_grade = intval($student_assignment_grade) > 0 ? $student_ass
         if (student_assignment_grade) {
           jQuery("#grade").val(student_assignment_grade);
         }
+        window.slideMessageReceivedCount = 0;
+        window.slideMessageReceived = 0;
+        window.addEventListener('message', function (event) {
+          window.slideMessageReceivedCount++;
+          if (window.slideMessageReceivedCount > 1 && typeof event.data === 'object' && event.data.hasOwnProperty('currentSlide')) {
+            const params = new URLSearchParams(window.location.search);
+            if (window.slideMessageReceived !== parseInt(event.data.currentSlide)) {
+              params.set('slide', event.data.currentSlide);
+              window.location = window.location.origin + window.location.pathname + '?' + params.toString();  
+            }
+          } else if (window.slideMessageReceivedCount <= 1 && typeof event.data === 'object' && event.data.hasOwnProperty('currentSlide')) {
+            window.slideMessageReceived = parseInt(event.data.currentSlide);
+          }
+        });
+        
       });
     </script>    
   </body>
