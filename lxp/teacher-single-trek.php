@@ -245,6 +245,7 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
 
       #trek-save-button {
         border: 0px;
+        background-color: #f6f7fa !important;
       }
     </style>
   </head>

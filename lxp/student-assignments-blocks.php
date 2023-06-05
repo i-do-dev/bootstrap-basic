@@ -62,3 +62,8 @@ foreach ($assignments as $assignment) {
 </a>
 
 <?php } ?>
+
+
+<?php if (count($assignments) == 0) { ?>
+    <div style="color: gray;"><i><h6>No Assignment(s)</h6></i></div>
+<?php } ?>

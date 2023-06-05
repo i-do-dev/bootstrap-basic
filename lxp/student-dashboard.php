@@ -120,7 +120,6 @@ $statuses_count = array_reduce($assignments, function($carry, $assignment) use (
 
           <div class="stu-about">
             <h1>Welcome <?php echo $userdata->display_name; ?>!</h1>
-            <p>Here's how your learning system looks like</p>
           </div>
         </div>
 
