@@ -16,8 +16,8 @@ $trek = get_post($assignment->trek_id);
 $trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id={$assignment->trek_section_id}");
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 $slide_current = isset($_GET['slide']) ? $_GET['slide'] : 0;
-$student_assignment_grade = lxp_get_student_assignment_grade($_GET['student'], $_GET['assignment'], $slide_current);
-$student_assignment_grade = intval($student_assignment_grade) > 0 ? $student_assignment_grade : 0;
+$assignment_submission = lxp_get_assignment_submissions($assignment->ID, $student_id);
+$grade = get_post_meta($assignment_submission['ID'], "slide_" . $slide_current . "_grade", true);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -469,52 +469,77 @@ $student_assignment_grade = intval($student_assignment_grade) > 0 ? $student_ass
             }
             $student_user_id = get_post_meta($_GET['student'], 'lxp_student_admin_id', true);
             $queryParam .= "&student=" . $student_user_id;
+            $queryParam .= "&skipSave=1";
+
+            $slides = get_assignment_lesson_slides( intval($_GET['assignment']) );
+            $slideIndex = intval($_GET['slide']);
+            $slide_filtered_arr = array_filter($slides, function($slide) use($slideIndex) {
+              return $slide->slide == $slideIndex;
+            });
             ?>
               <div class="tab-content" id="myTabContent">
-              <div class="container">
-                <div class="row">
-                  <div class="col col-md-8">
-                    <iframe style="border: none;width: 100%;height: 395px;" class="" src="<?php echo site_url() ?>?lti-platform&post=<?php echo $trek_lesson->ID ?>&id=<?php echo $attrId ?><?php echo $queryParam ?>" allowfullscreen></iframe>
-                  </div>
-                  <div class="col col-md-4">
-                      <div class="grade-box">
-                          <span class="grade-box-slide">Slide <?php echo $_GET['slide']; ?></span>
-                          <!-- <p>What Is Happening?</p> -->
-                          <!-- <h2 class="gray_grade">1/1</h2> -->
-                          <!-- input grade select control -->
-                          <div class="invalid-feedback" id="grade_select_error">
-                              Please select grade
-                          </div>
-                          <div class="grade-select">
-                            <select name="grade" id="grade" class="form-select">
-                              <option value="0" selected>Select Grade</option>
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="3">3</option>
-                              <option value="4">4</option>
-                              <option value="5">5</option>
-                              <option value="6">6</option>
-                              <option value="7">7</option>
-                              <option value="8">8</option>
-                              <option value="9">9</option>
-                              <option value="10">10</option>
-                              <option value="11">11</option>
-                              <option value="12">12</option>
-                              <option value="13">13</option>
-                              <option value="14">14</option>
-                              <option value="15">15</option>
-                              <option value="16">16</option>
-                              <option value="17">17</option>
-                              <option value="18">18</option>
-                              <option value="19">19</option>
-                              <option value="20">20</option>
-                            </select>
-                          <button class="grade-box-btn" onclick="assign_grade(<?php echo $_GET['slide']; ?>, jQuery('#grade').val())">Grade</button>
-                          <button class="grade-box-btn" onclick="back()">Back</button>
+                <div class="container">
+                  
+                  <div class="row">
+                    
+                      <div class="col col-md-8">
+                        <iframe style="border: none;width: 100%;height: 395px;" class="" src="<?php echo site_url() ?>?lti-platform&post=<?php echo $trek_lesson->ID ?>&id=<?php echo $attrId ?><?php echo $queryParam ?>" allowfullscreen></iframe>
                       </div>
+                      <?php 
+                        if (count($slide_filtered_arr) > 0) {
+                          $slide_filtered = array_values($slide_filtered_arr)[0];
+                      ?>
+                        <div class="col col-md-4">
+                            <div class="grade-box">
+                                <span class="grade-box-slide"><?php echo $slide_filtered->title; ?></span>
+                                <?php if ($slide_filtered->type == 'Essay' || $slide_filtered->type == 'Fill in the Blanks') { ?>
+                                  <div class="invalid-feedback" id="grade_select_error">
+                                      Please select grade
+                                  </div>
+                                  <div class="grade-select">
+                                    
+                                    <select name="grade" id="grade" class="form-select">
+                                        <option value="0" selected>Select Grade</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                      </select>
+                                      <button class="grade-box-btn" onclick="assign_grade(<?php echo $_GET['slide']; ?>, jQuery('#grade').val())">Grade</button>
+
+                                    <button class="grade-box-btn" onclick="back()">Back</button>
+                                  </div>
+                                <?php } else { ?>
+                                  <div class="alert alert-primary text-center" role="alert"> Auto-graded </div>
+                                  <button class="grade-box-btn" onclick="back()">Back</button>
+                                <?php } ?>
+                        </div>
+                      <?php } else { ?>
+                        <div class="col col-md-4">
+                          <div class="alert alert-warning text-center" role="alert">
+                            <i>Slide <?php echo $_GET['slide']; ?></i> is not gradable.
+                          </div>
+                        </div>
+                      <?php } ?>
                   </div>
+
                 </div>
-              </div>
               </div>
           <?php } else {
             get_template_part("lxp/teacher-grade", "teacher-grade", array('assignment' => intval($_GET['assignment'])));            
@@ -554,11 +579,10 @@ $student_assignment_grade = intval($student_assignment_grade) > 0 ? $student_ass
         let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
         let apiUrl = host + '/wp-json/lms/v1/';
         $.ajax({
-          url: apiUrl + 'student/assign_grade',
+          url: apiUrl + 'assignment/submission/grade',
           type: "POST",
           data: {
-            "assignment": "<?php echo $_GET['assignment']; ?>",
-            "student": "<?php echo $_GET['student']; ?>",
+            "assignment_submission_id": "<?php echo $assignment_submission['ID']; ?>",
             "slide": slide,
             "grade": grade
           },
@@ -580,22 +604,24 @@ $student_assignment_grade = intval($student_assignment_grade) > 0 ? $student_ass
       }
 
       jQuery(document).ready(function () {
-        var student_assignment_grade = <?php echo $student_assignment_grade; ?>;
+        var student_assignment_grade = "<?php echo $grade; ?>";
         if (student_assignment_grade) {
           jQuery("#grade").val(student_assignment_grade);
         }
         window.slideMessageReceivedCount = 0;
         window.slideMessageReceived = 0;
         window.addEventListener('message', function (event) {
-          window.slideMessageReceivedCount++;
-          if (window.slideMessageReceivedCount > 1 && typeof event.data === 'object' && event.data.hasOwnProperty('currentSlide')) {
-            const params = new URLSearchParams(window.location.search);
-            if (window.slideMessageReceived !== parseInt(event.data.currentSlide)) {
-              params.set('slide', event.data.currentSlide);
-              window.location = window.location.origin + window.location.pathname + '?' + params.toString();  
+          if (typeof event.data === 'object' && event.data.hasOwnProperty('currentSlide')) {
+            window.slideMessageReceivedCount++;
+            if (window.slideMessageReceivedCount > 1) {
+              const params = new URLSearchParams(window.location.search);
+              if (window.slideMessageReceived > 0 && window.slideMessageReceived !== parseInt(event.data.currentSlide)) {
+                params.set('slide', event.data.currentSlide);
+                window.location = window.location.origin + window.location.pathname + '?' + params.toString();  
+              }
+            } else if (window.slideMessageReceivedCount <= 1) {
+              window.slideMessageReceived = parseInt(event.data.currentSlide);
             }
-          } else if (window.slideMessageReceivedCount <= 1 && typeof event.data === 'object' && event.data.hasOwnProperty('currentSlide')) {
-            window.slideMessageReceived = parseInt(event.data.currentSlide);
           }
         });
         
