@@ -18,6 +18,8 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 $slide_current = isset($_GET['slide']) ? $_GET['slide'] : 0;
 $assignment_submission = lxp_get_assignment_submissions($assignment->ID, $student_id);
 $grade = get_post_meta($assignment_submission['ID'], "slide_" . $slide_current . "_grade", true);
+$result = get_post_meta($assignment_submission['ID'], "slide_" . $slide_current . "_result", true);
+$total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -526,7 +528,8 @@ $grade = get_post_meta($assignment_submission['ID'], "slide_" . $slide_current .
                                     <button class="grade-box-btn" onclick="back()">Back</button>
                                   </div>
                                 <?php } else { ?>
-                                  <div class="alert alert-primary text-center" role="alert"> Auto-graded </div>
+                                  <!-- <div class="alert alert-primary text-center" role="alert"> Auto-graded </div> -->
+                                  <span class="grade-box-slide">Grade: <?php echo $grade == '' ? "Pending" : $grade.$total_grades_str; ?></span>
                                   <button class="grade-box-btn" onclick="back()">Back</button>
                                 <?php } ?>
                         </div>
