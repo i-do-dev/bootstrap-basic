@@ -17,8 +17,8 @@ $trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 $slide_current = isset($_GET['slide']) ? $_GET['slide'] : 0;
 $assignment_submission = lxp_get_assignment_submissions($assignment->ID, $student_id);
-$grade = get_post_meta($assignment_submission['ID'], "slide_" . $slide_current . "_grade", true);
-$result = get_post_meta($assignment_submission['ID'], "slide_" . $slide_current . "_result", true);
+$grade = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide_current . "_grade", true) : '';
+$result = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide_current . "_result", true) : '';
 $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
 ?>
 <!DOCTYPE html>
@@ -501,27 +501,15 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
                                   <div class="grade-select">
                                     
                                     <select name="grade" id="grade" class="form-select">
-                                        <option value="0" selected>Select Grade</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                        <option value="8">8</option>
-                                        <option value="9">9</option>
-                                        <option value="10">10</option>
-                                        <option value="11">11</option>
-                                        <option value="12">12</option>
-                                        <option value="13">13</option>
-                                        <option value="14">14</option>
-                                        <option value="15">15</option>
-                                        <option value="16">16</option>
-                                        <option value="17">17</option>
-                                        <option value="18">18</option>
-                                        <option value="19">19</option>
-                                        <option value="20">20</option>
+                                        <option value="-" selected>Select Grade</option>
+                                        <?php if ($result == '') { ?>
+                                          <option value="0">0</option>
+                                          <option value="1">1</option>
+                                        <?php } else { ?>
+                                          <?php foreach (range(0, json_decode($result)->score->max) as $grade_number) { ?>
+                                            <option value="<?php echo $grade_number; ?>"><?php echo $grade_number; ?></option>
+                                          <?php } ?>
+                                        <?php } ?>
                                       </select>
                                       <button class="grade-box-btn" onclick="assign_grade(<?php echo $_GET['slide']; ?>, jQuery('#grade').val())">Grade</button>
 
@@ -529,7 +517,7 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
                                   </div>
                                 <?php } else { ?>
                                   <!-- <div class="alert alert-primary text-center" role="alert"> Auto-graded </div> -->
-                                  <span class="grade-box-slide">Grade: <?php echo $grade == '' ? "Pending" : $grade.$total_grades_str; ?></span>
+                                  <span class="grade-box-slide"><?php echo $grade == '' ? "Not Submitted" : 'Grade: '.$grade.$total_grades_str; ?></span>
                                   <button class="grade-box-btn" onclick="back()">Back</button>
                                 <?php } ?>
                         </div>
@@ -570,10 +558,11 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
         window.location.href = location.origin + location.pathname + "?assignment=<?php echo $_GET['assignment']; ?>&student=<?php echo $_GET['student']; ?>" + "&action=grade&slide=" + slide;
       }
 
+      <?php if($assignment_submission) { ?>
       // function assign_grade() assign grade and selected grade to student
       function assign_grade(slide, grade) {
 
-        if (grade == 0) {
+        if (grade == '-') {
           jQuery('#grade_select_error').show();
           return false;
         }
@@ -597,6 +586,8 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
           }
         });
       }
+
+      <?php } ?>
       
       function back() {
         window.location.href = window.location.origin + window.location.pathname + "?assignment=<?php echo $_GET['assignment']; ?>&student=<?php echo $_GET['student']; ?>";
