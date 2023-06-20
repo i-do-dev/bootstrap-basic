@@ -51,6 +51,7 @@ if (is_null($teacher_post)) {
 }
 $assignments = lxp_get_teacher_assignments($teacher_post->ID);
 $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_saved);
+$courses = lxp_get_courses();
 ?>
 
 <!DOCTYPE html>
@@ -207,16 +208,16 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
       <div class="recent-treks-section-div">
         <!--  TREKs header-->
         <div class="recent-treks-header section-div-header">
-          <h2>My TREKs</h2>
+          <h2>My Courses</h2>
           <div>
-            <a href="<?php echo site_url('treks'); ?>">See All</a>
+            <a href="<?php echo site_url('courses'); ?>">See All</a>
           </div>
         </div>
         <!-- TREKs cards -->
         <div class="recent-treks-cards-list">
           <!-- each cards  -->
           
-          <?php
+          <!-- <?php
           foreach($teacher_saved_treks as $trek) {
           ?>
             <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
@@ -226,15 +227,47 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
                   <div>
                     <?php echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
                   </div>
-                  <div>
+                  <div> -->
                     <h3><?php echo get_the_title($trek->ID); ?></h3>
                     <!-- <span>Due date: May 17, 2023</span> -->
-                  </div>
+                  <!-- </div>
                 </div>
             </a>
-          <?php } ?>
+          <?php } ?> -->
+
+          <!-- Courses cards -->
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active recent-treks-cards-list treks_card_list" id="all-tab-pane"
+                            role="tabpanel" aria-labelledby="all-tab" tabindex="0">
+                            <!-- each cards  -->
+                            <?php
+                            foreach($courses as $course) {
+                            ?>
+                            <a href="<?php echo get_post_permalink($course->ID); ?>" class="treks-card-link">
+                                <div class="recent-treks-card-body treks-card">
+                                    <div>                                        
+                                    <?php
+                                        if ( has_post_thumbnail( $course->ID ) ) {
+                                            echo get_the_post_thumbnail($course->ID, "medium", array( 'class' => 'rounded' )); 
+                                        } else {
+                                    ?>
+                                    <img src="<?php echo $treks_src; ?>/assets/img/tr_main.png" /> 
+                                    <?php        
+                                        }
+                                    ?>
+                                    </div>
+                                    <div>
+                                    <h3><?php echo get_the_title($course->ID); ?></h3>                                    
+                                    </div>
+                                </div>
+                            </a>
+                            <?php
+                            }
+                            ?>
+                        </div>
+                    </div>
           
-          <?php
+          <!-- <?php
           foreach($treks as $trek) {
           ?>
             <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
@@ -248,7 +281,7 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
                   </div>
                 </div>
             </a>
-          <?php } ?>
+          <?php } ?> -->
 
         </div>
       </div>

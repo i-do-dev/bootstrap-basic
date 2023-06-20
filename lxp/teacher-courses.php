@@ -124,7 +124,7 @@ while (have_posts()) : the_post();
                                 <div class="recent-treks-card-body treks-card">
                                     <div>                                        
                                     <?php
-                                        if ( has_post_thumbnail( $post->ID ) ) {
+                                        if ( has_post_thumbnail( $course->ID ) ) {
                                             echo get_the_post_thumbnail($course->ID, "medium", array( 'class' => 'rounded' )); 
                                         } else {
                                     ?>
@@ -132,69 +132,6 @@ while (have_posts()) : the_post();
                                     <?php        
                                         }
                                     ?>
-                                    </div>
-                                    <div>
-                                    <h3><?php echo get_the_title($course->ID); ?></h3>
-                                    <span>Due date: May 17, 2023</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <?php
-                            }
-                            ?>
-                        </div>
-                        <div class="tab-pane fade show recent-treks-cards-list treks_card_list" id="todo-tab-pane"
-                            role="tabpanel" aria-labelledby="todo-tab" tabindex="1">
-                            <!-- each cards  -->
-                            <?php
-                            foreach($courses as $course) {
-                            ?>
-                            <a href="<?php echo get_post_permalink($course->ID); ?>" class="treks-card-link">
-                                <div class="recent-treks-card-body treks-card">
-                                    <div>
-                                    <?php echo get_the_post_thumbnail($course->ID, "medium", array( 'class' => 'rounded' )); ?>
-                                    </div>
-                                    <div>
-                                    <h3><?php echo get_the_title($course->ID); ?></h3>
-                                    <span>Due date: May 17, 2023</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <?php
-                            }
-                            ?>
-                        </div>
-                        <div class="tab-pane fade show recent-treks-cards-list treks_card_list" id="inprogress-tab-pane"
-                            role="tabpanel" aria-labelledby="inprogress-tab" tabindex="2">
-                            <!-- each cards  -->
-                            <?php
-                            foreach($courses as $course) {
-                            ?>
-                            <a href="<?php echo get_post_permalink($course->ID); ?>" class="treks-card-link">
-                                <div class="recent-treks-card-body treks-card">
-                                    <div>
-                                    <?php echo get_the_post_thumbnail($course->ID, "medium", array( 'class' => 'rounded' )); ?>
-                                    </div>
-                                    <div>
-                                    <h3><?php echo get_the_title($course->ID); ?></h3>
-                                    <span>Due date: May 17, 2023</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <?php
-                            }
-                            ?>
-                        </div>
-                        <div class="tab-pane fade show recent-treks-cards-list treks_card_list" id="completed-tab-pane"
-                            role="tabpanel" aria-labelledby="completed-tab" tabindex="3">
-                            <!-- each cards  -->
-                            <?php
-                            foreach($courses as $course) {
-                            ?>
-                            <a href="<?php echo get_post_permalink($course->ID); ?>" class="treks-card-link">
-                                <div class="recent-treks-card-body treks-card">
-                                    <div>
-                                    <?php echo get_the_post_thumbnail($course->ID, "medium", array( 'class' => 'rounded' )); ?>
                                     </div>
                                     <div>
                                     <h3><?php echo get_the_title($course->ID); ?></h3>

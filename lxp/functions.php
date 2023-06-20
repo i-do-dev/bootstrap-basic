@@ -481,4 +481,15 @@ function get_assignment_lesson_slides($assignment_post_id) {
     return $data;
 }
 
+function lxp_get_courses()
+{
+    $courses_query = new WP_Query( array( 
+        'post_type' => TL_COURSE_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,
+        'order' => 'asc'
+    ) );
+    return $courses_query->get_posts();
+}
+
 ?>
