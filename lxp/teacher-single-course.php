@@ -230,6 +230,10 @@
       #course-save-button {
         border: 0px;
       }
+
+      .my-trk-detail-prep {
+        width: 100% !important;
+      }
     </style>
   </head>
   <body>
@@ -324,7 +328,7 @@
                   the_post_thumbnail('medium', array( 'class' => 'rounded' ));
               } else {
             ?>
-              <img src="<?php echo $treks_src; ?>/assets/img/tr_main.png" /> 
+              <img width="300" height="180" src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" class="rounded wp-post-image" alt="" decoding="async">
             <?php        
               }
             ?>
