@@ -3,7 +3,7 @@
   global $treks_src;
   $teacher_post = lxp_get_teacher_post($userdata->data->ID);
   $treks_src = get_stylesheet_directory_uri() . '/treks-src';
-
+  $course_id = $post->ID;
   $lxp_sections = get_post_meta($post->ID, "lxp_sections", true);
   $lxp_sections = $lxp_sections ? json_decode($lxp_sections) : [];
 ?>
@@ -388,7 +388,15 @@
                     'order'   => 'ASC',
                     'post_type' => TL_LESSON_CPT,
                     'meta_query' => [
-                        ['key' => 'lti_content_title', 'value' => $lxp_section]
+                        [
+                          'key' => 'lti_content_title', 
+                          'value' => $lxp_section
+                        ],
+                        [
+                          'key' => 'tl_course_id', 
+                          'value' => $course_id,
+                          'compare' => '='
+                        ]
                       ]
                   ) );
         ?>
