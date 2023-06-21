@@ -66,7 +66,7 @@ $treks = get_posts($args);
                             <div class="third-trek-box <?php echo $trek_notation; ?>-trek-box">
                                 <!-- Selected Section -->
                                 <div class="tags-body <?php echo $trek_notation; ?>-poly-body">
-                                    <div class="tags-body-polygon">
+                                    <div class="">
                                         <span>
                                             <?php 
                                                 echo 'Overview';
@@ -77,7 +77,7 @@ $treks = get_posts($args);
                                     <div class="tags-body-detail">
                                         <span>
                                             <?php 
-                                                echo 'Overview';
+                                                //echo 'Overview';
                                                 //echo $trek_section->title; 
                                             ?>             
                                         </span>
