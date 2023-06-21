@@ -234,6 +234,10 @@
       .my-trk-detail-prep {
         width: 100% !important;
       }
+
+      .lesson-link {
+        text-decoration: none !important;
+      }
     </style>
   </head>
   <body>
@@ -366,6 +370,13 @@
         </div>
       </section>
   
+      <section class="central-cncpt-section">
+        <section class="trk-assign-section">
+          <div class="trk-assign-section-div">
+              <h1 class="trek-main-heading">Sections</h1>            
+          </div>
+        </section>
+      </section>
       <div class="accordion" id="accordionExample">
         <?php
           if ( is_array($lxp_sections) ) {
@@ -382,22 +393,30 @@
                   ) );
         ?>
               <div class="accordion-item">
-                  <h2 class="accordion-header" id="heading<?php echo $i;?>">
-                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?php echo $i;?>" aria-expanded="true" aria-controls="collapseOne">
+                  <h2 class="accordion-header" id="heading-<?php echo $i; ?>">
+                      <button class="accordion-button<?php echo $i == 1 ? '' : ' collapsed'; ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<?php echo $i; ?>" aria-expanded="<?php echo $i == 1 ? 'true' : 'false'; ?>" aria-controls="collapse-<?php echo $i; ?>">
                         <?php
-                            echo $lxp_section;;
+                            echo $lxp_section;
                         ?>
                       </button>
                   </h2>
-                  <div id="collapse<?php echo $i;?>" class="accordion-collapse collapse show" aria-labelledby="heading<?php echo $i;?>" data-bs-parent="#accordionExample">
+                  <div id="collapse-<?php echo $i; ?>" class="accordion-collapse collapse<?php echo $i == 1 ? ' show' : ''; ?>" aria-labelledby="heading-<?php echo $i; ?>" data-bs-parent="#accordionExample">
                       <div class="accordion-body">
+                        <section class="trk-assign-section">
+                          <div class="trk-assign-section-div">
+                            <h5>Lessons</h5>
+                          </div>
+                          <div class="">
+                            <button onclick="assign(0,0)" class="primary-btn lx-space">Assign</button>
+                          </div>
+                        </section>
                         <?php
                             if (($lesson_query->have_posts())) {
                               echo "<ul>";
                               while ($lesson_query->have_posts()) {
                                 $lesson_query->the_post();
                           ?>
-                            <li><a target="_blank" href="<?php echo get_permalink(get_the_ID()); ?>"><?php echo get_the_title(); ?></a></li>
+                            <li><a class="lesson-link" target="_blank" href="<?php echo get_permalink(get_the_ID()); ?>"><?php echo get_the_title(); ?></a></li>
                             
                           <?php
                           
