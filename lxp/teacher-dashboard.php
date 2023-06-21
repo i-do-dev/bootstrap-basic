@@ -251,7 +251,7 @@ $courses = lxp_get_courses();
                                             echo get_the_post_thumbnail($course->ID, "medium", array( 'class' => 'rounded' )); 
                                         } else {
                                     ?>
-                                    <img src="<?php echo $treks_src; ?>/assets/img/tr_main.png" /> 
+                                    <img width="300" height="180" src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" class="rounded wp-post-image" /> 
                                     <?php        
                                         }
                                     ?>
