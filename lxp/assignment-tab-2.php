@@ -10,7 +10,7 @@ $practice_a = array_values(array_filter($trek_sections, function ($trek_section)
 $practice_b = array_values(array_filter($trek_sections, function ($trek_section) { return $trek_section->title === "Practice B"; }));
 $apply = array_values(array_filter($trek_sections, function ($trek_section) { return $trek_section->title === "Apply"; }));
 $segment_id = isset($_GET['segment']) ? $_GET['segment'] : null;
-$select_segment_title = $segment_id ? "1" : "Select a RPA segment";
+$select_segment_title = $segment_id ? "1" : "Select a Lesson";
 $args = array(
     'posts_per_page'   => -1,
     'post_type'        => 'tl_trek',
@@ -46,7 +46,7 @@ $treks = get_posts($args);
                 
                 <?php if (boolval($trek_post)) { ?>
                     <!-- TREK -->
-                    <h4 class="new-assignment-heading select-calendar-heading third-calendar-heading">TREK</h4>
+                    <h4 class="new-assignment-heading select-calendar-heading third-calendar-heading">Course</h4>
                     <div class="third-trek-box">
                         <div class="third-card-box">
                             <img src="<?php echo $treks_src; ?>/assets/img/interdependence-logo.svg" alt="img" />
@@ -57,20 +57,30 @@ $treks = get_posts($args);
                     <!-- horizontal line -->
                     <div class="horizontal-line"></div>
                     <!-- RPA Segment -->
-                    <h4 class="new-assignment-heading select-calendar-heading">RPA Segments</h4>
+                    <h4 class="new-assignment-heading select-calendar-heading">Lessons</h4>
                     <div id="rpa_segments_container">
                         <?php 
-                            $trek_section = get_trek_section_by_id($_GET['segment']);
-                            $trek_notation = implode('-', explode(' ', strtolower($trek_section->title)));
+                            // $trek_section = get_trek_section_by_id($_GET['segment']);
+                            // $trek_notation = implode('-', explode(' ', strtolower($trek_section->title)));
                         ?>
                             <div class="third-trek-box <?php echo $trek_notation; ?>-trek-box">
                                 <!-- Selected Section -->
                                 <div class="tags-body <?php echo $trek_notation; ?>-poly-body">
                                     <div class="tags-body-polygon">
-                                        <span><?php echo $trek_section->title[0]; ?></span>
+                                        <span>
+                                            <?php 
+                                                echo 'Overview';
+                                                //echo $trek_section->title[0]; 
+                                            ?>          
+                                        </span>
                                     </div>
                                     <div class="tags-body-detail">
-                                        <span><?php echo $trek_section->title; ?></span>
+                                        <span>
+                                            <?php 
+                                                echo 'Overview';
+                                                //echo $trek_section->title; 
+                                            ?>             
+                                        </span>
                                     </div>
                                 </div>
                                 <!-- <img class="cursor-img" src="<?php //echo $treks_src; ?>/assets/img/delete.svg" alt="img" /> -->
@@ -117,7 +127,7 @@ $treks = get_posts($args);
             <p class="date-time assign-text">Select a content to assign</p>
             <div class="search_box">
                 <input type="hidden" name="trek_id" id="trek_id" value="<?php echo $trek_id ?>" />
-                <label class="trek-label">TREK</label>
+                <label class="trek-label">Course</label>
                 <div class="dropdown period-box">
                     <button class="input_dropdown dropdown-button" type="button" id="dropdownMenu2"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -157,11 +167,11 @@ $treks = get_posts($args);
                     </div>
                 </div>
                 <div class="invalid-feedback" id="trek_select_error">
-                    Please select TREK
+                    Please select Course
                 </div>
             </div>
             <div class="search_box">
-                <label class="trek-label">RPA segment</label>
+                <label class="trek-label">Lessons</label>
 
                 <!-- Select a RPA segment -->
                 <div class="dropdown period-box">
@@ -265,7 +275,7 @@ $treks = get_posts($args);
             if (segments_count) {
                 jQuery('#select-segment-title').text(segments_count);
             } else {
-                jQuery('#select-segment-title').text("Select a RPA segment");
+                jQuery('#select-segment-title').text("Select a Lesson");
             }
 
             jQuery("#rpa_segments_container").html(
