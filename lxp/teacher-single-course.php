@@ -388,7 +388,15 @@
                     'order'   => 'ASC',
                     'post_type' => TL_LESSON_CPT,
                     'meta_query' => [
-                        ['key' => 'lti_content_title', 'value' => $lxp_section]
+                        [
+                          'key' => 'lti_content_title', 
+                          'value' => $lxp_section
+                        ],
+                        [
+                          'key' => 'tl_course_id', 
+                          'value' => $post->ID,
+                          'compare' => '='
+                        ]
                       ]
                   ) );
         ?>
