@@ -26,7 +26,7 @@ global $trek_post;
                 <button class="select-link" id="step-2-tab" data-bs-toggle="tab" 
                     data-bs-target="#step-2-tab-pane" type="button" role="tab" aria-controls="step-2-tab-pane" aria-selected="true">
                     <span class="select-num">2</span>
-                    Select TREK or RPA segments
+                    Select Course & Lessons
                 </button>
             </li>
             <li>
