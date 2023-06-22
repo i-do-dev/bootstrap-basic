@@ -68,16 +68,7 @@ $toolUrl = $toolUrl . $queryParam;
 <body>
 	<nav class="navbar navbar-expand-lg bg-light">
 		<div class="container-fluid">
-			<a class="navbar-brand" href="#">
-
-				<div class="header-logo-search">
-					<!-- logo -->
-					<div class="header-logo">
-						<img src="<?php echo $treks_src; ?>/assets/img/header_logo.svg" alt="svg" />
-					</div>
-
-				</div>
-			</a>
+			<?php get_template_part('trek/header-logo'); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -134,7 +125,7 @@ $toolUrl = $toolUrl . $queryParam;
 			<div class="treks_practice_bx">
 				<div class="practice_flx">
 					<img src="<?php echo $treks_src; ?>/assets/img/nav_Treks.svg" />
-					<p class="practice_text">My TREKs</p>
+					<p class="practice_text">My Courses</p>
 				</div>
 				<div class="practice_flx">
 
@@ -143,7 +134,12 @@ $toolUrl = $toolUrl . $queryParam;
 
 
 					<img src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" />
-					<p class="practice_text"><a  style = "color: #979797 !important;text-decoration: none !important;" href="<?php echo $trekPermaLink ?> "  target="_self"><?php echo $trekTitle ?></a></p>
+					<p class="practice_text"><a  style = "color: #979797 !important;text-decoration: none !important;" href="<?php echo $trekPermaLink ?> "  target="_self">
+						<?php 
+							echo 'Lesson';
+							//echo $trekTitle 
+						?>							
+						</a></p>
 				</div>
 				<div class="practice_flx">
 					<img src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" />
