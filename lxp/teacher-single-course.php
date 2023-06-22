@@ -238,6 +238,9 @@
       .lesson-link {
         text-decoration: none !important;
       }
+      .my-trk-detail-img img{
+        height: 230px !important;
+      }
     </style>
   </head>
   <body>
@@ -267,14 +270,7 @@
     <!-- Menu -->
     <nav class="navbar navbar-expand-lg treks-nav">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-          <div class="header-logo-search">
-            <!-- logo -->
-            <div class="header-logo">
-              <img src="<?php echo $treks_src; ?>/assets/img/header_logo.svg" alt="svg" />
-            </div>
-          </div>
-        </a>
+        <?php get_template_part('trek/header-logo'); ?>
         <button
           class="navbar-toggler"
           type="button"
