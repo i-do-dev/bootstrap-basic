@@ -89,7 +89,9 @@ global $trek_post;
     }
 
     function go_back(url) {
-        window.location = url;
+        //window.location = url;
+        window.history.go(-1); 
+        return false;
     }
 
     function go_previous() {
