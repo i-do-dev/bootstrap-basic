@@ -338,6 +338,7 @@ function lxp_assignment_stats($assignment_id) {
     $students = array_map(function ($student) use ($assignment_id) {
         $attempted = lxp_user_assignment_attempted($assignment_id, $student->ID);
         $submission = lxp_get_assignment_submissions($assignment_id, $student->ID);
+        /* 
         if ($attempted && is_null($submission)) {
             $status = 'In Progress';
         }else if ($attempted && !is_null($submission)) {
@@ -345,10 +346,17 @@ function lxp_assignment_stats($assignment_id) {
         } else {
             $status = 'To Do';
         }
+        */
+        $status = 'To Do';
+        if ($attempted && !is_null($submission) && !$submission['lti_user_id'] && !$submission['submission_id']) {
+            $status = 'In Progress';
+        } else if ($attempted && !is_null($submission) && $submission['lti_user_id'] && $submission['submission_id']) {
+            $status = 'Completed';
+        }
         $lxp_student_admin_id = get_post_meta($student->ID, 'lxp_student_admin_id', true);
         $userdata = get_userdata($lxp_student_admin_id);
-        $progress = $submission ? $submission['score_raw'] .'/'. $submission['score_max'] : '---';
-        $score = $submission ? round(($submission['score_scaled'] * 100), 2) . '%' : '---';
+        $progress = $submission && $submission['score_raw'] && $submission['score_max'] ? $submission['score_raw'] .'/'. $submission['score_max'] : '---';
+        $score = $submission && $submission['score_scaled'] ? round(($submission['score_scaled'] * 100), 2) . '%' : '---';
         $data = array("ID" => $student->ID, "name" => $userdata->data->display_name, "status" => $status, "progress" => $progress, "score" => $score);
         return $data;
     } , $students_posts);
@@ -429,12 +437,11 @@ function assignments_submissions($assignments, $student_post)
     $assignments_submission = array_map(function($assignment) use ($student_post) {
         $attempted = lxp_user_assignment_attempted($assignment->ID, $student_post->ID);
         $submission = lxp_get_assignment_submissions($assignment->ID, $student_post->ID);
-        if ($attempted && is_null($submission)) {
+        $status = 'To Do';
+        if ($attempted && !is_null($submission) && !$submission['lti_user_id'] && !$submission['submission_id']) {
             $status = 'In Progress';
-        }else if ($attempted && !is_null($submission)) {
+        } else if ($attempted && !is_null($submission) && $submission['lti_user_id'] && $submission['submission_id']) {
             $status = 'Completed';
-        } else {
-            $status = 'To Do';
         }
         return array( $assignment->ID => array('status' => $status, 'submission' => $submission) );
     }, $assignments);   
@@ -479,6 +486,38 @@ function get_assignment_lesson_slides($assignment_post_id) {
         $data = json_decode(wp_remote_retrieve_body($response));
     }
     return $data;
+}
+
+function lxp_check_assignment_submission($assignment_id, $student_post_id) {
+
+    $assignment_post = get_post($assignment_id);
+    $user_post = get_post($student_post_id);
+    $userId = get_post_meta($user_post->ID, 'lxp_student_admin_id', true);
+    
+    $assignment_submission_get_query = new WP_Query( array( 'post_type' => TL_ASSIGNMENT_SUBMISSION_CPT , 'posts_per_page'   => -1, 'post_status' => array( 'publish' ), 
+            'meta_query' => array(
+                array('key' => 'lxp_assignment_id', 'value' => $assignment_id, 'compare' => '='),
+                array('key' => 'lxp_student_id', 'value' => $student_post_id, 'compare' => '=')
+            )
+        )
+    );
+    $assignment_submission_posts = $assignment_submission_get_query->get_posts();
+    if (!count($assignment_submission_posts)) {
+        $assignment_submission_post_title = $user_post->post_title . ' | ' . $assignment_post->post_title;
+        $assignment_submission_post_arg = array(
+            'post_title'    => wp_strip_all_tags($assignment_submission_post_title),
+            'post_content'  => $assignment_submission_post_title,
+            'post_status'   => 'publish',
+            'post_author'   => $userId,
+            'post_type'   => TL_ASSIGNMENT_SUBMISSION_CPT
+        );
+        $assignment_submission_post_id = wp_insert_post($assignment_submission_post_arg);
+        if ($assignment_submission_post_id) {
+            update_post_meta($assignment_submission_post_id, 'lxp_assignment_id', $assignment_post->ID);
+            update_post_meta($assignment_submission_post_id, 'lxp_student_id', $user_post->ID);
+        }
+        return $assignment_submission_post_id ? true : false;
+    }
 }
 
 ?>
