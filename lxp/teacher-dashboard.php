@@ -1,57 +1,56 @@
 <?php
-// get_template_part('lxp/functions');
-global $treks_src;
-$teacher_post = lxp_get_teacher_post( get_userdata(get_current_user_id())->ID );
-if (is_null($teacher_post)) {
-  die("This account is inactive. Please contact site administrator. ". '<a href="' . wp_logout_url("login") . '">Logout</a>');
-}
-// Start the loop.
-$courseId =  isset($_GET['courseid']) ? $_GET['courseid'] : get_post_meta($post->ID, 'tl_course_id', true);
-$trek_count = 6;
-$args = array(
-	'posts_per_page'   => 3,
-	'post_type'        => 'tl_trek'
-);
-
-$treks_saved = get_post_meta($teacher_post->ID, 'treks_saved');
-if ($treks_saved) {
-  $args['post__not_in'] = $treks_saved;
-  if (is_array($treks_saved) && count($treks_saved) < $trek_count) {
-    $trek_count = $trek_count - count($treks_saved);
-    $args['posts_per_page']   = $trek_count;
-  } else {
-    $trek_count = 1;
+  global $treks_src;
+  $teacher_post = lxp_get_teacher_post( get_userdata(get_current_user_id())->ID );
+  if (is_null($teacher_post)) {
+    die("This account is inactive. Please contact site administrator. ". '<a href="' . wp_logout_url("login") . '">Logout</a>');
   }
-}
-
-$lxp_visited_treks = get_post_meta($teacher_post->ID, 'lxp_visited_treks');
-$lxp_visited_treks_to_show = is_array($lxp_visited_treks) && count($lxp_visited_treks) > 0 ? array_diff(array_reverse($lxp_visited_treks), $treks_saved) : array();
-if (count($lxp_visited_treks_to_show) > 0) {
-  $args['post__in'] = $lxp_visited_treks_to_show;
-  $args['orderby'] = 'post__in';
-} else {
-  $args['meta_key'] = 'sort';
-  $args['orderby'] = 'meta_value_num';
-  $args['order'] = 'ASC';
-}
-
-if ( get_userdata(get_current_user_id())->user_email === "guest@rpatreks.com" ) {
+  // Start the loop.
+  $courseId =  isset($_GET['courseid']) ? $_GET['courseid'] : get_post_meta($post->ID, 'tl_course_id', true);
+  $courses_count = 6;
   $args = array(
-    'include' => '15',
-    'post_type'        => 'tl_trek',
-    'order' => 'post__in'
+  	'posts_per_page'   => 3,
+  	'post_type'        => 'tl_course'
   );
-}
 
-$treks = get_posts($args);
-while (have_posts()) : the_post();
+  $courses_saved = get_post_meta($teacher_post->ID, 'courses_saved');
+  if ($courses_saved) {
+    $args['post__not_in'] = $courses_saved;
+    if (is_array($courses_saved) && count($courses_saved) < $courses_count) {
+      $courses_count = $courses_count - count($courses_saved);
+      $args['posts_per_page']   = $courses_count;
+    } else {
+      $courses_count = 1;
+    }
+  }
 
-if (is_null($teacher_post)) {
-  die("Teacher is not associated with any school. contact admin. <a href='". wp_logout_url("login") ."'>Logout</a>");
-}
-$assignments = lxp_get_teacher_assignments($teacher_post->ID);
-$teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_saved);
-$courses = lxp_get_courses();
+  $lxp_visited_courses = get_post_meta($teacher_post->ID, 'lxp_visited_courses');
+  $lxp_visited_courses_to_show = is_array($lxp_visited_courses) && count($lxp_visited_courses) > 0 ? array_diff(array_reverse($lxp_visited_courses), $courses_saved) : array();
+  if (count($lxp_visited_courses_to_show) > 0) {
+    $args['post__in'] = $lxp_visited_courses_to_show;
+    $args['orderby'] = 'post__in';
+  } else {
+    $args['meta_key'] = 'sort';
+    $args['orderby'] = 'meta_value_num';
+    $args['order'] = 'ASC';
+  }
+
+  if ( get_userdata(get_current_user_id())->user_email === "guest@rpatreks.com" ) {
+    $args = array(
+      'include' => '15',
+      'post_type'        => 'tl_course',
+      'order' => 'post__in'
+    );
+  }
+
+  $courses = get_posts($args);
+  while (have_posts()) : the_post();
+
+  if (is_null($teacher_post)) {
+    die("Teacher is not associated with any school. contact admin. <a href='". wp_logout_url("login") ."'>Logout</a>");
+  }
+  $assignments = lxp_get_teacher_assignments($teacher_post->ID);
+  $teacher_saved_courses = lxp_get_teacher_saved_courses($teacher_post->ID, $courses_saved);
+  //$courses = lxp_get_courses();
 ?>
 
 <!DOCTYPE html>
@@ -129,16 +128,7 @@ $courses = lxp_get_courses();
 <body>
   <nav class="navbar navbar-expand-lg bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-
-        <div class="header-logo-search">
-          <!-- logo -->
-          <div class="header-logo">
-            <img src="<?php echo $treks_src; ?>/assets/img/header_logo.svg" alt="svg" />
-          </div>
-
-        </div>
-      </a>
+      <?php get_template_part('trek/header-logo'); ?>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -172,117 +162,68 @@ $courses = lxp_get_courses();
       <?php get_template_part('trek/navigation') ?>
     </nav>
 
-    <!-- Reminders: section-->
-<!--     <section class="reminder-section">
-      <div class="reminder-section-div">
-        
-        <div class="reminder-title reminder-detail">
-          <img src="<?php // echo $treks_src; ?>/assets/img/rm_calendar.svg" />
-          <span>Reminders:</span>
-        </div>
-        
-        <div class="reminder-detail reminder-vli">
-          <span>Physical Properties Thu 9:00 AM</span>
-        </div>
-        
-        <div class="reminder-detail reminder-vli">
-          <span>Forces & Experimental Design Fri 10:00 AM</span>
-        </div>
-        
-        <div class="reminder-detail">
-          <span>Physics Fri 1:00 PM</span>
-        </div>
-        
-        <div class="reminder-detail">
-          <span>Mathematics Mon 11:00 AM</span>
-        </div>
-        
-        <div class="reminder-arrow">
-          <img src="<?php echo $treks_src; ?>/assets/img/rm_arrow down.svg" />
-        </div>
-      </div>
-    </section>
- -->
-    <!-- Recent TREKs -->
+    <!-- Recent Courses -->
     <section class="recent-treks-section">
       <div class="recent-treks-section-div">
-        <!--  TREKs header-->
+        <!--  Courses header-->
         <div class="recent-treks-header section-div-header">
           <h2>My Courses</h2>
           <div>
             <a href="<?php echo site_url('courses'); ?>">See All</a>
           </div>
         </div>
-        <!-- TREKs cards -->
+        <!-- Courses cards -->
         <div class="recent-treks-cards-list">
-          <!-- each cards  -->
-          
-          <!-- <?php
-          foreach($teacher_saved_treks as $trek) {
+          <!-- Saved Courses cards -->
+          <?php
+            foreach($teacher_saved_courses as $course) {
           ?>
-            <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
+            <a href="<?php echo get_post_permalink($course->ID); ?>" class="treks-card-link">
               <div class="recent-treks-card-body treks-card">
                   <div class="treks-card-saved"><img width="35" height="35" src="<?php echo $treks_src; ?>/assets/img/trek-save-filled-icon.svg" alt="svg" /></div>
                   <div class="treks-card-saved-back"></div>
                   <div>
-                    <?php echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
-                  </div>
-                  <div> -->
-                    <h3><?php echo get_the_title($trek->ID); ?></h3>
-                    <!-- <span>Due date: May 17, 2023</span> -->
-                  <!-- </div>
-                </div>
-            </a>
-          <?php } ?> -->
-
-          <!-- Courses cards -->
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active recent-treks-cards-list treks_card_list" id="all-tab-pane"
-                            role="tabpanel" aria-labelledby="all-tab" tabindex="0">
-                            <!-- each cards  -->
-                            <?php
-                            foreach($courses as $course) {
-                            ?>
-                            <a href="<?php echo get_post_permalink($course->ID); ?>" class="treks-card-link">
-                                <div class="recent-treks-card-body treks-card">
-                                    <div>                                        
-                                    <?php
-                                        if ( has_post_thumbnail( $course->ID ) ) {
-                                            echo get_the_post_thumbnail($course->ID, "medium", array( 'class' => 'rounded' )); 
-                                        } else {
-                                    ?>
-                                    <img width="300" height="180" src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" class="rounded wp-post-image" /> 
-                                    <?php        
-                                        }
-                                    ?>
-                                    </div>
-                                    <div>
-                                    <h3><?php echo get_the_title($course->ID); ?></h3>                                    
-                                    </div>
-                                </div>
-                            </a>
-                            <?php
-                            }
-                            ?>
-                        </div>
-                    </div>
-          
-          <!-- <?php
-          foreach($treks as $trek) {
-          ?>
-            <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
-              <div class="recent-treks-card-body treks-card">
-                  <div>
-                    <?php echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
+                    <?php
+                      if ( has_post_thumbnail( $course->ID ) ) {
+                          echo get_the_post_thumbnail($course->ID, "medium", array( 'class' => 'rounded' )); 
+                      } else {
+                    ?>
+                      <img width="300" height="180" src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" class="rounded wp-post-image" /> 
+                    <?php        
+                        }
+                    ?>
                   </div>
                   <div>
-                    <h3><?php echo get_the_title($trek->ID); ?></h3>
+                    <h3><?php echo get_the_title($course->ID); ?></h3>
                     <span>Due date: May 17, 2023</span>
                   </div>
                 </div>
             </a>
-          <?php } ?> -->
-
+          <?php } ?>
+          <!-- Visited Courses cards -->
+          <?php
+            foreach($courses as $course) {
+          ?>
+              <a href="<?php echo get_post_permalink($course->ID); ?>" class="treks-card-link">
+                <div class="recent-treks-card-body treks-card">
+                    <div>
+                      <?php
+                        if ( has_post_thumbnail( $course->ID ) ) {
+                            echo get_the_post_thumbnail($course->ID, "medium", array( 'class' => 'rounded' )); 
+                        } else {
+                      ?>
+                        <img width="300" height="180" src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" class="rounded wp-post-image" /> 
+                      <?php        
+                        }
+                      ?>
+                    </div>
+                    <div>
+                      <h3><?php echo get_the_title($course->ID); ?></h3>
+                      <span>Due date: May 17, 2023</span>
+                    </div>
+                  </div>
+              </a>
+            <?php } ?>       
         </div>
       </div>
     </section>
@@ -361,91 +302,11 @@ $courses = lxp_get_courses();
                   </td>
                 </tr>  
               <?php } ?>
-<!--               <tr>
-                <td>Elephants</td>
-                <td>
-                  <div class="assignments-table-cs-td-poly">
-                    <div class="polygon-shap">
-                      <span>P</span>
-                    </div>
-                    <div>
-                      <span>Physical Properties</span>
-                      <span>Practice B</span>
-                    </div>
-                  </div>
-                </td>
-                <td>Jan 21, 2023</td>
-                <td>25/30</td>
-              </tr>
-              <tr>
-                <td>Elephants</td>
-                <td>
-                  <div class="assignments-table-cs-td-poly">
-                    <div class="polygon-shap">
-                      <span>P</span>
-                    </div>
-                    <div>
-                      <span>Physical Properties</span>
-                      <span>Practice B</span>
-                    </div>
-                  </div>
-                </td>
-                <td>Jan 21, 2023</td>
-                <td>25/30</td>
-              </tr> -->
             </tbody>
           </table>
         </div>
       </div>
     </section>
-
-    <!-- Calendar &  Activities Completed Overall -->
-    <!-- 
-    <section class="clen-act-section">
-      <div class="clen-act-section-div">
-        <div class="calendar-portion">
-          <div class="calendar-portion-header section-div-header">
-            <h2>Pending Assignments</h2>
-            <div>
-              <a href="#">See All</a>
-            </div>
-          </div>
-        </div>
-        <div class="activities-portion">
-          <div class="activities-portion-header section-div-header">
-            <h2>Activities Completed Overall</h2>
-          </div>
-
-          <div class="activities-portion-prap">
-            <p>This is the status of all the activities you have assigned.</p>
-
-            <div class="activities-portion-progress">
-               
-                <div class="portion-progress-div">
-                  <div class="recall-progress-bar"></div>
-                  <p>Recall</p>
-                </div>
-
-                <div class="portion-progress-div">
-                  <div class="pa-progress-bar"></div>
-                  <p>Practice A</p>
-                </div>
-
-                <div class="portion-progress-div">
-                  <div class="pb-progress-bar"></div>
-                  <p>Practice B</p>
-                </div>
-
-                <div class="portion-progress-div">
-                  <div class="apply-progress-bar"></div>
-                  <p>Apply</p>
-                </div>
-              </div>
-          </div>
-        </div>
-      </div>
-    </section>
-     -->
   </section>
   <?php get_template_part('lxp/assignment-stats-modal', 'assignment-stats-modal'); ?>
 
