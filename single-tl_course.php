@@ -10,7 +10,7 @@ switch ($userRole) {
     get_template_part('lxp/teacher-single-course');
     break;
   case 'lxp_student':
-    //get_template_part('lxp/student-single-course');
+    get_template_part('lxp/teacher-single-course');
     break;
   default:
     echo 'Not a valid User role';

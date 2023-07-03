@@ -244,14 +244,66 @@
             <thead>
               <tr>
                 <th>Class</th>
-                <th>TREK</th>
-                <th>Segment</th>
+                <th>Course</th>
+                <th>Lesson</th>
                 <th>Date</th>
                 <th>Student Progress</th>
                 <th>Students Completed</th>
               </tr>
             </thead>
             <tbody>
+                  <tr>
+                    <td>Demo Class</td>
+                    <td>Composting</td>
+                    <td>
+                      <div class="assignments-table-cs-td-poly">
+                        <div class="polygon-shap polygonshape-<?php echo $segment; ?>">
+                          <span>L</span>
+                        </div>
+                        <div>
+                          <span>कोर्स की जानकारी</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      July 17, 2023
+                    </td>
+                    <td>
+                      <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php //echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['To Do', 'In Progress'])">0/10</a></div>
+                    </td>
+                    <td>
+                      <?php
+                        //$student_stats = lxp_assignment_stats($assignment->ID);
+                      ?>
+                      <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php //echo $assignment->ID; ?>, '<?php //echo $trek->post_title; ?>', '<?php //echo $trek_section->title; ?>', ['Completed'])">0/5</a></div>
+                    </td>
+                  </tr>  
+                  <tr>
+                    <td>Demo Class</td>
+                    <td>Paver Block</td>
+                    <td>
+                      <div class="assignments-table-cs-td-poly">
+                        <div class="polygon-shap polygonshape-<?php echo $segment; ?>">
+                          <span>L</span>
+                        </div>
+                        <div>
+                          <span>पेवर ब्लॉक - परिचय</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      July 20, 2023
+                    </td>
+                    <td>
+                      <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php //echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['To Do', 'In Progress'])">0/10</a></div>
+                    </td>
+                    <td>
+                      <?php
+                        //$student_stats = lxp_assignment_stats($assignment->ID);
+                      ?>
+                      <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php //echo $assignment->ID; ?>, '<?php //echo $trek->post_title; ?>', '<?php //echo $trek_section->title; ?>', ['Completed'])">0/5</a></div>
+                    </td>
+                  </tr>  
               <?php 
                 foreach ($assignments as $assignment) { 
                   $class_post = get_post(get_post_meta($assignment->ID, 'class_id', true));

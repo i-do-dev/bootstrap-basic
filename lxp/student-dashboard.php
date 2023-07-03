@@ -1,5 +1,14 @@
 <?php
 global $treks_src;
+
+$courses_count = 6;
+  $args = array(
+  	'posts_per_page'   => -1,
+  	'post_type'        => 'tl_course'
+  );
+
+$courses = get_posts($args);
+
 $userdata = get_userdata(get_current_user_id());
 $student_post = lxp_get_student_post(get_current_user_id());
 $assignments = lxp_get_student_assignments($student_post->ID);
@@ -166,13 +175,13 @@ $statuses_count = array_reduce($assignments, function($carry, $assignment) use (
           <div class="recent-treks-header section-div-header">
             <h2>TREKs</h2>
             <div>
-              <a href="#">See All</a>
+              <a href="<?php echo site_url("courses") ?>">See All</a>
             </div>
           </div>
           <!-- TREKs cards -->
           <div class="recent-treks-cards-list">
             <!-- each cards  -->
-            <?php foreach ($treks as $trek) { ?>
+            <?php foreach ($courses as $trek) { ?>
               <!-- card -->
               <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
                 <div class="recent-treks-card-body treks-card">
@@ -234,13 +243,19 @@ $statuses_count = array_reduce($assignments, function($carry, $assignment) use (
             <table>
               <thead>
                 <tr>
-                  <th>TREK</th>
+                  <th>Course</th>
                   <th>Date</th>
                   <th>Status</th>
                   <th>Teacher</th>
                 </tr>
               </thead>
               <tbody>
+              <tr>
+                  <td>Composting - कोर्स की जानकारी</td>
+                  <td>20 July 2023</td>
+                  <td>ToDo</td>
+                  <td>Demo Teacher</td>
+              </tr>
                 <!-- tr to iterate over assignments -->
                   <?php 
                     foreach ($assignments as $assignment) { 

@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
   global $userdata;
   global $treks_src;
   $teacher_post = lxp_get_teacher_post($userdata->data->ID);
@@ -238,9 +239,6 @@
       .lesson-link {
         text-decoration: none !important;
       }
-      .my-trk-detail-img img{
-        height: 230px !important;
-      }
     </style>
   </head>
   <body>
@@ -345,6 +343,7 @@
               <div class="col col-2 text-end">
                 <?php
                   $courses_saved = get_post_meta($teacher_post->ID, 'courses_saved');
+                  $courses_saved = $courses_saved ? $courses_saved : array();
                   $is_saved = in_array($post->ID, $courses_saved);
                 ?>
                 <button id="course-save-button" onclick="set_course_saved(<?php echo !$is_saved; ?>)">
