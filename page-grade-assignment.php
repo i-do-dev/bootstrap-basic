@@ -494,30 +494,27 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
                         <div class="col col-md-4">
                             <div class="grade-box">
                                 <span class="grade-box-slide"><?php echo $slide_filtered->title; ?></span>
-                                <?php if ($slide_filtered->type == 'Essay' || $slide_filtered->type == 'Fill in the Blanks') { ?>
-                                  <div class="invalid-feedback" id="grade_select_error">
-                                      Please select grade
-                                  </div>
+                                <?php if ($slide_filtered->type == 'Essay') { ?>
                                   <div class="grade-select">
                                     
                                     <select name="grade" id="grade" class="form-select">
-                                        <option value="-" selected>Select Grade</option>
-                                        <?php if ($result == '') { ?>
-                                          <option value="0">0</option>
-                                          <option value="1">1</option>
-                                        <?php } else { ?>
-                                          <?php foreach (range(0, json_decode($result)->score->max) as $grade_number) { ?>
-                                            <option value="<?php echo $grade_number; ?>"><?php echo $grade_number; ?></option>
-                                          <?php } ?>
+                                        <option value="">----</option>
+                                        <?php foreach (range(0, 10) as $grade_number) { ?>
+                                          <option value="<?php echo $grade_number; ?>"><?php echo $grade_number; ?></option>
                                         <?php } ?>
                                       </select>
                                       <button class="grade-box-btn" onclick="assign_grade(<?php echo $_GET['slide']; ?>, jQuery('#grade').val())">Grade</button>
 
                                     <button class="grade-box-btn" onclick="back()">Back</button>
                                   </div>
-                                <?php } else { ?>
+                                <?php 
+                                  } else { 
+                                    $auto_score = lxp_assignment_submission_auto_score($assignment_submission['ID'], $slideIndex);
+                                    $score = $auto_score['score'];
+                                    $max = $auto_score['max'];
+                                ?>
                                   <!-- <div class="alert alert-primary text-center" role="alert"> Auto-graded </div> -->
-                                  <span class="grade-box-slide"><?php echo $grade == '' ? "Not Submitted" : 'Grade: '.$grade.$total_grades_str; ?></span>
+                                  <span class="grade-box-slide"><?php echo $max ? "Grade: $score/$max" : "Not Submitted"; ?></span>
                                   <button class="grade-box-btn" onclick="back()">Back</button>
                                 <?php } ?>
                         </div>
@@ -561,13 +558,6 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
       <?php if($assignment_submission) { ?>
       // function assign_grade() assign grade and selected grade to student
       function assign_grade(slide, grade) {
-
-        if (grade == '-') {
-          jQuery('#grade_select_error').show();
-          return false;
-        }
-        jQuery('#grade_select_error').hide();
-
         let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
         let apiUrl = host + '/wp-json/lms/v1/';
         $.ajax({

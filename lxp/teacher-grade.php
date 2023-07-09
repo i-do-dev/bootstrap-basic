@@ -36,23 +36,44 @@ $assignment_submission = lxp_get_assignment_submissions($assignment->ID, $studen
                     <div class="slider_cards_flex">
                         <?php 
                             foreach ($slide_page as $slide_key => $slide) { 
-                            $grade = intval(lxp_get_student_assignment_grade($_GET['student'], $_GET['assignment'], $slide->slide));
-                            $green_class = $grade > 0 ? 'green_slide' : '';
                             $no_right_border = count($slide_page) == $slide_key + 1 ? ' no-right-border' : '';
-
-                            $grade = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true) : '';
-                            $result = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_result", true) : '';
-                            $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
                         ?>
-                            <div class="student_grade_card<?php echo $no_right_border; ?>">
-                                <span class="student_slide <?php echo $grade == '' ? "gray" : 'green'; ?>_slide <?php echo $green_class; ?>">Slide <?php echo $slide->slide; ?></span>
-                                <p><?php echo $slide->title; ?></p>
-                                <h2 class="gray_grade"><?php echo $grade == '' ? "Not Graded" : $grade.$total_grades_str; ?></h2>
-                                <button class="grade_btn" onclick="grade(<?php echo $slide->slide; ?>)">Grade</button>
-                                <?php if($grade != '') { ?>
-                                    <img style="margin-top: 10px;" src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" />
-                                <?php } ?>
-                            </div>
+                            <?php 
+                                if(in_array($slide->type, array('Essay'))) { 
+                                    $grade = get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true);
+                                    $green_class = $grade === "" ? "" : "green_slide";
+                            ?>
+                                <div class="student_grade_card<?php echo $no_right_border; ?>">
+                                    <span class="student_slide <?php echo $score == 0 ? "gray" : 'green'; ?>_slide <?php echo $green_class; ?>">Slide <?php echo $slide->slide; ?></span>
+                                    <p><?php echo $slide->title; ?></p>
+                                
+                                    <h2 class="gray_grade"><?php echo $grade === "" ? "Not Graded" : $grade; ?></h2>
+                                    <button class="grade_btn" onclick="grade(<?php echo $slide->slide; ?>)">Grade</button>
+                                    <?php if ($grade !== "") { ?>
+                                        <img src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" />
+                                    <?php } ?>
+                                </div>
+                            <?php 
+                                } else { 
+                                    $auto_score = lxp_assignment_submission_auto_score($assignment_submission['ID'], $slide->slide);
+                                    $score = $auto_score['score'];
+                                    $max = $auto_score['max'];
+                                    $green_class = $max > 0 ? 'green_slide' : '';
+                            ?>
+                                <div class="student_grade_card<?php echo $no_right_border; ?>">
+                                    <span class="student_slide <?php echo $score == 0 ? "gray" : 'green'; ?>_slide <?php echo $green_class; ?>">Slide <?php echo $slide->slide; ?></span>
+                                    <p><?php echo $slide->title; ?></p>
+                                
+                                    <?php if($max) { ?>
+                                        <h2 class="gray_grade"><?php echo $score . '/' . $max; ?></h2>
+                                        <span class="badge bg-secondary" style="margin-bottom:18px;">Auto-graded</span>    
+                                        <br />
+                                        <img src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" />
+                                    <?php } else { ?>
+                                        <h2 class="gray_grade">Not Attempted</h2>
+                                    <?php } ?>
+                                </div>    
+                            <?php } ?>
                         <?php } ?>
 
                     </div>

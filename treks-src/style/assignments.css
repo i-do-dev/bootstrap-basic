@@ -360,7 +360,7 @@
 
 .student_assignment_tab .tab-content .tab-pane .student_grade_card {
   width: 222px;
-  height: auto;
+  min-height: 255px;
   padding: 24px 8px;
   text-align: center;
   border-right: 1px solid #eaedf1;

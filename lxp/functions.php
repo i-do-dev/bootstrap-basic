@@ -520,4 +520,28 @@ function lxp_check_assignment_submission($assignment_id, $student_post_id) {
     }
 }
 
+function lxp_assignment_submission_auto_score($assignment_submission_id, $slide) {
+    $sub_content_ids = get_post_meta($assignment_submission_id, "subContentIds");
+    $slide_result_keys = array_map(function($sub_content_id) use ($slide) {
+        return "slide_{$slide}_subContentId_{$sub_content_id}_result";
+    }, $sub_content_ids);
+    $slide_contents_result = array_filter(get_post_meta($assignment_submission_id), function($key) use ($slide_result_keys) {
+        return in_array($key, $slide_result_keys);
+    }, ARRAY_FILTER_USE_KEY);
+    
+    $score = array_reduce($slide_contents_result, function($carry, $item) {
+        $carry += json_decode($item[0])->score->raw;
+        return $carry;
+    }, 0);
+    
+    $max = array_reduce($slide_contents_result, function($carry, $item) {
+        $carry += json_decode($item[0])->score->max;
+        return $carry;
+    }, 0);
+    return array(
+        'score' => $score,
+        'max' => $max
+    );
+}
+
 ?>
