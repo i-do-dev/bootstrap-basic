@@ -249,7 +249,7 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
                       </div>
                     </div>
                     <div class="stu_tag">
-                      <span class="student_label label_red <?php echo $statusClass; ?>"><?php echo $status; ?></span>
+                      <span class="student_label label_red <?php echo $statusClass; ?>"><?php echo $status && $status === 'Completed' ? 'Submitted' : $status; ?></span>
                       <img src="<?php echo $treks_src; ?>/assets/img/select-arrow-up.svg" alt="" />
                     </div>
                   </div>
@@ -459,7 +459,10 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
 
         <!-- Tabs Table -->
         <?php 
-          if ( isset($_GET['action']) && $_GET['action'] == 'grade' ) {
+          $slides = get_assignment_lesson_slides( intval($_GET['assignment']) );
+          if (isset($_GET['slide']) && intval($_GET['slide']) === intval($slides->data->totalSlides)) {
+            get_template_part("lxp/grade-book", "grade-book", array('slides' => $slides, 'assignment_submission' => $assignment_submission));
+          }else if ( isset($_GET['action']) && $_GET['action'] == 'grade' ) {
             $lessons = lxp_get_trek_digital_journals($trek->ID);
             $trek_lesson = null;
             foreach($lessons as $lesson){ if (trim($trek_section->title) === trim($lesson->post_title)) { $trek_lesson = $lesson; }; }
@@ -472,8 +475,8 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
             $student_user_id = get_post_meta($_GET['student'], 'lxp_student_admin_id', true);
             $queryParam .= "&student=" . $student_user_id;
             $queryParam .= "&skipSave=1";
-
-            $slides = get_assignment_lesson_slides( intval($_GET['assignment']) );
+            $slidesData = $slides->data;
+            $slides = $slides->slides;
             $slideIndex = intval($_GET['slide']);
             $slide_filtered_arr = array_filter($slides, function($slide) use($slideIndex) {
               return $slide->slide == $slideIndex;
@@ -530,7 +533,7 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
                 </div>
               </div>
           <?php } else {
-            get_template_part("lxp/teacher-grade", "teacher-grade", array('assignment' => intval($_GET['assignment'])));            
+            get_template_part("lxp/teacher-grade", "teacher-grade", array('assignment' => intval($_GET['assignment']), 'slides' => $slides));            
           }
         ?>
         <!-- End Table -->

@@ -215,7 +215,7 @@ $statuses_count = array_reduce($assignments, function($carry, $assignment) use (
             <h1 class="border-orange"><?php echo $statuses_count['inprogress']; ?></h1>
           </div>
           <div class="assig_card">
-            <label class="bg-green">Completed</label>
+            <label class="bg-green">Submitted</label>
             <h1 class="border-green"><?php echo $statuses_count['completed']; ?></h1>
           </div>
         </div>
@@ -308,7 +308,7 @@ $statuses_count = array_reduce($assignments, function($carry, $assignment) use (
                       <?php if (intval($assignment_grade) > 0) {?>
                         <span class="grade-label grade-report">Grade</span>
                       <?php } else { ?>
-                        <span class="grade-label pending-report"> <?php echo $status; ?> </span>
+                        <span class="grade-label pending-report"> <?php echo $status === 'Completed' ? 'Submitted' : $status; ?> </span>
                       <?php } ?>
                     </td>
                     <td>

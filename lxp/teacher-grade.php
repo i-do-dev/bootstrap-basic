@@ -2,7 +2,9 @@
 <?php
 global $treks_src;
 $assignment_id = $args['assignment'];
-$slides = get_assignment_lesson_slides(intval($assignment_id));
+$slides =  $args['slides'];
+$slidesData = $slides->data;
+$slides = $slides->slides;
 $slides_pages = array_chunk($slides, 4);
 
 $student_id = 0;
@@ -30,17 +32,18 @@ $assignment_submission = lxp_get_assignment_submissions($assignment->ID, $studen
         data-bs-interval="false"
     >
         <div class="carousel-inner" style="height: 250px;">
-        
             <?php foreach ($slides_pages as $page_key => $slide_page) { ?>
                 <div class="carousel-item<?php echo $page_key == 0 ? ' active' : ''; ?>">
                     <div class="slider_cards_flex">
                         <?php 
+                        if($assignment_submission)
+                        {
                             foreach ($slide_page as $slide_key => $slide) { 
                             $no_right_border = count($slide_page) == $slide_key + 1 ? ' no-right-border' : '';
                         ?>
                             <?php 
                                 if(in_array($slide->type, array('Essay'))) { 
-                                    $grade = get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true);
+                                    $grade = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true) : "";
                                     $green_class = $grade === "" ? "" : "green_slide";
                             ?>
                                 <div class="student_grade_card<?php echo $no_right_border; ?>">
@@ -55,7 +58,7 @@ $assignment_submission = lxp_get_assignment_submissions($assignment->ID, $studen
                                 </div>
                             <?php 
                                 } else { 
-                                    $auto_score = lxp_assignment_submission_auto_score($assignment_submission['ID'], $slide->slide);
+                                    $auto_score = $assignment_submission ? lxp_assignment_submission_auto_score($assignment_submission['ID'], $slide->slide) : array('score' => 0 , 'max' => 0);
                                     $score = $auto_score['score'];
                                     $max = $auto_score['max'];
                                     $green_class = $max > 0 ? 'green_slide' : '';
@@ -66,7 +69,7 @@ $assignment_submission = lxp_get_assignment_submissions($assignment->ID, $studen
                                 
                                     <?php if($max) { ?>
                                         <h2 class="gray_grade"><?php echo $score . '/' . $max; ?></h2>
-                                        <span class="badge bg-secondary" style="margin-bottom:18px;">Auto-graded</span>    
+                                        <a href="#" onclick="grade(<?php echo $slide->slide; ?>)"><span class="badge bg-secondary" style="margin-bottom:18px;">Auto-graded</span></a>
                                         <br />
                                         <img src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" />
                                     <?php } else { ?>
@@ -75,11 +78,13 @@ $assignment_submission = lxp_get_assignment_submissions($assignment->ID, $studen
                                 </div>    
                             <?php } ?>
                         <?php } ?>
-
+                        
+                        <?php } else {?>
+                            <p>Student has not attempted yet.</p>
+                        <?php } ?>
                     </div>
                 </div>
-            <?php } ?>
-            
+            <?php } ?>   
         </div>
 
         <button

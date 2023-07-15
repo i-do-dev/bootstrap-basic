@@ -168,7 +168,7 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
                 <th>Segment</th>
                 <th>Due Date</th>
                 <th>Student Progress</th>
-                <th>Students Completed</th>
+                <th>Students Submitted</th>
               </tr>
             </thead>
             <tbody>
@@ -390,7 +390,7 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
               </div>
               </td>
               <td>
-              <div class="table-status ` + statusClass + `">` + student.status + `</div>
+              <div class="table-status ` + statusClass + `">` + (student.status === 'Completed' ? 'Submitted' : student.status) + `</div>
               </td>
               <td><a class='student-progress-link' href='<?php echo site_url("grade-assignment"); ?>?assignment=` + assignment_id + `&student=` + student.ID + `'>` + student.progress + `</a></td>
               <td>` + student.score + `</td>
