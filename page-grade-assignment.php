@@ -38,6 +38,11 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
       integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
       crossorigin="anonymous"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+      crossorigin="anonymous"
+    />
     
     <style type="text/css">
       .time-date-box {
@@ -610,6 +615,27 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
               window.slideMessageReceived = parseInt(event.data.currentSlide);
             }
           }
+        });
+
+        // handle Mark as Graded check
+        jQuery('#markGraded').on('change', function() {
+          let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+          let apiUrl = host + '/wp-json/lms/v1/';
+          let checked = jQuery(this).prop('checked');
+          jQuery.ajax({
+            url: apiUrl + 'assignment/submission/mark-as-graded',
+            type: "POST",
+            data: {
+              "assignment_submission_id": "<?php echo $assignment_submission['ID']; ?>",
+              "checked": checked
+            },
+            success: function (response) {
+              console.log(response);
+            },
+            error: function (error) {
+              console.log(error);
+            }
+          });
         });
         
       });
