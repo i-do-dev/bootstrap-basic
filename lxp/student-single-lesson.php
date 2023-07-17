@@ -52,6 +52,7 @@ if (isset($_GET["assignment_id"])) {
 }
 
 $toolUrl = $toolUrl . $queryParam;
+$assignment = isset($_GET['assignment_id']) ? lxp_get_assignment($_GET['assignment_id']) : null;
 ?>
 
 
@@ -68,6 +69,13 @@ $toolUrl = $toolUrl . $queryParam;
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
 	<link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
 	<link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
+	<link rel="stylesheet" href="<?php echo $treks_src; ?>/style/newAssignment.css" />
+	<link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolAdminTeachers.css" />
+	<link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+      crossorigin="anonymous"
+    />
 </head>
 
 <body>
@@ -156,10 +164,53 @@ $toolUrl = $toolUrl . $queryParam;
 				</div>
 			</div>
 			<p class="interpendence_text"><?php echo $trekTitle ?></p>
-			<p class="practice_text student_text">Digital Student Journal &nbsp;<span><a id="dsj_link" href="#"><img class="copy-anchor-icon-img" src="<?php echo $treks_src; ?>/assets/img/link_icon.png" width="18" height="18" /></a></span></p>
+			<!-- <p class="practice_text student_text">Digital Student Journal &nbsp;<span><a id="dsj_link" href="#"><img class="copy-anchor-icon-img" src="<?php // echo $treks_src; ?>/assets/img/link_icon.png" width="18" height="18" /></a></span></p> -->
+			<?php if ($assignment) { ?>
+				<!-- make row with 2 columns -->
+				<div class="row">
+					<div class="col-md-6">
+						<div class="time-date-box">
+							<p class="date-time"><span id="assignment_day"><?php echo date("D", strtotime($assignment->start_date)); ?></span>, <span id="assignment_month"><?php echo date("F", strtotime($assignment->start_date)); ?></span> <span id="assignment_date"><?php echo date("d", strtotime($assignment->start_date)); ?></span>, <span id="assignment_date"><?php echo date("Y", strtotime($assignment->start_date)); ?></span></p>
+							<p class="date-time" id="assignment_time_start"><?php echo date("h:i:s a", strtotime($assignment->start_time)); ?></p>
+							<p class="date-time to-text">To</p>
+							<p class="date-time" id="assignment_time_end"><?php echo date("h:i:s a", strtotime($assignment->end_time)); ?></p>
+						</div>
+					</div>
+					<div class="col-md-2 offset-md-4">
+						<button class="primary-btn add-heading" id="assignment_timer_btn" onclick="openGradeBook()">Grade Book</button>
+					</div>
+			<?php } ?>
 			<iframe style="border: none;width: 100%;height: 706px;" class="" src="<?php echo site_url() ?>?lti-platform&post=<?php echo $post->ID ?>&id=<?php echo $attrId ?><?php echo $queryParam ?>" allowfullscreen></iframe>
 		</section>
 	</section>
+
+	<div class="modal fade" id="gradeBookModal" tabindex="-1" aria-labelledby="gradeBookModalLabel"aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class="modal-header-title">
+					<h4 class="modal-title" id="gradeBookModalLabel">Grade Book</h4>
+					</div>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<?php 
+						if ($assignment) {
+							$assignment_submission = lxp_get_assignment_submissions($assignment->ID, lxp_get_student_post(get_current_user_id())->ID);
+							$mark_as_graded = get_post_meta($assignment_submission['ID'], 'mark_as_graded', true);
+							if ($mark_as_graded === 'true') {
+								$slides = get_assignment_lesson_slides($assignment->ID);
+								get_template_part("lxp/grade-book", "grade-book", array('slides' => $slides, 'assignment_submission' => $assignment_submission)); 
+							} else {
+								echo '<p class="text-center">Assignment is not graded yet.</p>';
+							}
+						}
+					?>
+				</div>
+			</div>
+		</div>
+	</div>
+
 
 	<script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
 	<script src="<?php echo $treks_src; ?>/js/Animated-Circular-Progress-Bar-with-jQuery-Canvas-Circle-Progress/dist/circle-progress.js"></script>
@@ -175,6 +226,10 @@ $toolUrl = $toolUrl . $queryParam;
                 }, true);
                 document.execCommand('copy');  
 			});
+
+			var gradeBookModal = document.getElementById('gradeBookModal');
+			gradeBookModalObj = new bootstrap.Modal(gradeBookModal);
+			window.gradeBookModalObj = gradeBookModalObj;
 		});
 
 		window.addEventListener('message', function (event) {
@@ -183,6 +238,10 @@ $toolUrl = $toolUrl . $queryParam;
 				jQuery('#dsj_link').attr('href', dsj_copy_link);
 			}
 		});
+
+		function openGradeBook() {
+			window.gradeBookModalObj.show();
+		}
 	</script>
 </body>
 
