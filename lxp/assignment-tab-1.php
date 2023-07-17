@@ -91,7 +91,9 @@ global $treks_src;
                 return {domNodes: event_dom_nodes};
             },
             eventClick: function(eventClickInfo) {
+                var course_post_image = ( eventClickInfo.event.extendedProps.course_post_image ) ? eventClickInfo.event.extendedProps.course_post_image : '<?php echo $treks_src; ?>'+'/assets/img/tr_main.jpg';
                 jQuery('#student-progress-course-title').text(eventClickInfo.event.extendedProps.course);
+                jQuery('#student-progress-course-post-image').html(`<img width="50" class="rounded wp-post-image" src="`+course_post_image+`" alt="logo" />`);
                 jQuery('#student-progress-course-segment').text(eventClickInfo.event.title);
                 jQuery('#student-progress-course-segment-char').text(eventClickInfo.event.title[0]);
                 var segmentColor = "#1fa5d4";
