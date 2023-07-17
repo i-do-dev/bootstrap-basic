@@ -410,7 +410,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
                             <h5>Lessons</h5>
                           </div>
                           <div class="">
-                            <button onclick="assign(0,0)" class="primary-btn lx-space">Assign</button>
+                            <button onclick="assign(<?php echo $course_id; ?>, '<?php echo $lxp_section; ?>')" class="primary-btn lx-space">Assign</button>
                           </div>
                         </section>
                         <?php
@@ -454,8 +454,8 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js'></script>
 
     <script type="text/javascript">
-      function assign(trek_id, section_id) {
-        window.location = "<?php echo site_url("assignment"); ?>" + "?trek=" + trek_id + "&segment=" + section_id;
+      function assign(course_id, lxp_section) {
+        window.location = "<?php echo site_url("assignment"); ?>" + "?course=" + course_id + "&section=" + lxp_section;
       }
     </script>
 

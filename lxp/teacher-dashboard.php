@@ -50,7 +50,6 @@
   }
   $assignments = lxp_get_teacher_assignments($teacher_post->ID);
   $teacher_saved_courses = lxp_get_teacher_saved_courses($teacher_post->ID, $courses_saved);
-  //$courses = lxp_get_courses();
 ?>
 
 <!DOCTYPE html>
@@ -251,67 +250,13 @@
                 <th>Students Completed</th>
               </tr>
             </thead>
-            <tbody>
-                  <tr>
-                    <td>Demo Class</td>
-                    <td>Composting</td>
-                    <td>
-                      <div class="assignments-table-cs-td-poly">
-                        <div class="polygon-shap polygonshape-<?php echo $segment; ?>">
-                          <span>L</span>
-                        </div>
-                        <div>
-                          <span>कोर्स की जानकारी</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      July 17, 2023
-                    </td>
-                    <td>
-                      <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php //echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['To Do', 'In Progress'])">0/10</a></div>
-                    </td>
-                    <td>
-                      <?php
-                        //$student_stats = lxp_assignment_stats($assignment->ID);
-                      ?>
-                      <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php //echo $assignment->ID; ?>, '<?php //echo $trek->post_title; ?>', '<?php //echo $trek_section->title; ?>', ['Completed'])">0/5</a></div>
-                    </td>
-                  </tr>  
-                  <tr>
-                    <td>Demo Class</td>
-                    <td>Paver Block</td>
-                    <td>
-                      <div class="assignments-table-cs-td-poly">
-                        <div class="polygon-shap polygonshape-<?php echo $segment; ?>">
-                          <span>L</span>
-                        </div>
-                        <div>
-                          <span>पेवर ब्लॉक - परिचय</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      July 20, 2023
-                    </td>
-                    <td>
-                      <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php //echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['To Do', 'In Progress'])">0/10</a></div>
-                    </td>
-                    <td>
-                      <?php
-                        //$student_stats = lxp_assignment_stats($assignment->ID);
-                      ?>
-                      <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php //echo $assignment->ID; ?>, '<?php //echo $trek->post_title; ?>', '<?php //echo $trek_section->title; ?>', ['Completed'])">0/5</a></div>
-                    </td>
-                  </tr>  
+            <tbody>  
               <?php 
                 foreach ($assignments as $assignment) { 
                   $class_post = get_post(get_post_meta($assignment->ID, 'class_id', true));
-                  $trek_section_id = get_post_meta($assignment->ID, 'trek_section_id', true);
-                  global $wpdb;
-                  $trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id={$trek_section_id}");
-                  $trek = get_post(get_post_meta($assignment->ID, 'trek_id', true));
-                  $segment = implode("-", explode(" ", strtolower($trek_section->title))) ;
+                  $lxp_lesson_post = get_post(get_post_meta($assignment->ID, 'lxp_lesson_id', true));
+                  $course = get_post(get_post_meta($assignment->ID, 'course_id', true));
+                  $lesson_segment = implode("-", explode(" ", strtolower($lxp_lesson_post->post_title))) ;
                   
                   $student_stats = lxp_assignment_stats($assignment->ID);
                   $statuses = array("To Do", "In Progress");
@@ -325,14 +270,19 @@
               ?>
                 <tr>
                   <td><?php echo $class_post->post_title; ?></td>
-                  <td><?php echo $trek->post_title; ?></td>
+                  <td>
+                    <?php 
+                      echo $course->post_title; 
+                      $course_post_image = has_post_thumbnail( $course->ID ) ? get_the_post_thumbnail_url($course->ID) : $treks_src.'/assets/img/tr_main.jpg';                       
+                    ?>
+                  </td>
                   <td>
                     <div class="assignments-table-cs-td-poly">
-                      <div class="polygon-shap polygonshape-<?php echo $segment; ?>">
-                        <span><?php echo $trek_section->title[0]; ?></span>
+                      <div class="polygon-shap">
+                        <span><?php echo $lxp_lesson_post->post_title[0]; ?></span>
                       </div>
                       <div>
-                        <span><?php echo $trek_section->title; ?></span>
+                        <span><?php echo $lxp_lesson_post->post_title; ?></span>
                       </div>
                     </div>
                   </td>
@@ -344,13 +294,13 @@
                     ?>
                   </td>
                   <td>
-                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['To Do', 'In Progress'])"><?php echo count($students_in_progress); ?>/<?php echo count($student_stats); ?></a></div>
+                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $course->post_title; ?>', '<?php echo $lxp_lesson_post->post_title; ?>', ['To Do', 'In Progress'], '<?php echo $course_post_image; ?>')"><?php echo count($students_in_progress); ?>/<?php echo count($student_stats); ?></a></div>
                   </td>
                   <td>
                     <?php
                       $student_stats = lxp_assignment_stats($assignment->ID);
                     ?>
-                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Completed'])"><?php echo count($students_completed); ?>/<?php echo count($student_stats); ?></a></div>
+                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $course->post_title; ?>', '<?php echo $lxp_lesson_post->post_title; ?>', ['Completed'], '<?php echo $course_post_image; ?>')"><?php echo count($students_completed); ?>/<?php echo count($student_stats); ?></a></div>
                   </td>
                 </tr>  
               <?php } ?>
@@ -369,32 +319,12 @@
     crossorigin="anonymous"></script>
   
   <script type="text/javascript">
-    function fetch_assignment_stats(assignment_id, trek, segment, statuses) {
-
-      jQuery('#student-progress-trek-title').text(trek);
-      jQuery('#student-progress-trek-segment').text(segment);
-      jQuery('#student-progress-trek-segment-char').text(segment[0]);
-      var segmentColor = "#979797";
-      switch (segment) {
-          case 'Overview':
-              segmentColor = "#979797";
-              break;
-          case 'Recall':
-              segmentColor = "#ca2738";
-              break;
-          case 'Practice A':
-              segmentColor = "#1fa5d4";
-              break;
-          case 'Practice B':
-              segmentColor = "#1fa5d4";
-              break;
-          case 'Apply':
-              segmentColor = "#9fc33b";
-              break;
-          default:
-              segmentColor = "#979797";
-              break;
-      }
+    function fetch_assignment_stats(assignment_id, course, segment, statuses, course_post_image) {
+      jQuery('#student-progress-course-title').text(course);
+      jQuery('#student-progress-course-post-image').html(`<img width="50" class="rounded wp-post-image" src="`+course_post_image+`" alt="logo" />`);
+      jQuery('#student-progress-course-segment').text(segment);
+      jQuery('#student-progress-course-segment-char').text(segment[0]);
+      var segmentColor = "#1fa5d4";
       jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-tab-polygon').css('background-color', segmentColor);
       jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon-name, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-user-name').css('color', segmentColor);
       

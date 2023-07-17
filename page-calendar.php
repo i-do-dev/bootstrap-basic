@@ -105,7 +105,7 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
             </form>
           </div>
         </div>
-        <div class="rpa-segments-box">
+        <!-- <div class="rpa-segments-box">
           <h5 class="rpa-heading">RPA Segments</h5>
           <div class="rpa-segments-form">
             <div class="form-check">
@@ -129,7 +129,7 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
               <label class="form-check-label" for="apply"> Apply </label>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </section>
@@ -167,50 +167,32 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
               eventClassNames: function(arg) {
                   let segment_class = "segment-default-event";
                   if (arg.event.extendedProps.hasOwnProperty("segment")) {
-                      segment_class = arg.event.extendedProps.segment + "-event";
+                      //segment_class = arg.event.extendedProps.segment + "-event";
+                      segment_class = "practice-b-event";
                   }
                   return segment_class;
               },
               eventContent: function(arg) {
-                  let trek_segment_el = document.createElement('p');
-                  trek_segment_el.innerHTML = arg.event.title;
-                  let event_title_class  = arg.event.extendedProps.segment + "-segment-event-title";
-                  trek_segment_el.classList.add(event_title_class);
-                  trek_segment_el.classList.add("lxp-event-title");
+                  let lesson_segment_el = document.createElement('p');
+                  lesson_segment_el.innerHTML = arg.event.title;
+                  let event_title_class  = "practice-b-segment-event-title";
+                  lesson_segment_el.classList.add(event_title_class);
+                  lesson_segment_el.classList.add("lxp-event-title");
                   
-                  let trek_el = document.createElement('p');
-                  trek_el.innerHTML = arg.event.extendedProps.trek;
-                  let event_sub_title_class = arg.event.extendedProps.segment + "-segment-event-sub-title"
-                  trek_el.classList.add(event_sub_title_class);
-                  trek_el.classList.add("lxp-event-sub-title");
+                  let course_el = document.createElement('p');
+                  course_el.innerHTML = arg.event.extendedProps.course;
+                  let event_sub_title_class = "practice-b-segment-event-sub-title"
+                  course_el.classList.add(event_sub_title_class);
+                  course_el.classList.add("lxp-event-sub-title");
 
-                  let event_dom_nodes = [trek_segment_el, trek_el];
+                  let event_dom_nodes = [lesson_segment_el, course_el];
                   return {domNodes: event_dom_nodes};
               },
               eventClick: function(eventClickInfo) {
-                  jQuery('#student-progress-trek-title').text(eventClickInfo.event.extendedProps.trek);
-                  jQuery('#student-progress-trek-segment').text(eventClickInfo.event.title);
-                  jQuery('#student-progress-trek-segment-char').text(eventClickInfo.event.title[0]);
-                  switch (eventClickInfo.event.title) {
-                      case 'Overview':
-                          segmentColor = "#979797";
-                          break;
-                      case 'Recall':
-                          segmentColor = "#ca2738";
-                          break;
-                      case 'Practice A':
-                          segmentColor = "#1fa5d4";
-                          break;
-                      case 'Practice B':
-                          segmentColor = "#1fa5d4";
-                          break;
-                      case 'Apply':
-                          segmentColor = "#9fc33b";
-                          break;
-                      default:
-                          segmentColor = "#ca2738";
-                          break;
-                  }
+                  jQuery('#student-progress-course-title').text(eventClickInfo.event.extendedProps.course);
+                  jQuery('#student-progress-course-segment').text(eventClickInfo.event.title);
+                  jQuery('#student-progress-course-segment-char').text(eventClickInfo.event.title[0]);
+                  var segmentColor = "#1fa5d4";
                   jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-tab-polygon').css('background-color', segmentColor);
                   jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon-name, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-user-name').css('color', segmentColor);
                   fetch_assignment_stats(eventClickInfo.event.id);

@@ -170,12 +170,12 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
 </div>
 
 <script type="text/javascript">
-    let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
-    let apiUrl = host + '/wp-json/lms/v1/';
+    //let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+    //let apiUrl = host + '/wp-json/lms/v1/';
     window.selected_students_ids = [];
     window.classes = <?php echo json_encode($classes); ?>;
-
     function class_select(class_id) {
+        console.log('class_id:',class_id);
         jQuery('#class_id').val(class_id);
         let class_record = window.classes.filter(the_class => the_class.ID == class_id)[0];
         jQuery('#class_title').text(class_record.post_title);
@@ -249,14 +249,13 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
         }
 
         if (ok) {
-            let trek_id = jQuery("#trek_id").val()
-            let segments_ids = jQuery("input[name='segments[]']:checked").get().map(segment => jQuery(segment).val());
+            let course_id = jQuery("#course_id").val();            
+            let lesson_ids = jQuery("input[name='lesson_ids[]']:checked").get().map(lesson_id => jQuery(lesson_id).val());
             let class_id = jQuery('#class_id').val();
-            let teacher_id = jQuery('#teacher_id').val();
-
+            let teacher_id = jQuery('#teacher_id').val();            
             let formData = new FormData();
-            formData.append('trek_id', trek_id);
-            formData.append('segments_ids', JSON.stringify(segments_ids));
+            formData.append('course_id', course_id);
+            formData.append('lesson_ids', JSON.stringify(lesson_ids));
             formData.append('class_id', class_id);
             formData.append('student_ids', JSON.stringify(window.selected_students_ids));
             formData.append('teacher_id', teacher_id);

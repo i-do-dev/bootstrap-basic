@@ -517,4 +517,22 @@ function lxp_get_teacher_saved_courses($teacher_post_id, $courses_saved_ids, $st
     }
 }
 
+function lxp_get_lessons_by_course($course_id)
+{
+    $lessons_query = new WP_Query( array( 
+        'post_type' => TL_LESSON_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,
+        'order' => 'asc',
+        'meta_query' => [
+            [
+              'key' => 'tl_course_id', 
+              'value' => $course_id,
+              'compare' => '='
+            ]
+        ]
+    ) );
+    return $lessons_query->get_posts();
+}
+
 ?>
