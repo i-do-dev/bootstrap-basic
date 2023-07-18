@@ -40,17 +40,17 @@ $lessons = lxp_get_lessons_by_course($course_id);
                     <h4 class="new-assignment-heading select-calendar-heading third-calendar-heading">Course</h4>
                     <div class="third-trek-box">
                         <div class="third-card-box">
-                            <?php
-                                if ( has_post_thumbnail( $course_post->ID ) ) {
-                                    echo get_the_post_thumbnail($course_post->ID, array(50,50), array( 'class' => 'rounded' )); 
-                                } else {
-                            ?>
                             <span class="select-course-image">
-                                <img width="50" src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" class="rounded wp-post-image" /> 
-                            </span>                            
-                            <?php        
-                                }
-                            ?>
+                                <?php
+                                    if ( has_post_thumbnail( $course_post->ID ) ) {
+                                        echo get_the_post_thumbnail($course_post->ID, array(50,50), array( 'class' => 'rounded' )); 
+                                    } else {
+                                ?>
+                                    <img width="50" src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" class="rounded wp-post-image" /> 
+                                <?php        
+                                    }
+                                ?>
+                            </span>
                             <p class="select-course-title"><?php echo $course_post->post_title ?></p>
                         </div>
                     </div>
@@ -236,9 +236,23 @@ $lessons = lxp_get_lessons_by_course($course_id);
                 jQuery('#lxp_lessons_select_error').hide();
                 jQuery('#lxp_lessons_view_container').html('');
                 fetch_lxp_sections(course_id);
+                fetch_lxp_lesson_by_course(course_id);
               }
             })
         }
+    }
+
+    function fetch_lxp_lesson_by_course(course_id) {
+        $.ajax({
+            method: "POST",
+            enctype: 'multipart/form-data',
+            url: apiUrl + "course/lxp_lessons",
+            data: {course_id}
+        }).done(function( response ) {
+            window.lessons = response.data.lxp_lessons;
+        }).fail(function (response) {
+            console.error("Can not load lessons by course");
+        });
     }
 
     function fetch_lxp_sections(course_id) {
