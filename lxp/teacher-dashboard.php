@@ -279,7 +279,8 @@
                   <td>
                     <div class="assignments-table-cs-td-poly">
                       <div class="polygon-shap">
-                        <span><?php echo $lxp_lesson_post->post_title[0]; ?></span>
+                        <!-- <span><?php echo $lxp_lesson_post->post_title[0]; ?></span> -->
+                        <span>L</span>
                       </div>
                       <div>
                         <span><?php echo $lxp_lesson_post->post_title; ?></span>
@@ -323,7 +324,8 @@
       jQuery('#student-progress-course-title').text(course);
       jQuery('#student-progress-course-post-image').html(`<img width="50" class="rounded wp-post-image" src="`+course_post_image+`" alt="logo" />`);
       jQuery('#student-progress-course-segment').text(segment);
-      jQuery('#student-progress-course-segment-char').text(segment[0]);
+      // jQuery('#student-progress-course-segment-char').text(segment[0]);
+      jQuery('#student-progress-course-segment-char').text('L');
       var segmentColor = "#1fa5d4";
       jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-tab-polygon').css('background-color', segmentColor);
       jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon-name, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-user-name').css('color', segmentColor);

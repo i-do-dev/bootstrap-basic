@@ -95,7 +95,7 @@ global $treks_src;
                 jQuery('#student-progress-course-title').text(eventClickInfo.event.extendedProps.course);
                 jQuery('#student-progress-course-post-image').html(`<img width="50" class="rounded wp-post-image" src="`+course_post_image+`" alt="logo" />`);
                 jQuery('#student-progress-course-segment').text(eventClickInfo.event.title);
-                jQuery('#student-progress-course-segment-char').text(eventClickInfo.event.title[0]);
+                jQuery('#student-progress-course-segment-char').text('L');
                 var segmentColor = "#1fa5d4";
                 jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-tab-polygon').css('background-color', segmentColor);
                 jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon-name, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-user-name').css('color', segmentColor);

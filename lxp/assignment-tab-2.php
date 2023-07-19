@@ -217,7 +217,7 @@ $lessons = lxp_get_lessons_by_course($course_id);
             let course_record = window.courses.filter(course => course.ID == course_id)[0];            
             jQuery('.select-course-title').text(course_record.post_title);
             fetch_lxp_sections(course_id);
-        } else {
+        } else if (jQuery('#course_id').val() != course_id) {
             Swal.fire({
               title: 'Do you want to change the Course?',
               showCancelButton: true,
@@ -347,7 +347,7 @@ $lessons = lxp_get_lessons_by_course($course_id);
                 <div class="time-date-box">
                     <input class="form-check-input lesson-checkbox" type="checkbox" value="` + lxp_lesson.ID + `" id="lesson_id_` + lxp_lesson.ID + `" name="lesson_ids[]" ` + checked + ` section="`+lxp_section+`"/>                
                     <div class="tags-body-polygon">
-                        <span>` + lxp_lesson.post_title[0] + `</span>
+                        <span>L</span>
                     </div>
                     <div class="tags-body-detail">
                         <p data-id="` + lxp_lesson.ID + `" id="lesson_body_id_` + lxp_lesson.ID + `" class="lesson-name">` + lxp_lesson.post_title + `</p>
@@ -390,7 +390,7 @@ $lessons = lxp_get_lessons_by_course($course_id);
         <div id="lesson-view_` + lesson.ID + `" lxpsection="`+lxp_section+`" class="`+lxp_section+`"><div id="` + lesson.ID + `" class="third-trek-box practice-a-trek-box" title="lesson-view-box-` + lesson.ID + `">
             <div class="tags-body practice-a-poly-body">
                 <div class="tags-body-polygon">
-                    <span>` + lesson.post_title[0] + `</span>
+                    <span>L</span>
                 </div>
                 <div class="tags-body-detail">
                     <span>` + lesson.post_title + `</span>
@@ -401,7 +401,7 @@ $lessons = lxp_get_lessons_by_course($course_id);
 
     function onLxpLessonsCheckboxSelect() {
         window.selected_lxp_lessons = jQuery("input[name='lesson_ids[]']:checked").get().map(lxp_lesson_checkbox => jQuery(lxp_lesson_checkbox).val());
-        let selected_lxp_lessons_label = window.selected_lxp_lessons.length > 0 ? window.selected_lxp_lessons.length : "Select sections";
+        let selected_lxp_lessons_label = window.selected_lxp_lessons.length > 0 ? window.selected_lxp_lessons.length : "Select lessons";
         jQuery("#select-lxp-lessons-label").text(selected_lxp_lessons_label);
     }
 
