@@ -6,22 +6,25 @@ $slides = $slides->slides;
 
 // get assignment submission 'mark_as_graded' post meta
 $mark_as_graded = get_post_meta($assignment_submission['ID'], 'mark_as_graded', true);
+global $post;
 ?>
 <div class="tab-content" id="myTabContent">
     <div class="container">
-        <div class="row">
-            <div class="col-md-3">
-                <button type="button" class="btn btn-outline-secondary" onclick="back()"><i class="bi bi-arrow-return-left"></i> Back</button>
-            </div>
-            <div class="col-md-3 offset-md-6">
-                <div class="alert alert-info" role="alert" style="padding-left: 38px;">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="markGraded" <?php echo boolval($mark_as_graded) ? 'checked' : '/'; ?>>
-                        <label class="form-check-label" for="markGraded"><strong>Mark Graded</strong></label>
+        <?php if ($post->post_name === 'grade-assignment') { ?>
+            <div class="row">
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-outline-secondary" onclick="back()"><i class="bi bi-arrow-return-left"></i> Back</button>
+                </div>
+                <div class="col-md-3 offset-md-6">
+                    <div class="alert alert-info" role="alert" style="padding-left: 38px;">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="markGraded" <?php echo boolval($mark_as_graded) ? 'checked' : '/'; ?>>
+                            <label class="form-check-label" for="markGraded"><strong>Mark Graded</strong></label>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        <?php } ?>
         <div class="row">
             <div class="col-md-12">
                 <table class="table">

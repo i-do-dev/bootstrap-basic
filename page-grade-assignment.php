@@ -626,7 +626,7 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
             url: apiUrl + 'assignment/submission/mark-as-graded',
             type: "POST",
             data: {
-              "assignment_submission_id": "<?php echo $assignment_submission['ID']; ?>",
+              "assignment_submission_id": "<?php echo $assignment_submission ? $assignment_submission['ID'] : 0; ?>",
               "checked": checked
             },
             success: function (response) {

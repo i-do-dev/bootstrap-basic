@@ -298,7 +298,7 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
                   });
               ?>
                 <tr>
-                  <td><?php echo $class_post->post_title; ?></td>
+                  <td><?php echo $class_post ? $class_post->post_title : 'Demo Class'; ?></td>
                   <td><?php echo $trek->post_title; ?></td>
                   <td>
                     <div class="assignments-table-cs-td-poly">

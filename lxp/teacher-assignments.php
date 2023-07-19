@@ -192,7 +192,7 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
                   });
               ?>
                 <tr>
-                  <td><?php echo $class_post->post_title; ?></td>
+                  <td><?php echo $class_post ? $class_post->post_title : 'Demo Class'; ?></td>
                   <td><?php echo $trek->post_title; ?></td>
                   <td>
                     <div class="assignments-table-cs-td-poly">

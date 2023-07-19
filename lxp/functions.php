@@ -484,6 +484,9 @@ function get_assignment_lesson_slides($assignment_post_id) {
     $data =  array();
     if ($code === 200) {
         $data = json_decode(wp_remote_retrieve_body($response));
+        $data->slides = array_filter($data->slides, function($item) {
+            return strtolower($item->title) !== 'you did it!';
+        });
     }
     return $data;
 }
