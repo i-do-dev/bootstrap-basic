@@ -547,4 +547,125 @@ function lxp_assignment_submission_auto_score($assignment_submission_id, $slide)
     );
 }
 
+function lxp_get_teacher_group_by_type($lxp_class_teacher_id, $type)
+{
+    $query = new WP_Query( array( 
+        'post_type' => TL_CLASS_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array(
+                'key' => 'lxp_class_teacher_id', 
+                'value' => $lxp_class_teacher_id, 'compare' => '='
+            ),
+            array(
+                'key' => 'lxp_class_type', 
+                'value' => $type, 'compare' => '='
+            )
+        )
+    ) );
+    return $query->get_posts();
+}
+
+function lxp_get_teacher_groups($lxp_group_teacher_id)
+{
+    $query = new WP_Query( array( 
+        'post_type' => TL_GROUP_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array(
+                'key' => 'lxp_group_teacher_id', 
+                'value' => $lxp_group_teacher_id, 'compare' => '='
+            )
+        )
+    ) );
+    return $query->get_posts();
+}
+
+function lxp_get_class_group($class_id)
+{
+    $query = new WP_Query( array( 
+        'post_type' => TL_GROUP_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_class_group_id', 'value' => $class_id, 'compare' => '=')
+        )
+    ) );
+    return $query->get_posts();
+}
+
+function lxp_get_student_class_group_by_type($student_id, $type)
+{
+    $query = new WP_Query( array( 
+        'post_type' => TL_CLASS_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(            
+            array('key' => 'lxp_student_ids', 'value' => $student_id, 'compare' => '='),
+            array(
+                'key' => 'lxp_class_type', 
+                'value' => $type, 'compare' => '='
+            )
+        )
+    ) );
+    return $query->get_posts();
+}
+
+function lxp_get_all_teacher_groups($teachers_ids)
+{
+    if (empty($teachers_ids)) {
+        return array();
+    }
+
+    $query = new WP_Query( array( 
+        'post_type' => TL_GROUP_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_group_teacher_id', 'value' => $teachers_ids, 'compare' => 'IN')
+        )
+    ) );
+    return $query->get_posts();
+}
+
+function lxp_get_all_teachers_group_by_type($teachers_ids, $type)
+{
+    if (empty($teachers_ids)) {
+        return array();
+    }
+
+    $query = new WP_Query( array( 
+        'post_type' => TL_CLASS_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_class_teacher_id', 'value' => $teachers_ids, 'compare' => 'IN'),
+            array(
+                'key' => 'lxp_class_type', 
+                'value' => $type, 'compare' => '='
+            )
+        )
+    ) );
+    return $query->get_posts();
+}
+
+function lxp_get_all_teachers_groups($teachers_ids)
+{
+    if (empty($teachers_ids)) {
+        return array();
+    }
+
+    $query = new WP_Query( array( 
+        'post_type' => TL_GROUP_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_group_teacher_id', 'value' => $teachers_ids, 'compare' => 'IN')
+        )
+    ) );
+    return $query->get_posts();
+}
+
 ?>

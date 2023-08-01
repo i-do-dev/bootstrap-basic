@@ -9,27 +9,27 @@ $teacher_post = $args['teacher_post'];
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-header-title">
-                    <h2 class="modal-title" id="classModalLabel"><span id="class-action-heading">New</span> Class</h2>
+                    <h2 class="modal-title" id="classModalLabel"><span id="class-action-heading">New</span> Class & Other Group</h2>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body">                
                 <div class="alert alert-danger invalid-feedback-student_ids" role="alert" style="display: none;">
-                    Please select students
+                    Please select at least one student.
                 </div>
-                <div class="alert alert-danger invalid-feedback-schedule" role="alert" style="display: none;">
-                    Please make class schedule with valide time.
-                </div>
+                <!-- <div class="alert alert-danger invalid-feedback-schedule" role="alert" style="display: none;">
+                    Please make class schedule with valid time.
+                </div> -->
                 <form class="row g-3" id="classForm">
                     <input type="hidden" name="class_teacher_id" id="class_teacher_id" value="<?php echo $teacher_post->ID; ?>" />
                     <input type="hidden" name="class_post_id" id="class_post_id" value="0" />
                     <div class="personal_box">
                         <!-- Left Class box -->
                         <div class="class-information">
-                            <p class="personal-text">Class information</p>
+                            <p class="personal-text">Class & Other Group information</p>
                             <div class="search_box">
-                                <label class="trek-label">Class name</label>
+                                <label class="trek-label">Name</label>
                                 <input type="text" class="form-control period-select" value="" id="class_name" name="class_name" />
                             </div>
                             <div class="search_box">
@@ -108,34 +108,10 @@ $teacher_post = $args['teacher_post'];
 
                         <!-- Right Class box -->
                         <div class="class-information class-information">
-                            <p class="personal-text">Classes</p>
-
+                            <p class="personal-text">Classes & Other Group</p>
                             <!-- Select Grade -->
                             <div class="search_box">
                                 <label class="trek-label">Grade</label>
-                                <!-- <div class="dropdown period-box">
-                                    <button class="input_dropdown dropdown-button" type="button"
-                                        id="dropdownMenu2" data-bs-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false">
-                                        Select a Grade
-                                        <img class="rotate-arrow" src="<?php // echo $treks_src; ?>/assets/img/down-arrow.svg"
-                                            alt="logo" />
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                        <button class="dropdown-item dropdown-class">
-                                            <p>1st grade</p>
-                                        </button>
-                                        <button class="dropdown-item dropdown-class" type="button">
-                                            <p>2d grade</p>
-                                        </button>
-                                        <button class="dropdown-item dropdown-class" type="button">
-                                            <p>3rd grade</p>
-                                        </button>
-                                        <button class="dropdown-item dropdown-class" type="button">
-                                            <p>4th grade</p>
-                                        </button>
-                                    </div>
-                                </div> -->
                                 <select class="form-select form-control" aria-label="Default select example" name="grade" id="grade">
                                     <option value="0">--- Select ---</option>
                                     <option value="1st">1st</option>
@@ -195,6 +171,26 @@ $teacher_post = $args['teacher_post'];
                                     </div>
                                 </div>
                             </div>
+                            <div class="horizontal-line"></div>
+                            <p class="personal-text">Type</p>
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" value="classes" id="classes_radio" name="type" checked>
+                                                <label class="form-check-label" for="classes">Classes</label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" value="other_group" id="other_group_radio" name="type">
+                                                <label class="form-check-label" for="other_group">Other Group</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <!-- Button Section -->
@@ -241,7 +237,14 @@ function onClassEdit(class_id) {
             jQuery('input#' + day + '-ed').val(class_record.schedule[day].end);
         });
 
-        jQuery('select#grade').val(class_record.grade);
+        jQuery('select#grade').val(class_record.grade);      
+        if (class_record.lxp_class_type == 'other_group') {
+            jQuery('#classes_radio').attr('checked', false);
+            jQuery('#other_group_radio').attr('checked', true);
+        } else {
+            jQuery('#classes_radio').attr('checked', true);
+            jQuery('#other_group_radio').attr('checked', false);
+        }
         
         class_record.lxp_student_ids.forEach(student_id => {
             jQuery('input.select-student-check[value="' + student_id + '"]').prop('checked', true);
@@ -279,7 +282,6 @@ function onClassEdit(class_id) {
         jQuery(classForm).on('submit', function(e) {
             e.preventDefault();
             jQuery(".alert-danger").hide();
-
             const formData = new FormData(e.target);
             $.ajax({
                 method: "POST",
@@ -307,9 +309,9 @@ function onClassEdit(class_id) {
                         jQuery('#classModal input[name="' + element + '"]').addClass('is-invalid');
                         jQuery('#classModal textarea[name="' + element + '"]').addClass('is-invalid');
                         jQuery('#classModal select[name="' + element + '"]').addClass('is-invalid');
-                        if (element === "schedule") {
-                            jQuery(".invalid-feedback-" + element).show();
-                        }
+                        // if (element === "schedule") {
+                        //     jQuery(".invalid-feedback-" + element).show();
+                        // }
                     });
                 }
             });

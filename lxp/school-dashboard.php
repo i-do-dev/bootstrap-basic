@@ -5,8 +5,12 @@ $school_post = lxp_get_user_school_post();
 $teachers = lxp_get_school_teachers($school_post->ID);
 $students = lxp_get_school_students($school_post->ID);
 $school_teachers_ids = array_map(function ($teacher) { return $teacher->ID; }, $teachers);
-$classes = lxp_get_all_teachers_classes($school_teachers_ids);
 $assignments = lxp_get_all_teachers_assignments($school_teachers_ids);
+//$classes = lxp_get_all_teachers_classes($school_teachers_ids);
+$classes = lxp_get_all_teachers_group_by_type($school_teachers_ids, 'classes');
+$other_groups = lxp_get_all_teachers_group_by_type($school_teachers_ids, 'other_group');
+$countClassesOtherGroup = count($classes) + count($other_groups);
+$groups = lxp_get_all_teachers_groups($school_teachers_ids);
 ?>
 
 <!DOCTYPE html>
@@ -101,13 +105,13 @@ $assignments = lxp_get_all_teachers_assignments($school_teachers_ids);
                     </div>
                     <div class="card">
                         <img src="<?php echo $treks_src; ?>/assets/img/classes.svg" alt="logo" />
-                        <h3 class="numbers-heading"><?php echo count($classes); ?></h3>
-                        <p class="name-text">Classes</p>
+                        <h3 class="numbers-heading"><?php echo $countClassesOtherGroup; ?></h3>
+                        <p class="name-text">Classes & Other Group</p>
                     </div>
                     <div class="card">
                         <img src="<?php echo $treks_src; ?>/assets/img/groups.svg" alt="logo" />
-                        <h3 class="numbers-heading">0</h3>
-                        <p class="name-text">Groups</p>
+                        <h3 class="numbers-heading"><?php echo count($groups); ?></h3>
+                        <p class="name-text">Small Groups</p>
                     </div>
                     <div class="card">
                         <img src="<?php echo $treks_src; ?>/assets/img/user.svg" alt="logo" />
@@ -148,10 +152,17 @@ $assignments = lxp_get_all_teachers_assignments($school_teachers_ids);
                                 </button>
                             </li>
                             <li>
-                                <button class="nav-link" id="inprogress-tab" data-bs-toggle="tab"
+                                <button class="nav-link" id="og-tab" data-bs-toggle="tab"
+                                    data-bs-target="#other-group-tab-content" type="button" role="tab"
+                                    aria-controls="other-group-tab-content" aria-selected="false">
+                                    Other Group
+                                </button>
+                            </li>
+                            <li>
+                                <button class="nav-link" id="sg-tab" data-bs-toggle="tab"
                                     data-bs-target="#group-tab-content" type="button" role="tab"
                                     aria-controls="group-tab-content" aria-selected="false">
-                                    Groups
+                                    Small Group
                                 </button>
                             </li>
                         </ul>
@@ -160,6 +171,8 @@ $assignments = lxp_get_all_teachers_assignments($school_teachers_ids);
                         <?php get_template_part('lxp/school-dashboard-teachers-tab', 'teacher-tab', array('teachers' => $teachers)); ?>
                         <?php get_template_part('lxp/school-dashboard-students-tab', 'student-tab', array('students' => $students)); ?>
                         <?php get_template_part('lxp/school-dashboard-classes-tab', 'class-tab', array('classes' => $classes)); ?>
+                        <?php get_template_part('lxp/school-dashboard-other-groups-tab', 'other-group-tab', array('other_groups' => $other_groups)); ?>
+                        <?php get_template_part('lxp/school-dashboard-groups-tab', 'group-tab', array('groups' => $groups)); ?>
                     </div>
                 </section>
             </section>

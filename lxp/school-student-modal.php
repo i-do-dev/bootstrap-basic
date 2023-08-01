@@ -9,7 +9,7 @@ $school_post = $args['school_post'];
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-header-title">
-                    <h2 class="modal-title" id="studentModalLabel"><span class="student-action">Update</span> Student</h2>
+                    <h2 class="modal-title" id="studentModalLabel"><span class="student-action">New</span> Student</h2>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-label="Close"></button>
@@ -177,7 +177,7 @@ $school_post = $args['school_post'];
                         <div class="btn_box">
                             <button class="btn" type="button" data-bs-dismiss="modal"
                                 aria-label="Close">Cancel</button>
-                            <button class="btn" id="saveStudentBtn"><span class="student-action">Update</span></button>
+                            <button class="btn" id="saveStudentBtn"><span class="student-action">Add</span></button>
                         </div>
                     </div>
                 </form>

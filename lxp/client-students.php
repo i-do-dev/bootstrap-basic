@@ -164,6 +164,12 @@ $students = lxp_get_all_schools_students($district_schools_ids);
                                         </div>
                                     </th>
                                     <th>
+                                        <div class="th1 th3">
+                                            Other Group
+                                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
+                                        </div>
+                                    </th>
+                                    <th>
                                         <div class="th1 th4">
                                             Grades
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
@@ -194,7 +200,16 @@ $students = lxp_get_all_schools_students($district_schools_ids);
                                         <td>
                                             <div class="table-status"><?php echo $student_admin->user_email?></div>
                                         </td>
-                                        <td><?php echo count(lxp_get_student_all_classes($student->ID)); ?></td>
+                                        <td>
+                                            <?php
+                                                echo count(lxp_get_student_class_group_by_type($student->ID, 'classes'));
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php 
+                                                echo count(lxp_get_student_class_group_by_type($student->ID, 'other_group'));
+                                            ?>
+                                        </td>
                                         <td class="grade">
                                             <?php 
                                                 $student_grades = json_decode(get_post_meta($student->ID, 'grades', true));

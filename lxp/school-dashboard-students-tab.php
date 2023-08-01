@@ -11,10 +11,15 @@ $students = $args["students"];
                 <p class="filter-heading">Filter</p>
             </div>
         </div>
-        <label for="import-student" class="primary-btn add-heading">
-            Import Students (CSV)
-        </label >
-        <input type="file" id="import-student" hidden />
+        <div>
+            <button id="studentModalBtn" class="add-heading" type="button" data-bs-toggle="modal" data-bs-target="#studentModal" class="primary-btn">
+                Add New Student
+            </button>
+            <label for="import-student" class="primary-btn add-heading">
+                Import Students (CSV)
+            </label >
+            <input type="file" id="import-student" hidden />
+        </div>
     </div>
     <div class="students-table">
         <table class="table">
@@ -35,6 +40,12 @@ $students = $args["students"];
                     <th>
                         <div class="th1 th3">
                             Classes
+                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
+                        </div>
+                    </th>
+                    <th>
+                        <div class="th1 th3">
+                            Other Group
                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                         </div>
                     </th>
@@ -69,7 +80,16 @@ $students = $args["students"];
                         <td>
                             <div class="table-status"><?php echo $student_admin->user_email?></div>
                         </td>
-                        <td><?php echo count(lxp_get_student_all_classes($student->ID)); ?></td>
+                        <td>
+                            <?php 
+                                echo count(lxp_get_student_class_group_by_type($student->ID, 'classes'));
+                            ?>
+                        </td>
+                        <td>
+                            <?php 
+                                echo count(lxp_get_student_class_group_by_type($student->ID, 'other_group'));
+                            ?>
+                        </td>
                         <td class="grade">
                             <?php 
                                 $student_grades = json_decode(get_post_meta($student->ID, 'grades', true));
