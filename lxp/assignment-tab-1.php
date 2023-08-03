@@ -5,6 +5,15 @@ global $treks_src;
     <!-- New Assignment Day Week Month Buttons -->
     <section class="assignment-section new-assignment-section">
         <h3 class="new-assignment-heading">New Assignment</h3>
+        <?php
+            if ( isset($_GET['back']) && $_GET['back'] == 'true' ) {                
+        ?>
+            <div class="alert alert-warning" role="alert">
+              Please select date and time.
+            </div>
+        <?php
+            }
+        ?>
         <!-- <div class="button-box">
             <button class="assignment-button day-button">Day</button>
             <button class="assignment-button week-button active">Week</button>

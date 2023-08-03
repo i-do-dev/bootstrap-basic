@@ -28,21 +28,23 @@ $treks = get_posts($args);
             <h3 class="new-assignment-heading">New Assignment</h3>
             <div class="select-calendar-box">
                 <h4 class="new-assignment-heading select-calendar-heading">Calendar</h4>
-                <div class="calendar-time-date <?php echo boolval($trek_post) ? 'third-tab-date-time' : '' ?>">
-                    <img src="<?php echo $treks_src; ?>/assets/img/clock-outline.svg" alt="logo" />
-                    <div class="time-date-box days-box">
-                        <div class="time-date-box">
-                            <p class="date-time"><span id="assignment_day"></span>, <span id="assignment_month"></span> <span id="assignment_date"></span></p>
-                            <p class="date-time" id="assignment_time_start"></p>
-                            <p class="date-time to-text">To</p>
-                            <p class="date-time" id="assignment_time_end"></p>
-                        </div>
-                        <!-- <label class="to-text all-day-label">
-                            <input class="form-check-input" type="checkbox" />
-                            All day
-                        </label> -->
+                <a href='<?php echo site_url("assignment?trek=".$trek_id."&segment=".$segment_id."&back=true"); ?>'>
+                    <div class="calendar-time-date <?php echo boolval($trek_post) ? 'third-tab-date-time' : '' ?>">
+                        <img src="<?php echo $treks_src; ?>/assets/img/clock-outline.svg" alt="logo" />                    
+                        <div id="set_date_time" class="time-date-box days-box">
+                            <div class="time-date-box">
+                                <p class="date-time"><span id="assignment_day"></span>, <span id="assignment_month"></span> <span id="assignment_date"></span></p>
+                                <p class="date-time" id="assignment_time_start"></p>
+                                <p class="date-time to-text">To</p>
+                                <p class="date-time" id="assignment_time_end"></p>
+                            </div>
+                            <!-- <label class="to-text all-day-label">
+                                <input class="form-check-input" type="checkbox" />
+                                All day
+                            </label> -->
+                        </div>                    
                     </div>
-                </div>
+                </a>
                 
                 <?php if (boolval($trek_post)) { ?>
                     <!-- TREK -->

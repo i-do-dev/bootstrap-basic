@@ -2,7 +2,9 @@
 global $treks_src;
 $userdata = get_userdata(get_current_user_id());
 $teacher_post = lxp_get_teacher_post($userdata->data->ID);
-$classes = lxp_get_teacher_classes($teacher_post->ID);
+//$classes = lxp_get_teacher_classes($teacher_post->ID);
+$classes = lxp_get_teacher_group_by_type($teacher_post->ID, 'classes');
+$other_groups = lxp_get_teacher_group_by_type($teacher_post->ID, 'other_group');
 ?>
 <input type="hidden" name="teacher_id" id="teacher_id" value="<?php echo $teacher_post->ID; ?>" />
 <div class="tab-pane fade show" id="step-3-tab-pane" role="tabpanel" aria-labelledby="step-3-tab" tabindex="2">
@@ -103,35 +105,60 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
             <h3 class="new-assignment-heading assign-heading">Assign Content</h3>
             <p class="date-time assign-text">What class would you like to assign to?
             <div class="search_box">
-                <label class="trek-label">Class</label>
-                <div class="dropdown period-box">
-                    <input type="hidden" id="class_id" name="class_id" value="" />
-                    <button class="input_dropdown dropdown-button" type="button" id="classDD"
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span id="class_title">Select a class</span>
-                        <img class="rotate-arrow" src="<?php echo $treks_src; ?>/assets/img/down-arrow.svg" alt="logo" />
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="classDD">
-                        <?php foreach ($classes as $class) {
+                <label class="trek-label">Classes/Other Group</label>
+                <input type="hidden" id="class_id" name="class_id" value="" />
+                <select onChange="class_select()" class="form-select form-control" aria-label="Default select example" name="classes_other_group" id="classes_other_group">
+                    <option value="0">Select Classe/Other Group</option>
+                    <optgroup value="classes" label="Classes">
+                        <?php
+                            foreach ($classes as $class) {
                         ?>
-                            <button class="dropdown-item dropdown-class" onclick="class_select(<?php echo $class->ID; ?>)">
-                                <p><?php echo $class->post_title; ?></p>
-                            </button>
-                        <?php } ?>
-                    </div>
-                </div>
+                            <option value="<?php echo $class->ID; ?>"><?php echo $class->post_title; ?></option>
+                        <?php        
+                            }
+                        ?>
+                    </optgroup>
+                    <optgroup value="other_group" label="Other Group">
+                        <?php
+                            foreach ($other_groups as $other_group) {
+                        ?>
+                            <option value="<?php echo $other_group->ID; ?>"><?php echo $other_group->post_title; ?></option>
+                        <?php        
+                            }
+                        ?>
+                    </optgroup>
+                </select>
             </div>
             <div class="invalid-feedback" id="class_select_error">
-                Please select class
+                Please Select Classe/Other Group
+            </div>
+
+            <!-- Select a Students -->
+            <div class="search_box">
+                <label class="trek-label">Small Groups</label>                 
+                <div class="dropdown period-box">
+                    <input type="hidden" id="group_id" name="group_id" value="" />
+                    <button class="input_dropdown dropdown-button" type="button" id="smallGroupDD"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span id="group_title">Select Small Group</span>
+                        <img class="rotate-arrow" src="<?php echo $treks_src; ?>/assets/img/down-arrow.svg" alt="logo" />
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="smallGroupDD">
+                        <div id="small-groups-container"></div>                        
+                    </div>
+                </div> 
+            </div>
+            <div class="invalid-feedback" id="group_select_error">
+                Please Select Small Group
             </div>
             
-            <!-- Select a class Period -->
+            <!-- Select a Students -->
             <div class="search_box">
                 <label class="trek-label">Students</label>
                 <div class="dropdown period-box">
                     <button class="input_dropdown dropdown-button second-drop-button" type="button"
                         id="studentsDD" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span id="select-students-label">Select students</span>
+                        <span id="select-students-label">Select Students</span>
                         <img class="rotate-arrow" src="<?php echo $treks_src; ?>/assets/img/down-arrow.svg" alt="logo" />
                     </button>
                     <div class="dropdown-menu" aria-labelledby="studentsDD">
@@ -152,7 +179,7 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
                 </div>
             </div>
             <div class="invalid-feedback" id="students_select_error">
-                Please select students
+                Please Select Students
             </div>
         </div>
 
@@ -173,21 +200,54 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
     let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
     let apiUrl = host + '/wp-json/lms/v1/';
     window.selected_students_ids = [];
-    window.classes = <?php echo json_encode($classes); ?>;
 
-    function class_select(class_id) {
+    function class_select() {
+        var class_id = jQuery('#classes_other_group :selected').val();
         jQuery('#class_id').val(class_id);
-        let class_record = window.classes.filter(the_class => the_class.ID == class_id)[0];
-        jQuery('#class_title').text(class_record.post_title);
-        fetch_class_student(class_id);
+        jQuery('#group_id').val("");
+        jQuery('#group_title').text("Select Small Group");
+        jQuery("#select-students-label").text("Select Students");
+        jQuery("#select-all-students").prop("checked", false);
+        jQuery("#students-container").empty();
+        window.selected_students_ids = [];
+        jQuery('.select-students-logos').html("");
+        jQuery('.students_count_label').text("0");
+        fetch_small_groups(class_id);
     }
 
-    function fetch_class_student(class_id) {
+    function fetch_small_groups(class_id) {        
         $.ajax({
             method: "POST",
             enctype: 'multipart/form-data',
-            url: apiUrl + "class/students",
+            url: apiUrl + "class/groups",
             data: {class_id}
+        }).done(function( response ) {
+            window.class_small_group = response.data.small_groups;
+            let class_small_group_html = window.class_small_group.map(small_group => class_small_group_dd_html(small_group)).join('\n');
+            jQuery('#small-groups-container').html(class_small_group_html);
+        }).fail(function (response) {
+            console.error("Can not load class");
+        });
+    }
+
+    function class_small_group_dd_html(small_group) {
+        var title = "'"+small_group.post_title+"'";;
+        return `
+        <button class="dropdown-item dropdown-small-group" onclick="fetch_group_student(`+small_group.ID+`, `+title+`)">
+            <p>`+small_group.post_title+`</p>
+        </button>
+        `;
+    }
+    
+
+    function fetch_group_student(group_id, group_title) {
+        jQuery('#group_id').val(group_id);
+        jQuery('#group_title').text(group_title);
+        $.ajax({
+            method: "POST",
+            enctype: 'multipart/form-data',
+            url: apiUrl + "group/students",
+            data: {group_id}
         }).done(function( response ) {
             window.class_students = response.data.students;
             let class_students_dd_html = window.class_students.map(student => class_student_dd_html(student)).join('\n');
@@ -220,7 +280,7 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
     
     function onStudentsCheckboxSelect() {
         window.selected_students_ids = jQuery("input[name='student_ids[]']:checked").get().map(student_checkbox => jQuery(student_checkbox).val());
-        let selected_students_label = window.selected_students_ids.length > 0 ? window.selected_students_ids.length : "Select students";
+        let selected_students_label = window.selected_students_ids.length > 0 ? window.selected_students_ids.length : "Select Students";
         jQuery("#select-students-label").text(selected_students_label);
         jQuery(".students_count_label").text(window.selected_students_ids.length);
         set_student_logos();
@@ -241,6 +301,13 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
             jQuery("#class_select_error").hide();
         }
 
+        if (!parseInt(jQuery("#group_id").val())) {
+            ok = false;
+            jQuery("#group_select_error").show();
+        } else {
+            jQuery("#group_select_error").hide();
+        }
+
         if (window.selected_students_ids.length == 0) {
             ok = false;
             jQuery("#students_select_error").show();
@@ -252,12 +319,14 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
             let trek_id = jQuery("#trek_id").val()
             let segments_ids = jQuery("input[name='segments[]']:checked").get().map(segment => jQuery(segment).val());
             let class_id = jQuery('#class_id').val();
+            let group_id = jQuery('#group_id').val();
             let teacher_id = jQuery('#teacher_id').val();
 
             let formData = new FormData();
             formData.append('trek_id', trek_id);
             formData.append('segments_ids', JSON.stringify(segments_ids));
             formData.append('class_id', class_id);
+            formData.append('group_id', group_id);
             formData.append('student_ids', JSON.stringify(window.selected_students_ids));
             formData.append('teacher_id', teacher_id);
             formData.append('assignment_post_id', '0');
@@ -303,9 +372,10 @@ $classes = lxp_get_teacher_classes($teacher_post->ID);
     });
 
     function resetWizard() {
-        jQuery("#class_title").text("Select a class");
         jQuery("#class_id").val("");
-        jQuery("#select-students-label").text("Select students");
+        jQuery('#group_id').val("");
+        jQuery('#group_title').text("Select Small Group");
+        jQuery("#select-students-label").text("Select Students");
         jQuery("#select-all-students").prop("checked", false);
         jQuery("#students-container").empty();
         window.selected_students_ids = [];

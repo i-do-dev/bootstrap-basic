@@ -7,10 +7,12 @@ $students = lxp_get_school_students($school_post->ID);
 $school_teachers_ids = array_map(function ($teacher) { return $teacher->ID; }, $teachers);
 $assignments = lxp_get_all_teachers_assignments($school_teachers_ids);
 //$classes = lxp_get_all_teachers_classes($school_teachers_ids);
+$default_classes = lxp_get_teacher_all_default_classes($school_teachers_ids);
 $classes = lxp_get_all_teachers_group_by_type($school_teachers_ids, 'classes');
 $other_groups = lxp_get_all_teachers_group_by_type($school_teachers_ids, 'other_group');
-$countClassesOtherGroup = count($classes) + count($other_groups);
+$countClassesOtherGroup = count($default_classes) + count($classes) + count($other_groups);
 $groups = lxp_get_all_teachers_groups($school_teachers_ids);
+$classes = array_merge($default_classes, $classes);
 ?>
 
 <!DOCTYPE html>

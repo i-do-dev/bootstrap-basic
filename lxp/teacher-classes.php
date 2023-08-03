@@ -7,8 +7,10 @@ $teacher_school_id = get_post_meta($teacher_post->ID, 'lxp_teacher_school_id', t
 $school_post = get_post($teacher_school_id);
 $students = lxp_get_school_students($teacher_school_id);
 //$classes = lxp_get_teacher_classes($teacher_post->ID);
+$default_classes = lxp_get_teacher_default_classes($teacher_post->ID);
 $classes = lxp_get_teacher_group_by_type($teacher_post->ID, 'classes');
 $other_groups = lxp_get_teacher_group_by_type($teacher_post->ID, 'other_group');
+$classes = array_merge($default_classes, $classes);
 ?>
 
 <!DOCTYPE html>
