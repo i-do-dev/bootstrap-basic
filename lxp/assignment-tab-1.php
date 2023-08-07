@@ -8,15 +8,6 @@ global $treks_src;
         <div id="set_date_time_alert" class="alert alert-warning" role="alert">
           Please select date and time.
         </div>
-        <!-- <?php
-            if ( isset($_GET['back']) && $_GET['back'] == 'true' ) {                
-        ?>
-            <div class="alert alert-warning" role="alert">
-              Please select date and time.
-            </div>
-        <?php
-            }
-        ?> -->
         <!-- <div class="button-box">
             <button class="assignment-button day-button">Day</button>
             <button class="assignment-button week-button active">Week</button>
