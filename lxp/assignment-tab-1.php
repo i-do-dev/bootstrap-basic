@@ -5,7 +5,10 @@ global $treks_src;
     <!-- New Assignment Day Week Month Buttons -->
     <section class="assignment-section new-assignment-section">
         <h3 class="new-assignment-heading">New Assignment</h3>
-        <?php
+        <div id="set_date_time_alert" class="alert alert-warning" role="alert">
+          Please select date and time.
+        </div>
+        <!-- <?php
             if ( isset($_GET['back']) && $_GET['back'] == 'true' ) {                
         ?>
             <div class="alert alert-warning" role="alert">
@@ -13,7 +16,7 @@ global $treks_src;
             </div>
         <?php
             }
-        ?>
+        ?> -->
         <!-- <div class="button-box">
             <button class="assignment-button day-button">Day</button>
             <button class="assignment-button week-button active">Week</button>
@@ -44,12 +47,14 @@ global $treks_src;
     <section class="calendar-container">
         <section class="calendar-section">
             <div id="calendar"></div>
+            <input type="hidden" id="set_date_time" value="0" />
         </section>
     </section>
 </div>
 
 <script type="text/javascript">
     jQuery(document).ready(function() {
+        jQuery('#set_date_time_alert').hide();
 
         let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
         let apiUrl = host + '/wp-json/lms/v1/';

@@ -47,11 +47,13 @@ global $trek_post;
 
         let allTabs = document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(tabEl => {
             tabEl.addEventListener('shown.bs.tab', function (event) {
-                console.log('event.target >>> ', jQuery(event.target).attr('id'));
-                
+                console.log('event.target >>> ', jQuery(event.target).attr('id'));                
                 switch (jQuery(event.target).attr('id')) {
                     case 'step-1-tab':
                         window.calendar.render();
+                        if ( jQuery('#set_date_time').val() == 1 ) {
+                            jQuery('#set_date_time_alert').show();                            
+                        }
                         break;
                     case 'step-2-tab':                        
                         set_assignment_date();
@@ -89,10 +91,14 @@ global $trek_post;
     }
 
     function go_back(url) {
+        jQuery('#set_date_time').val(0);
+        jQuery('#set_date_time_alert').hide();
         window.location = url;
     }
 
     function go_previous() {
+        jQuery('#set_date_time').val(0);
+        jQuery('#set_date_time_alert').hide();
         window.back_tab.show();
     }
 </script>

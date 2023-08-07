@@ -28,10 +28,11 @@ $treks = get_posts($args);
             <h3 class="new-assignment-heading">New Assignment</h3>
             <div class="select-calendar-box">
                 <h4 class="new-assignment-heading select-calendar-heading">Calendar</h4>
-                <a href='<?php echo site_url("assignment?trek=".$trek_id."&segment=".$segment_id."&back=true"); ?>'>
+                <!-- <a href='<?php echo site_url("assignment?trek=".$trek_id."&segment=".$segment_id."&back=true"); ?>'> -->
+                    <a href='javascript:void();' onClick='set_date_time();'>
                     <div class="calendar-time-date <?php echo boolval($trek_post) ? 'third-tab-date-time' : '' ?>">
                         <img src="<?php echo $treks_src; ?>/assets/img/clock-outline.svg" alt="logo" />                    
-                        <div id="set_date_time" class="time-date-box days-box">
+                        <div class="time-date-box days-box">
                             <div class="time-date-box">
                                 <p class="date-time"><span id="assignment_day"></span>, <span id="assignment_month"></span> <span id="assignment_date"></span></p>
                                 <p class="date-time" id="assignment_time_start"></p>
@@ -278,6 +279,11 @@ $treks = get_posts($args);
         });
     });
 
+    function set_date_time() {
+        jQuery('#set_date_time').val(1);
+        bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-1-tab')).show();
+    }
+
     function trek_sections_html(section) {
         let notation = section.title.toLowerCase().split(' ').join('-');
         return `
@@ -298,6 +304,9 @@ $treks = get_posts($args);
     }
 
     function go_step_3() {
+        jQuery('#set_date_time').val(0);
+        jQuery('#set_date_time_alert').hide();
+
         ok = true;
         if (!parseInt(jQuery('#trek_id').val())) {
             jQuery('#trek_select_error').show();
