@@ -1,22 +1,29 @@
 <?php
-global $treks_src, $trek_post;
-$select_trek_title = !boolval($trek_post) ? "Select a TREK" : $trek_post->post_title;
-$trek_id = $trek_post ? $trek_post->ID : 0;
-global $wpdb;
-$trek_sections = boolval($trek_post) ? $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections WHERE trek_id={$trek_post->ID} ORDER BY sort") : [];
-$overview = array_values(array_filter($trek_sections, function ($trek_section) { return $trek_section->title === "Overview"; }));
-$recall = array_values(array_filter($trek_sections, function ($trek_section) { return $trek_section->title === "Recall"; }));
-$practice_a = array_values(array_filter($trek_sections, function ($trek_section) { return $trek_section->title === "Practice A"; }));
-$practice_b = array_values(array_filter($trek_sections, function ($trek_section) { return $trek_section->title === "Practice B"; }));
-$apply = array_values(array_filter($trek_sections, function ($trek_section) { return $trek_section->title === "Apply"; }));
-$segment_id = isset($_GET['segment']) ? $_GET['segment'] : null;
-$select_segment_title = $segment_id ? "1" : "Select a RPA segment";
-$args = array(
-    'posts_per_page'   => -1,
-    'post_type'        => 'tl_trek',
-    'order' => 'asc'
-);
-$treks = get_posts($args);
+    global $treks_src, $trek_post;
+    
+    $args = array(
+        'posts_per_page'   => -1,
+        'post_type'        => 'tl_trek',
+        'order' => 'asc'
+    );
+    $treks = get_posts($args);
+    if ( isset($_GET['trek']) && $_GET['trek'] == 0 && isset($_GET['segment']) && $_GET['segment'] == 0 ) {
+        $trek_post = $treks[0];
+    }
+    $select_trek_title = !boolval($trek_post) ? "Select a TREK" : $trek_post->post_title;    
+    $trek_id = $trek_post ? $trek_post->ID : 0;
+
+    global $wpdb;    
+    $trek_sections = ( boolval($trek_post) ) ? $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections WHERE trek_id={$trek_post->ID} ORDER BY sort") : [];
+
+    $overview = array_values(array_filter($trek_sections, function ($trek_section) { return $trek_section->title === "Overview"; }));
+    $recall = array_values(array_filter($trek_sections, function ($trek_section) { return $trek_section->title === "Recall"; }));
+    $practice_a = array_values(array_filter($trek_sections, function ($trek_section) { return $trek_section->title === "Practice A"; }));
+    $practice_b = array_values(array_filter($trek_sections, function ($trek_section) { return $trek_section->title === "Practice B"; }));
+    $apply = array_values(array_filter($trek_sections, function ($trek_section) { return $trek_section->title === "Apply"; }));
+    $segment_id = isset($_GET['segment']) ? $_GET['segment'] : null;
+    $select_segment_title = $segment_id ? "1" : "Select a RPA segment";
+
 ?>
 <div class="tab-pane fade show" id="step-2-tab-pane" role="tabpanel" aria-labelledby="setp-2-tab" tabindex="1">
 
@@ -28,7 +35,6 @@ $treks = get_posts($args);
             <h3 class="new-assignment-heading">New Assignment</h3>
             <div class="select-calendar-box">
                 <h4 class="new-assignment-heading select-calendar-heading">Calendar</h4>
-                <!-- <a href='<?php echo site_url("assignment?trek=".$trek_id."&segment=".$segment_id."&back=true"); ?>'> -->
                     <a href='javascript:void();' onClick='set_date_time();'>
                     <div class="calendar-time-date <?php echo boolval($trek_post) ? 'third-tab-date-time' : '' ?>">
                         <img src="<?php echo $treks_src; ?>/assets/img/clock-outline.svg" alt="logo" />                    
@@ -53,7 +59,7 @@ $treks = get_posts($args);
                     <div class="third-trek-box">
                         <div class="third-card-box">
                             <img src="<?php echo $treks_src; ?>/assets/img/interdependence-logo.svg" alt="img" />
-                            <p class="interdependence-text"><?php echo $trek_post->post_title ?></p>
+                            <p class="trek_title"><?php echo $select_trek_title ?></p>
                         </div>
                         <!-- <img class="cursor-img" src="<?php echo $treks_src; ?>/assets/img/delete.svg" alt="img" /> -->
                     </div>
@@ -63,8 +69,9 @@ $treks = get_posts($args);
                     <h4 class="new-assignment-heading select-calendar-heading">RPA Segments</h4>
                     <div id="rpa_segments_container">
                         <?php 
-                            $trek_section = get_trek_section_by_id($_GET['segment']);
-                            $trek_notation = implode('-', explode(' ', strtolower($trek_section->title)));
+                            if ( $_GET['segment'] > 0 ) {
+                                $trek_section = get_trek_section_by_id($_GET['segment']);
+                                $trek_notation = implode('-', explode(' ', strtolower($trek_section->title)));
                         ?>
                             <div class="third-trek-box <?php echo $trek_notation; ?>-trek-box">
                                 <!-- Selected Section -->
@@ -78,8 +85,8 @@ $treks = get_posts($args);
                                 </div>
                                 <!-- <img class="cursor-img" src="<?php //echo $treks_src; ?>/assets/img/delete.svg" alt="img" /> -->
                             </div>
-                        <?php } ?>
-                    </div> 
+                        <?php } } ?>                        
+                    </div>                     
                     
                     <!-- horizontal line -->
                 <div class="horizontal-line"></div>
@@ -124,14 +131,14 @@ $treks = get_posts($args);
                 <div class="dropdown period-box">
                     <button class="input_dropdown dropdown-button" type="button" id="dropdownMenu2"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span id="select-trek-title"><?php echo $select_trek_title; ?></span>
+                            <span class="trek_title"><?php echo $select_trek_title; ?></span>
                         <img class="rotate-arrow" src="<?php echo $treks_src; ?>/assets/img/down-arrow.svg" alt="logo" />
                     </button>
                     
                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                         
                         <?php foreach ($treks as $trek) { ?>
-                            <button class="dropdown-item dropdown-item2 dropdown-class" onclick="set_trek_id(<?php echo $trek->ID; ?>)">
+                            <button class="dropdown-item dropdown-item2 dropdown-class" onclick="set_trek_id(<?php echo $trek->ID; ?>, '<?php echo $trek->post_title; ?>')">
                                 <div class="third-card-box">
                                     <img src="<?php echo $treks_src; ?>/assets/img/interdependence-logo.svg" alt="img" />
                                     <p class="interdependence-text"><?php echo $trek->post_title; ?></p>
@@ -178,7 +185,7 @@ $treks = get_posts($args);
                             class="dropdown-item dropdown-item2 polygon-button overview-button dropdown-class">
                             <!-- overview -->
                             <div class="tags-body select-tags-body-polygon overview-poly-body">
-                                <input class="form-check-input input-overview" type="checkbox" value="<?php echo $overview ? $overview[0]->id : '' ?>" id="Recall" name="segments[]" <?php echo $overview && $overview[0]->id == $segment_id ? 'checked=checked' : '' ?> />
+                                <input class="form-check-input input-overview" type="checkbox" value="<?php echo $overview ? $overview[0]->id : '' ?>" title="Overview" id="Recall" name="segments[]" <?php echo $overview && $overview[0]->id == $segment_id ? 'checked=checked' : '' ?> />
                                 <div class="tags-body-polygon">
                                     <span>O</span>
                                 </div>
@@ -191,7 +198,7 @@ $treks = get_posts($args);
                             class="dropdown-item dropdown-item2 polygon-button recall-button dropdown-class">
                             <!-- Recall -->
                             <div class="tags-body select-tags-body-polygon recall-poly-body">
-                                <input class="form-check-input input-recall" type="checkbox" value="<?php echo $recall ? $recall[0]->id : '' ?>" id="Recall" name="segments[]" <?php echo $recall && $recall[0]->id == $segment_id ? 'checked=checked' : '' ?> />
+                                <input class="form-check-input input-recall" type="checkbox" value="<?php echo $recall ? $recall[0]->id : '' ?>" title="Recall" id="Recall" name="segments[]" <?php echo $recall && $recall[0]->id == $segment_id ? 'checked=checked' : '' ?> />
                                 <div class="tags-body-polygon">
                                     <span>R</span>
                                 </div>
@@ -205,7 +212,7 @@ $treks = get_posts($args);
                             class="dropdown-item dropdown-item2 polygon-button practice-button dropdown-class">
                             <!-- Practice A -->
                             <div class="tags-body select-tags-body-polygon pa-poly-body">
-                                <input class="form-check-input input-practiceA" type="checkbox" value="<?php echo $practice_a ? $practice_a[0]->id : '' ?>" id="practiceA" name="segments[]" <?php echo $practice_a && $practice_a[0]->id == $segment_id ? 'checked=checked' : '' ?> />
+                                <input class="form-check-input input-practiceA" type="checkbox" value="<?php echo $practice_a ? $practice_a[0]->id : '' ?>" title="Practice A" id="practiceA" name="segments[]" <?php echo $practice_a && $practice_a[0]->id == $segment_id ? 'checked=checked' : '' ?> />
                                 <div class="tags-body-polygon ">
                                     <span>P</span>
                                 </div>
@@ -219,7 +226,7 @@ $treks = get_posts($args);
                             class="dropdown-item dropdown-item2 polygon-button practice-button dropdown-class">
                             <!-- Practice B -->
                             <div class="tags-body select-tags-body-polygon pa-poly-body">
-                                <input class="form-check-input input-practiceB" type="checkbox" value="<?php echo $practice_b ? $practice_b[0]->id : '' ?>" id="practiceB" name="segments[]" <?php echo $practice_b && $practice_b[0]->id == $segment_id ? 'checked=checked' : '' ?> />
+                                <input class="form-check-input input-practiceB" type="checkbox" value="<?php echo $practice_b ? $practice_b[0]->id : '' ?>" title="Practice B" id="practiceB" name="segments[]" <?php echo $practice_b && $practice_b[0]->id == $segment_id ? 'checked=checked' : '' ?> />
                                 <div class="tags-body-polygon ">
                                     <span>P</span>
                                 </div>
@@ -232,7 +239,7 @@ $treks = get_posts($args);
                         <button class="dropdown-item dropdown-item2 polygon-button apply-button dropdown-class">
                             <!-- Apply -->
                             <div class="tags-body select-tags-body-polygon apply-poly-body">
-                                <input class="form-check-input input-apply" type="checkbox" value="<?php echo $apply ? $apply[0]->id : '' ?>" id="apply" name="segments[]" <?php echo $apply && $apply[0]->id == $segment_id ? 'checked=checked' : '' ?>/>
+                                <input class="form-check-input input-apply" type="checkbox" value="<?php echo $apply ? $apply[0]->id : '' ?>" title="Apply" id="apply" name="segments[]" <?php echo $apply && $apply[0]->id == $segment_id ? 'checked=checked' : '' ?>/>
                                 <div class="tags-body-polygon apply-body-polygon">
                                     <span>A</span>
                                 </div>
@@ -299,8 +306,9 @@ $treks = get_posts($args);
         </div>`;
     }
 
-    function set_trek_id(trek_id) {
+    function set_trek_id(trek_id, trek_title) {
         jQuery('#trek_id').val(trek_id);
+        jQuery('.trek_title').text(trek_title);
     }
 
     function go_step_3() {

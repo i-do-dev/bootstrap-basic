@@ -1,6 +1,14 @@
 <?php
-global $treks_src;
-global $trek_post;
+    global $treks_src; global $trek_post;
+    $args = array(
+        'posts_per_page'   => -1,
+        'post_type'        => 'tl_trek',
+        'order' => 'asc'
+    );
+    $treks = get_posts($args);
+    if ( isset($_GET['trek']) && $_GET['trek'] == 0 && isset($_GET['segment']) && $_GET['segment'] == 0 ) {
+        $trek_post = $treks[0];
+    }
 ?>
 <section class="welcome-section assignment-section">
     <div id="back-btn">

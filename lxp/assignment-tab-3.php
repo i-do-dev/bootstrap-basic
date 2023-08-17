@@ -318,6 +318,7 @@ $other_groups = lxp_get_teacher_group_by_type($teacher_post->ID, 'other_group');
         if (ok) {
             let trek_id = jQuery("#trek_id").val()
             let segments_ids = jQuery("input[name='segments[]']:checked").get().map(segment => jQuery(segment).val());
+            let segments_title = jQuery("input[name='segments[]']:checked").get().map(segment => jQuery(segment).attr('title'));
             let class_id = jQuery('#class_id').val();
             let group_id = jQuery('#group_id').val();
             let teacher_id = jQuery('#teacher_id').val();
@@ -325,6 +326,7 @@ $other_groups = lxp_get_teacher_group_by_type($teacher_post->ID, 'other_group');
             let formData = new FormData();
             formData.append('trek_id', trek_id);
             formData.append('segments_ids', JSON.stringify(segments_ids));
+            formData.append('segments_title', JSON.stringify(segments_title));
             formData.append('class_id', class_id);
             formData.append('group_id', group_id);
             formData.append('student_ids', JSON.stringify(window.selected_students_ids));

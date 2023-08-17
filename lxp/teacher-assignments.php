@@ -153,110 +153,41 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
       <div class="pending-assignments-section-div">
         <!--  header -->
         <div class="pending-assignments-header section-div-header">
-          <h2>Pending Assignments</h2>
-          <div>
-            <!-- <a href="<?php echo site_url('calendar');?>">See All</a> -->
-          </div>
-        </div>
-        <!--  table -->
-        <div class="pending-assignments-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Class</th>
-                <th>TREK</th>
-                <th>Segment</th>
-                <th>Due Date</th>
-                <th>Student Progress</th>
-                <th>Students Submitted</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php 
-                foreach ($assignments as $assignment) { 
-                  $class_post = get_post(get_post_meta($assignment->ID, 'class_id', true));
-                  $trek_section_id = get_post_meta($assignment->ID, 'trek_section_id', true);
-                  global $wpdb;
-                  $trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id={$trek_section_id}");
-                  $trek = get_post(get_post_meta($assignment->ID, 'trek_id', true));
-                  $segment = implode("-", explode(" ", strtolower($trek_section->title)));
-
-                  $student_stats = lxp_assignment_stats($assignment->ID);
-                  $statuses = array("To Do", "In Progress");
-                  $students_in_progress = array_filter($student_stats, function($studentStat) use ($statuses) {
-                    return in_array($studentStat["status"], $statuses);
-                  });
-                  $statuses = array("Completed");
-                  $students_completed = array_filter($student_stats, function($studentStat) use ($statuses) {
-                    return in_array($studentStat["status"], $statuses);
-                  });
-              ?>
-                <tr>
-                  <td><?php echo $class_post ? $class_post->post_title : 'Demo Class'; ?></td>
-                  <td><?php echo $trek->post_title; ?></td>
-                  <td>
-                    <div class="assignments-table-cs-td-poly">
-                      <div class="polygon-shap polygonshape-<?php echo $segment; ?>">
-                        <span><?php echo $trek_section->title[0]; ?></span>
-                      </div>
-                      <div>
-                        <span><?php echo $trek_section->title; ?></span>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <?php
-                      $start_date = get_post_meta($assignment->ID, "start_date", true);
-                      $start_date = date("M d, Y", strtotime($start_date));
-                      echo $start_date;
-                    ?>
-                  </td>
-                  <td>
-                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['To Do', 'In Progress'])"><?php echo count($students_in_progress); ?>/<?php echo count($student_stats); ?></a></div>
-                  </td>
-                  <td>
-                    <?php
-                      $student_stats = lxp_assignment_stats($assignment->ID);
-                    ?>
-                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Completed'])"><?php echo count($students_completed); ?>/<?php echo count($student_stats); ?></a></div>
-                  </td>
-                </tr>  
-              <?php } ?>
-<!--               <tr>
-                <td>Elephants</td>
-                <td>
-                  <div class="assignments-table-cs-td-poly">
-                    <div class="polygon-shap">
-                      <span>P</span>
-                    </div>
-                    <div>
-                      <span>Physical Properties</span>
-                      <span>Practice B</span>
-                    </div>
+          <!-- <h2>Pending</h2> -->
+                <!-- Table Section -->
+          <section class="recent-treks-section-div table-section">            
+              <nav class="nav-section treks_nav table_tabs">                
+                  <ul class="treks_ul" id="myTab" role="tablist">
+                      <li>
+                          <button class="nav-link" data-bs-toggle="tab"
+                              data-bs-target="#pending-tab-content" type="button" role="tab" aria-controls="pending-tab-content"
+                              aria-selected="false">
+                              Pending
+                          </button>
+                      </li>
+                      <li>
+                          <button class="nav-link" data-bs-toggle="tab"
+                              data-bs-target="#completed-tab-content" type="button" role="tab"
+                              aria-controls="completed-tab-content" aria-selected="true">
+                              Completed
+                          </button>
+                      </li>
+                  </ul>
+                  
+                  <a href="<?php echo site_url("assignment??trek=0&segment=0") ?>" title="Add Assignment" class='btn btn-success' style="color:#FFFFFF;" role='button'> Add Assignment
+                  </a>
+                  <div>                    
+                    <img src="<?php echo $treks_src; ?>/assets/img/calendar<?php echo $post->post_name === "calendar" ? "-selected" : ""; ?>.svg" />
+                    <a href="<?php echo site_url("calendar") ?>">Calendar</a>
                   </div>
-                </td>
-                <td>Jan 21, 2023</td>
-                <td>25/30</td>
-              </tr>
-              <tr>
-                <td>Elephants</td>
-                <td>
-                  <div class="assignments-table-cs-td-poly">
-                    <div class="polygon-shap">
-                      <span>P</span>
-                    </div>
-                    <div>
-                      <span>Physical Properties</span>
-                      <span>Practice B</span>
-                    </div>
-                  </div>
-                </td>
-                <td>Jan 21, 2023</td>
-                <td>25/30</td>
-              </tr> -->
-            </tbody>
-          </table>
+              </nav>              
+              <div class="tab-content">
+                  <?php get_template_part('lxp/teacher-pending-assignment-tab', 'pending-tab', array('assignments' => $assignments)); ?>
+                  <?php get_template_part('lxp/teacher-completed-assignment-tab', 'completed-tab', array('assignments' => $assignments)); ?>
+              </div>
+          </section>
         </div>
+        
       </div>
     </section>
 
@@ -317,6 +248,23 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
     crossorigin="anonymous"></script>
   
   <script type="text/javascript">
+    jQuery(document).ready(function(){
+      jQuery('.nav-link').on('show.bs.tab', function (event) {
+          localStorage.setItem("teacher_assignments_tab", jQuery(event.target).attr('data-bs-target'));
+      });
+
+      let current_tab = localStorage.getItem("teacher_assignments_tab");
+      if (current_tab) {
+          let tabEl = jQuery('button.nav-link[data-bs-target="' + current_tab + '"]');
+          var tab = new bootstrap.Tab(tabEl);
+          tab.show();
+      } else {
+          let tabEl = jQuery('button.nav-link[data-bs-target="' + '#pending-tab-content' + '"]');
+          var tab = new bootstrap.Tab(tabEl);
+          tab.show();
+      }
+    });
+
     function fetch_assignment_stats(assignment_id, trek, segment, statuses) {
 
       jQuery('#student-progress-trek-title').text(trek);

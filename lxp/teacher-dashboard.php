@@ -275,6 +275,7 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
                 <th>Date</th>
                 <th>Student Progress</th>
                 <th>Students Submitted</th>
+                <th>Students Graded</th>
               </tr>
             </thead>
             <tbody>
@@ -325,6 +326,9 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
                       $student_stats = lxp_assignment_stats($assignment->ID);
                     ?>
                     <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Completed'])"><?php echo count($students_completed); ?>/<?php echo count($student_stats); ?></a></div>
+                  </td>
+                  <td>
+                    0
                   </td>
                 </tr>  
               <?php } ?>

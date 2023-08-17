@@ -46,6 +46,13 @@ global $treks_src;
 <script type="text/javascript">
     jQuery(document).ready(function() {
         jQuery('#set_date_time_alert').hide();
+        
+        const urlParams = new URL(window.location.href).searchParams;
+        const trek_id = urlParams.get('trek');
+        const segment_id = urlParams.get('segment');
+        if ( trek_id > 0 && segment_id == 0 ) {
+            bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-2-tab')).show();
+        }
 
         let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
         let apiUrl = host + '/wp-json/lms/v1/';
@@ -125,8 +132,8 @@ global $treks_src;
                 window.assignmentStatsModalObj.show();
             },
             select: function( calendarSelectionInfo ) {
-                window.calendarSelectionInfo = calendarSelectionInfo;
-                bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-2-tab')).show();
+               window.calendarSelectionInfo = calendarSelectionInfo;
+               bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-2-tab')).show();
             },
             viewDidMount: function(viewObject) {
                 jQuery('#month-date-text').text(viewObject.view.getCurrentData().viewTitle);
