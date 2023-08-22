@@ -1,10 +1,12 @@
 <?php
-global $treks_src;
-$userdata = get_userdata(get_current_user_id());
-$teacher_post = lxp_get_teacher_post($userdata->data->ID);
-//$classes = lxp_get_teacher_classes($teacher_post->ID);
-$classes = lxp_get_teacher_group_by_type($teacher_post->ID, 'classes');
-$other_groups = lxp_get_teacher_group_by_type($teacher_post->ID, 'other_group');
+    global $treks_src;
+    $userdata = get_userdata(get_current_user_id());
+    $teacher_post = lxp_get_teacher_post($userdata->data->ID);
+    //$classes = lxp_get_teacher_classes($teacher_post->ID);
+    $default_classes = lxp_get_teacher_default_classes($teacher_post->ID);
+    $classes = lxp_get_teacher_group_by_type($teacher_post->ID, 'classes');
+    $classes = array_merge($default_classes, $classes);
+    $other_groups = lxp_get_teacher_group_by_type($teacher_post->ID, 'other_group');
 ?>
 <input type="hidden" name="teacher_id" id="teacher_id" value="<?php echo $teacher_post->ID; ?>" />
 <div class="tab-pane fade show" id="step-3-tab-pane" role="tabpanel" aria-labelledby="step-3-tab" tabindex="2">

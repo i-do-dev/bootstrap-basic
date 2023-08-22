@@ -3,7 +3,9 @@
     global $userdata;
     $teacher_post = lxp_get_teacher_post($userdata->data->ID);
     $teacher_school_id = get_post_meta($teacher_post->ID, 'lxp_teacher_school_id', true);
+    $default_classes = lxp_get_teacher_default_classes($teacher_post->ID);
     $classes = lxp_get_teacher_group_by_type($teacher_post->ID, 'classes');
+    $classes = array_merge($default_classes, $classes);
     $other_groups = lxp_get_teacher_group_by_type($teacher_post->ID, 'other_group');
     $small_groups = lxp_get_teacher_groups($teacher_post->ID);
 ?>
