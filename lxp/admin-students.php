@@ -1,6 +1,7 @@
 <?php
-//get_template_part('lxp/functions');
-lxp_login_check();
+// get_template_part('lxp/functions');
+$treks_src = get_stylesheet_directory_uri() . '/treks-src';
+
 // get all user with role lxp_client_admin
 $lxp_client_admin_users = get_users(array('role' => 'lxp_client_admin'));
 $lxp_client_admin_user_ids = array_map(function ($user) { return $user->ID; },  $lxp_client_admin_users);
@@ -16,12 +17,18 @@ $district_posts = get_posts(array(
   )
 ));
 
-$treks_src = get_stylesheet_directory_uri() . '/treks-src';
 $district_post = lxp_get_user_district_post( (isset($_GET['district_id']) ? get_post_meta($_GET['district_id'], 'lxp_district_admin', true) : 0) );
 $district_schools = !$district_post ? [] : lxp_get_district_schools($district_post->ID);
 $district_schools_ids = array_map(function ($school) { return $school->ID; },  $district_schools);
 $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_id']) ? [$_GET['school_id']] : $district_schools_ids );
+
+global $userdata;
+$teacher_post =  isset($_GET['teacher_id']) ? get_post($_GET['teacher_id']) : null;
+$teacher_school_id = $teacher_post ? get_post_meta($teacher_post->ID, 'lxp_teacher_school_id', true) : 0;
+$school_post = get_post($teacher_school_id);
+$students = lxp_get_school_students($teacher_school_id);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,18 +36,45 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>District / Teachers</title>
+    <title>Students</title>
     <link href="<?php echo $treks_src; ?>/style/main.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolAdminTeachers.css" />
+    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/addNewTeacherModal.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolDashboard.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolAdminStudents.css" />
-    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/adminTeacher.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/adminInternalTeacherView.css" />
     <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
-    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/addNewTeacherModal.css" />
+    
+    <style type="text/css">
+        .heading-wrapper {
+            border: 0px solid red;
+            height: 115px;
+        }
+
+        .heading-left {
+            float: left;
+        }
+        .heading-right {
+            padding-top: 70px;
+            padding-right: 20px;
+            float: right;
+        }
+
+        .welcome-content {
+            padding: 20px 0;
+        }
+
+        .add-teacher-box {
+            display: block !important;
+        }
+
+        .add-heading {
+            margin-top: 20px !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -67,7 +101,9 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                         <!-- searching input -->
                         <div class="header-search">
                             <img src="<?php echo $treks_src; ?>/assets/img/header_search.svg" alt="svg" />
-                            <input placeholder="Search" />
+                            <form action="<?php echo site_url("search"); ?>">
+                                <input placeholder="Search" id="q" name="q" value="<?php echo isset($_GET["q"]) ? $_GET["q"]:''; ?>" />
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -87,53 +123,93 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
         </nav>
     </section>
 
-    <!-- Teachers: section-->
+    <!-- Welcome: section-->
     <section class="welcome-section">
-        <!-- Teachers: heading-->
-        <div class="welcome-content">
-            <h2 class="welcome-heading">Teachers</h2>
-            <p class="welcome-text">Comprehensive teacher database and records management</p>
-            <br />
-            <!-- bootstrap form with Dstricts drop down component displaying using $district_posts -->
-            <form class="row g-3">
-                <div class="col-md-4">
-                    <label for="district-drop-down" class="form-label">District</label>
-                    <select id="district-drop-down" class="form-select">
-                        <option value="0">Choose...</option>
-                        <?php foreach ($district_posts as $district_post) { ?>
-                            <option value="<?php echo $district_post->ID; ?>"<?php echo isset($_GET['district_id']) && $_GET['district_id'] == $district_post->ID ? ' selected=selected' : '' ?>><?php echo $district_post->post_title; ?></option>
-                        <?php } ?>
-                    </select>                    
+        <!-- Welcome: heading-->
+        <div class="heading-wrapper">
+            <div class="heading-left">
+                <div class="welcome-content">
+                    <h2 class="welcome-heading">Students</h2>
+                    <p class="welcome-text">Student enrollment and registration management</p>
                 </div>
-                <div class="col-md-4">
-                    <!-- School drop down using $district_schools -->
-                    <label for="school-drop-down" class="form-label">School</label>
-                    <select id="school-drop-down" class="form-select">
-                        <option value="0">Choose...</option>
-                        <?php foreach ($district_schools as $district_school) { ?>
-                            <option value="<?php echo $district_school->ID; ?>"<?php echo isset($_GET['school_id']) && $_GET['school_id'] == $district_school->ID ? ' selected=selected' : '' ?>><?php echo $district_school->post_title; ?></option>
-                        <?php } ?>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <button class="add-heading" type="button" type="button" data-bs-toggle="modal"
-                        data-bs-target="#teacherModal" class="primary-btn" style="margin-top: 25px;">
-                        Add New Teacher
-                    </button>
-                </div>
-            </form>
+            </div>
+
+<!-- 
+            <div class="heading-right">
+                <a href="<?php //echo site_url("students"); ?>" type="button" class="btn btn-secondary btn-lg">Students</a>
+                <a href="<?php //echo site_url("classes"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Classes & Other Group</a>
+                <a href="<?php //echo site_url("groups"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Small Group</a>
+            </div> -->
         </div>
 
-        <!-- Teachers: section-->
+        <!-- Total Schools: section-->
         <section class="school-section">
             <section class="school_teacher_cards">
+                <div class="add-teacher-box">
+                    <!-- <div class="search-filter-box">
+                        <div class="search_box">
+                            <label class="search-label">Search</label>
+                            <input type="text" name="text" placeholder="School, ID, admin" />
+                        </div>
+                        <div class="filter-box">
+                            <img src="<?php //echo $treks_src; ?>/assets/img/filter-alt.svg" alt="filter logo" />
+                            <p class="filter-heading">Filter</p>
+                        </div>
+                    </div> -->
 
-                <!-- Admin Teacher Table Section -->
+                    <!-- bootstrap html form with Dstricts, School and Teachers drop downs components with text search capabilities. These all drop downs use $district_posts, $district_schools and $district_schools_teachers php arrays for drop down items -->
+                    <div class="row">
+                        <div class="col-md-7">
+                            <form class="row">
+                                <div class="col-md-4">
+                                    <label for="district-drop-down" class="form-label">District</label>
+                                    <select class="form-select" id="district-drop-down" name="district_id">
+                                        <option value="0">Choose...</option>
+                                        <?php foreach ($district_posts as $district_post) { ?>
+                                            <option value="<?php echo $district_post->ID; ?>"<?php echo isset($_GET['district_id']) && $_GET['district_id'] == $district_post->ID ? ' selected=selected' : '' ?>><?php echo $district_post->post_title; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="district-drop-down" class="form-label">School</label>
+                                    <select class="form-select" id="school-drop-down" name="school_id">
+                                        <option value="0">Choose...</option>
+                                        <?php foreach ($district_schools as $district_school) { ?>
+                                            <option value="<?php echo $district_school->ID; ?>"<?php echo isset($_GET['school_id']) && $_GET['school_id'] == $district_school->ID ? ' selected=selected' : '' ?>><?php echo $district_school->post_title; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="district-drop-down" class="form-label">Teacher</label>
+                                    <select class="form-select" id="teacher-drop-down" name="teacher_id">
+                                        <option value="0">Choose...</option>
+                                        <?php foreach ($district_schools_teachers as $district_school_teacher) { ?>
+                                            <option value="<?php echo $district_school_teacher->ID; ?>"<?php echo isset($_GET['teacher_id']) && $_GET['teacher_id'] == $district_school_teacher->ID ? ' selected=selected' : '' ?>><?php echo $district_school_teacher->post_title; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-5">
+                            <div>
+                                <button id="studentModalBtn" class="add-heading" type="button" data-bs-toggle="modal" data-bs-target="#studentModal" class="primary-btn">
+                                    Add New Student
+                                </button>
+                                <label for="import-student" class="primary-btn add-heading">
+                                    Import Students (CSV)
+                                </label >
+                                <input type="file" id="import-student" hidden />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Section -->
                 <section class="recent-treks-section-div table-school-section">
 
                     <div class="students-table">
+                        <!-- 
                         <div class="school-box">
-                            <!-- 
                             <div class="showing-row-box">
                                 <p class="showing-row-text">Showing 1 - 5 of 25</p>
                                 <div class="row-box">
@@ -156,7 +232,6 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                                     </div>
                                 </div>
                             </div>
-                            
                             <div class="row-box">
                                 <p class="showing-row-text">First</p>
                                 <img class="previous-slide-img" src="<?php // echo $treks_src; ?>/assets/img/previous-arrow.svg" alt="logo" />
@@ -170,15 +245,14 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                                 <img class="last-slide-img" src="<?php // echo $treks_src; ?>/assets/img/last-slide.svg" alt="logo" />
                                 <p class="showing-row-text">Last</p>
                             </div>
-                             -->
-
                         </div>
+                        -->
                         <table class="table">
                             <thead>
                                 <tr>
                                     <th class="">
                                         <div class="th1">
-                                            Teacher
+                                            Student
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>
@@ -195,6 +269,18 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                                         </div>
                                     </th>
                                     <th>
+                                        <div class="th1 th3">
+                                            Other Group
+                                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="th1 th4">
+                                            Grades
+                                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
+                                        </div>
+                                    </th>
+                                    <th>
                                         <div class="th1 th5">
                                             ID
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
@@ -204,23 +290,44 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                             </thead>
                             <tbody>
                                 <?php 
-                                    foreach ($district_schools_teachers as $teacher) {
-                                        $teacher_admin = get_userdata(get_post_meta($teacher->ID, 'lxp_teacher_admin_id', true));
+                                    foreach ($students as $student) {
+                                        $student_admin = get_userdata(get_post_meta($student->ID, 'lxp_student_admin_id', true));
                                 ?>
                                     <tr>
                                         <td class="user-box">
                                             <div class="table-user">
-                                                <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="teacher" />
+                                                <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="student" />
                                                 <div class="user-about">
-                                                    <h5><?php echo $teacher_admin->display_name?></h5>
+                                                    <h5><?php echo $student_admin->display_name?></h5>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="table-status"><?php echo $teacher_admin->user_email?></div>
+                                            <div class="table-status"><?php echo $student_admin->user_email?></div>
                                         </td>
-                                        <td><?php echo count(lxp_get_teacher_classes($teacher->ID)); ?></td>
-                                        <td><?php echo $teacher->ID; ?></td>
+                                        <td>
+                                            <?php 
+                                                // echo count(lxp_get_student_all_classes($student->ID)); 
+                                                echo count(lxp_get_student_class_group_by_type($student->ID, 'classes'));
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php 
+                                                echo count(lxp_get_student_class_group_by_type($student->ID, 'other_group'));
+                                            ?>
+                                        </td>
+                                        <td class="grade">
+                                            <?php 
+                                                $student_grades = json_decode(get_post_meta($student->ID, 'grades', true));
+                                                $student_grades = $student_grades ? $student_grades : array();
+                                                foreach ($student_grades as $grade) {
+                                            ?>
+                                                <span><?php echo $grade; ?></span>
+                                            <?php        
+                                                }
+                                            ?>
+                                        </td>
+                                        <td><?php echo $student->ID ?></td>
                                         <td>
                                             <div class="dropdown">
                                                 <button class="dropdown_btn" type="button" id="dropdownMenu2"
@@ -228,7 +335,7 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                                                     <img src="<?php echo $treks_src; ?>/assets/img/dots.svg" alt="logo" />
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                                    <button class="dropdown-item" type="button" onclick="onTeacherEdit(<?php echo $teacher->ID; ?>)">
+                                                    <button class="dropdown-item" type="button" onclick="onStudentEdit(<?php echo $student->ID; ?>)">
                                                         <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
                                                         Edit</button>
                                                     <!-- <button class="dropdown-item" type="button">
@@ -241,7 +348,6 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                                 <?php } ?>
                             </tbody>
                         </table>
-                        
                         <!-- 
                         <div class="school-box">
                             <div class="showing-row-box">
@@ -262,7 +368,6 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                             </div>
                         </div>
                          -->
-
                     </div>
                 </section>
             </section>
@@ -278,17 +383,48 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
     
+    <?php 
+        if(isset($_GET['teacher_id'])) {
+            get_template_part('lxp/admin-student-modal', 'student-modal', array("school_post" => $school_post)); 
+        } else {
+    ?>
+        <div class="modal fade students-modal" id="studentModal" tabindex="-1" aria-labelledby="studentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="modal-header-title">
+                            <h2 class="modal-title" id="studentModalLabel"><span class="student-action">New</span> Student</h2>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Bootstrap alert with text: Please select District and School to add new student. -->
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            Please select <strong>Teacher</strong> to add/edit a student.</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
+
     <script>
         $(document).ready(function () {
             $('#district-drop-down').change(function () {
                 var district_id = $(this).val();
                 var url = new URL(window.location.href);
                 url.searchParams.set('district_id', district_id);
+
                 // unset school_id url param
                 url.searchParams.delete('school_id');
+                // unset teacher_id url param if it exists
+                url.searchParams.delete('teacher_id');
+
                 if (district_id == 0) {
                     url.searchParams.delete('district_id');
                 }
+
                 window.location.href = url.href;
             });
 
@@ -296,48 +432,27 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                 var school_id = $(this).val();
                 var url = new URL(window.location.href);
                 url.searchParams.set('school_id', school_id);
+
+                // unset teacher_id url param if it exists
+                url.searchParams.delete('teacher_id');
+
                 if (school_id == 0) {
                     url.searchParams.delete('school_id');
                 }
                 window.location = url.href;
             });
+
+            $('#teacher-drop-down').change(function() {
+                var teacher_id = $(this).val();
+                var url = new URL(window.location.href);
+                url.searchParams.set('teacher_id', teacher_id);
+                if (teacher_id == 0) {
+                    url.searchParams.delete('teacher_id');
+                }
+                window.location = url.href;
+            });
         });
     </script>
-
-    <?php 
-        // check if district_id and school_id GET set
-        if (isset($_GET['district_id']) && isset($_GET['school_id'])) {
-            get_template_part('lxp/admin-teacher-modal');
-        } else {
-    ?>
-            <div class="modal fade teachers-modal" id="teacherModal" tabindex="-1" aria-labelledby="teacherModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <div class="modal-header-title">
-                                <h2 class="modal-title" id="teacherModalLabel"><span class="teacher-action-head">New</span> Teacher</h2>
-                            </div>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Bootstrap alert with text: Please select District and School to add new teacher. -->
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                Please select <strong>District</strong> and <strong>School</strong> to add/edit a teacher.</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <script type="text/javascript">
-                function onTeacherEdit(x) {
-                    $('#teacherModal').modal('show');
-                }
-            </script>
-    <?php
-        }    
-    ?>
-
 </body>
 
 </html>
