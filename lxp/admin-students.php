@@ -26,7 +26,22 @@ global $userdata;
 $teacher_post =  isset($_GET['teacher_id']) ? get_post($_GET['teacher_id']) : null;
 $teacher_school_id = $teacher_post ? get_post_meta($teacher_post->ID, 'lxp_teacher_school_id', true) : 0;
 $school_post = get_post($teacher_school_id);
-$students = lxp_get_school_students($teacher_school_id);
+$students = [];
+if(isset($_GET['teacher_id'])) {
+    $students = get_posts(array(
+        'post_type' => 'tl_student',
+        'meta_query' => array(
+            array(
+                'key' => 'lxp_teacher_id',
+                'value' => $_GET['teacher_id'],
+                'compare' => '='
+            )
+        )
+    ));
+} else if(isset($_GET['school_id'])) {
+    $students = lxp_get_school_students($_GET['school_id']);
+    $school_post = get_post($_GET['school_id']);
+}
 ?>
 
 <!DOCTYPE html>

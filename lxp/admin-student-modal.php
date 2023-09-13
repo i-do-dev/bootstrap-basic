@@ -18,6 +18,7 @@ $school_post = $args['school_post'];
                 <form class="row g-3" id="studentForm">
                     <input type="hidden" name="school_admin_id" id="school_admin_id" value="<?php echo get_post_meta( $school_post->ID, 'lxp_school_admin_id', true ); ?>">
                     <input type="hidden" name="student_school_id" id="student_school_id" value="<?php echo $school_post->ID; ?>">
+                    <input type="hidden" name="teacher_id" id="teacher_id" value="<?php echo isset($_GET['teacher_id']) ? $_GET['teacher_id'] : 0; ?>">
                     <input type="hidden" name="student_post_id" id="student_post_id" value="0">
 
                     <div class="personal_box">
