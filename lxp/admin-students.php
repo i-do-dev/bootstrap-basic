@@ -422,6 +422,15 @@ if(isset($_GET['teacher_id'])) {
                 </div>
             </div>
         </div>
+        
+        <script type="text/javascript">
+            $(document).ready(function() {
+                jQuery("#import-student").on("change", function(e) {
+                    $('#studentModal').modal('show');
+                    jQuery("#import-student").val("");
+                });
+            });
+        </script>
     <?php } ?>
 
     <script>

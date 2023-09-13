@@ -234,6 +234,7 @@ function onStudentEdit(student_id) {
             let formData = new FormData();
             formData.append('student_school_id', jQuery("#student_school_id").val());
             formData.append('school_admin_id', jQuery("#school_admin_id").val());
+            formData.append('teacher_id', jQuery("#teacher_id").val());
             formData.append('students', e.target.files[0]);
             $.ajax({
                 method: "POST",
