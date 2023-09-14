@@ -95,7 +95,7 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
             <p class="welcome-text">Comprehensive teacher database and records management</p>
             <br />
             <!-- bootstrap form with Dstricts drop down component displaying using $district_posts -->
-            <form class="row g-3">
+            <form class="row g-3 recent-treks-section-div">
                 <div class="col-md-4">
                     <label for="district-drop-down" class="form-label">District</label>
                     <select id="district-drop-down" class="form-select">
