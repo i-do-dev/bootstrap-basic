@@ -58,7 +58,7 @@ $classes = array_merge($default_classes, $classes);
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Classes & Other Group</title>
+    <title>Classes & Other Groups</title>
     <link href="<?php echo $treks_src; ?>/style/main.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolAdminTeachers.css" />
@@ -145,15 +145,15 @@ $classes = array_merge($default_classes, $classes);
         <div class="heading-wrapper">
             <div class="heading-left">
                 <div class="welcome-content">
-                    <h2 class="welcome-heading">Classes & Other Group</h2>
+                    <h2 class="welcome-heading">Classes & Other Groups</h2>
                     <p class="welcome-text">Classes and Groups management</p>
                 </div>
             </div>
 
             <div class="heading-right">
-                <!-- <a href="<?php echo site_url("students"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Students</a>
-                <a href="<?php echo site_url("classes"); ?>" type="button" class="btn btn-secondary btn-lg">Classes & Other Group</a> -->
-                <a href="<?php echo site_url("groups"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Manage Small Groups</a>
+                <!-- <a href="<?php //echo site_url("students"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Students</a>
+                <a href="<?php //echo site_url("classes"); ?>" type="button" class="btn btn-secondary btn-lg">Classes & Other Group</a> -->
+                <!-- <a href="<?php //echo site_url("groups"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Manage Small Groups</a> -->
             </div>
         </div>
 
