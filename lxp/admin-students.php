@@ -25,7 +25,7 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
 global $userdata;
 $teacher_post =  isset($_GET['teacher_id']) ? get_post($_GET['teacher_id']) : null;
 $teacher_school_id = $teacher_post ? get_post_meta($teacher_post->ID, 'lxp_teacher_school_id', true) : 0;
-$school_post = get_post($teacher_school_id);
+$school_post = $teacher_school_id > 0 ? get_post($teacher_school_id) : null;
 $students = [];
 if(isset($_GET['teacher_id'])) {
     $students = get_posts(array(

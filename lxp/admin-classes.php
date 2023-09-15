@@ -1,15 +1,53 @@
 <?php
-// get_template_part('lxp/functions');
+lxp_login_check();
+
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 global $userdata;
-$teacher_post = lxp_get_teacher_post($userdata->data->ID);
-$teacher_school_id = get_post_meta($teacher_post->ID, 'lxp_teacher_school_id', true);
-$school_post = get_post($teacher_school_id);
-$students = lxp_get_school_students($teacher_school_id);
-//$classes = lxp_get_teacher_classes($teacher_post->ID);
-$default_classes = lxp_get_teacher_default_classes($teacher_post->ID);
-$classes = lxp_get_teacher_group_by_type($teacher_post->ID, 'classes');
-$other_groups = lxp_get_teacher_group_by_type($teacher_post->ID, 'other_group');
+
+// get all user with role lxp_client_admin
+$lxp_client_admin_users = get_users(array('role' => 'lxp_client_admin'));
+$lxp_client_admin_user_ids = array_map(function ($user) { return $user->ID; },  $lxp_client_admin_users);
+// get post TL_DISTRICT_CPT based on multiple 'lxp_district_admin' meta values
+$district_posts = get_posts(array(
+  'post_type' => 'tl_district',
+  'meta_query' => array(
+    array(
+      'key' => 'lxp_district_admin',
+      'value' => $lxp_client_admin_user_ids,
+      'compare' => 'IN'
+    )
+  )
+));
+
+$district_post = lxp_get_user_district_post( (isset($_GET['district_id']) ? get_post_meta($_GET['district_id'], 'lxp_district_admin', true) : 0) );
+$district_schools = !$district_post ? [] : lxp_get_district_schools($district_post->ID);
+$district_schools_ids = array_map(function ($school) { return $school->ID; },  $district_schools);
+$district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_id']) ? [$_GET['school_id']] : $district_schools_ids );
+
+// $teacher_post = lxp_get_teacher_post($userdata->data->ID);
+$teacher_post =  isset($_GET['teacher_id']) ? get_post($_GET['teacher_id']) : null;
+$teacher_school_id = $teacher_post ? get_post_meta($teacher_post->ID, 'lxp_teacher_school_id', true) : 0;
+$school_post = $teacher_school_id > 0 ? get_post($teacher_school_id) : null;
+
+// $students = $teacher_school_id > 0 ? lxp_get_school_students($teacher_school_id) : [];
+$students = [];
+if ($teacher_post) {
+    // get students by 'lxp_teacher_id' post meta
+    $students = get_posts(array(
+        'post_type' => 'tl_student',
+        'meta_query' => array(
+            array(
+                'key' => 'lxp_teacher_id',
+                'value' => $teacher_post->ID,
+                'compare' => '='
+            )
+        )
+    ));
+}
+
+$default_classes = $teacher_post ? lxp_get_teacher_default_classes($teacher_post->ID) : [];
+$classes = $teacher_post ? lxp_get_teacher_group_by_type($teacher_post->ID, 'classes') : [];
+$other_groups = $teacher_post ? lxp_get_teacher_group_by_type($teacher_post->ID, 'other_group') : [];
 $classes = array_merge($default_classes, $classes);
 ?>
 
@@ -97,7 +135,7 @@ $classes = array_merge($default_classes, $classes);
     <!-- Nav Section -->
     <section class="main-container">
         <nav class="nav-section">
-            <?php get_template_part('trek/navigation'); ?>
+            <?php get_template_part('lxp/admin-nav'); ?>
         </nav>
     </section>
 
@@ -108,14 +146,14 @@ $classes = array_merge($default_classes, $classes);
             <div class="heading-left">
                 <div class="welcome-content">
                     <h2 class="welcome-heading">Classes & Other Group</h2>
-                    <p class="welcome-text">Student enrollment and registration management</p>
+                    <p class="welcome-text">Classes and Groups management</p>
                 </div>
             </div>
 
             <div class="heading-right">
-                <a href="<?php echo site_url("students"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Students</a>
-                <a href="<?php echo site_url("classes"); ?>" type="button" class="btn btn-secondary btn-lg">Classes & Other Group</a>
-                <a href="<?php echo site_url("groups"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Small Group</a>
+                <!-- <a href="<?php echo site_url("students"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Students</a>
+                <a href="<?php echo site_url("classes"); ?>" type="button" class="btn btn-secondary btn-lg">Classes & Other Group</a> -->
+                <a href="<?php echo site_url("groups"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Manage Small Groups</a>
             </div>
         </div>
 
@@ -123,19 +161,44 @@ $classes = array_merge($default_classes, $classes);
         <section class="school-section">
             <section class="school_teacher_cards">
                 <div class="add-teacher-box">
-                    <div class="search-filter-box">
-                        <div class="search_box">
-                            <label class="search-label">Search</label>
-                            <input type="text" name="text" placeholder="School, ID, admin" />
+                    <div class="row" style="width: 100%;">
+                        <div class="col-md-9">
+                            <form class="row">
+                                <div class="col-md-4">
+                                    <label for="district-drop-down" class="form-label">District</label>
+                                    <select class="form-select" id="district-drop-down" name="district_id">
+                                        <option value="0">Choose...</option>
+                                        <?php foreach ($district_posts as $district_post) { ?>
+                                            <option value="<?php echo $district_post->ID; ?>"<?php echo isset($_GET['district_id']) && $_GET['district_id'] == $district_post->ID ? ' selected=selected' : '' ?>><?php echo $district_post->post_title; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="district-drop-down" class="form-label">School</label>
+                                    <select class="form-select" id="school-drop-down" name="school_id">
+                                        <option value="0">Choose...</option>
+                                        <?php foreach ($district_schools as $district_school) { ?>
+                                            <option value="<?php echo $district_school->ID; ?>"<?php echo isset($_GET['school_id']) && $_GET['school_id'] == $district_school->ID ? ' selected=selected' : '' ?>><?php echo $district_school->post_title; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="district-drop-down" class="form-label">Teacher</label>
+                                    <select class="form-select" id="teacher-drop-down" name="teacher_id">
+                                        <option value="0">Choose...</option>
+                                        <?php foreach ($district_schools_teachers as $district_school_teacher) { ?>
+                                            <option value="<?php echo $district_school_teacher->ID; ?>"<?php echo isset($_GET['teacher_id']) && $_GET['teacher_id'] == $district_school_teacher->ID ? ' selected=selected' : '' ?>><?php echo $district_school_teacher->post_title; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </form>
                         </div>
-                        <div class="filter-box">
-                            <img src="<?php echo $treks_src; ?>/assets/img/filter-alt.svg" alt="filter logo" />
-                            <p class="filter-heading">Filter</p>
+                        <div class="col-md-3">                   
+                            <button id="classModalBtn" class="add-heading" type="button" data-bs-toggle="modal" data-bs-target="#classModal" class="primary-btn" style="margin-top: 25px;">
+                                Add New Class & Other Group
+                            </button>
                         </div>
-                    </div>                    
-                    <button id="classModalBtn" class="add-heading" type="button" data-bs-toggle="modal" data-bs-target="#classModal" class="primary-btn">
-                        Add New Class & Other Group
-                    </button>
+                    </div>
                 </div>
 
                 <!-- Classes Section -->
@@ -243,7 +306,7 @@ $classes = array_merge($default_classes, $classes);
                                 <tr>
                                     <th class="">
                                         <div class="th1">
-                                            Other Groups
+                                            Other Group
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>
@@ -340,7 +403,77 @@ $classes = array_merge($default_classes, $classes);
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
     
-    <?php get_template_part('lxp/admin-class-modal', 'student-modal', array("school_post" => $school_post, 'students' => $students, 'teacher_post' => $teacher_post)); ?>
+    <?php 
+        if(isset($_GET['teacher_id'])) {
+            get_template_part('lxp/admin-class-modal', 'student-modal', array("school_post" => $school_post, 'students' => $students, 'teacher_post' => $teacher_post)); 
+        } else {
+    ?>
+        <div class="modal fade classes-modal" id="classModal" tabindex="-1" aria-labelledby="classModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered class-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="modal-header-title">
+                            <h2 class="modal-title" id="classModalLabel"><span id="class-action-heading">New</span> Class & Other Group</h2>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            Please select <strong>Teacher</strong> to add/edit a Classe & Other Group</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php        
+        }
+    ?>
+
+    <script>
+        $(document).ready(function () {
+            $('#district-drop-down').change(function () {
+                var district_id = $(this).val();
+                var url = new URL(window.location.href);
+                url.searchParams.set('district_id', district_id);
+
+                // unset school_id url param
+                url.searchParams.delete('school_id');
+                // unset teacher_id url param if it exists
+                url.searchParams.delete('teacher_id');
+
+                if (district_id == 0) {
+                    url.searchParams.delete('district_id');
+                }
+
+                window.location.href = url.href;
+            });
+
+            $('#school-drop-down').change(function() {
+                var school_id = $(this).val();
+                var url = new URL(window.location.href);
+                url.searchParams.set('school_id', school_id);
+
+                // unset teacher_id url param if it exists
+                url.searchParams.delete('teacher_id');
+
+                if (school_id == 0) {
+                    url.searchParams.delete('school_id');
+                }
+                window.location = url.href;
+            });
+
+            $('#teacher-drop-down').change(function() {
+                var teacher_id = $(this).val();
+                var url = new URL(window.location.href);
+                url.searchParams.set('teacher_id', teacher_id);
+                if (teacher_id == 0) {
+                    url.searchParams.delete('teacher_id');
+                }
+                window.location = url.href;
+            });
+        });
+    </script>
 </body>
 
 </html>
