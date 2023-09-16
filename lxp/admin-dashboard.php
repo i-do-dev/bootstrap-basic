@@ -78,7 +78,12 @@ global $treks_src;
         <div class="cards-box">
             <div class="card">
                 <img src="<?php echo $treks_src; ?>/assets/img/home-logo.svg" alt="logo" />
-                <!-- <h3 class="numbers-heading"><?php echo count( $district_schools ); ?></h3> -->
+                <!-- <h3 class="numbers-heading"><?php //echo count( $district_schools ); ?></h3> -->
+                <p class="name-text"><a href="<?php echo site_url('districts'); ?>">Districts</a></p>
+            </div>
+            <div class="card">
+                <img src="<?php echo $treks_src; ?>/assets/img/home-logo.svg" alt="logo" />
+                <!-- <h3 class="numbers-heading"><?php //echo count( $district_schools ); ?></h3> -->
                 <p class="name-text"><a href="<?php echo site_url('schools'); ?>">Schools</a></p>
             </div>
             <div class="card">
