@@ -76,11 +76,11 @@ global $treks_src;
     <!-- Total Schools: section-->
     <section class="school-section">
         <div class="cards-box">
-            <!-- <div class="card">
+            <div class="card">
                 <img src="<?php echo $treks_src; ?>/assets/img/home-logo.svg" alt="logo" />
-                <h3 class="numbers-heading"><?php echo count( $district_schools ); ?></h3>
-                <p class="name-text">Schools</p>
-            </div> -->
+                <!-- <h3 class="numbers-heading"><?php echo count( $district_schools ); ?></h3> -->
+                <p class="name-text"><a href="<?php echo site_url('schools'); ?>">Schools</a></p>
+            </div>
             <div class="card">
                 <img src="<?php echo $treks_src; ?>/assets/img/verified-user.svg" alt="logo" />
                 <!-- <h3 class="numbers-heading"><?php //echo count($district_schools_teachers); ?></h3> -->
