@@ -79,12 +79,12 @@ global $treks_src;
             <div class="card">
                 <img src="<?php echo $treks_src; ?>/assets/img/home-logo.svg" alt="logo" />
                 <!-- <h3 class="numbers-heading"><?php //echo count( $district_schools ); ?></h3> -->
-                <p class="name-text"><a href="<?php echo site_url('districts'); ?>">Districts</a></p>
+                <p class="name-text"><a href="<?php echo site_url('districts'); ?>">Manage Districts</a></p>
             </div>
             <div class="card">
                 <img src="<?php echo $treks_src; ?>/assets/img/home-logo.svg" alt="logo" />
                 <!-- <h3 class="numbers-heading"><?php //echo count( $district_schools ); ?></h3> -->
-                <p class="name-text"><a href="<?php echo site_url('schools'); ?>">Schools</a></p>
+                <p class="name-text"><a href="<?php echo site_url('schools'); ?>">Manage Schools</a></p>
             </div>
             <div class="card">
                 <img src="<?php echo $treks_src; ?>/assets/img/verified-user.svg" alt="logo" />
