@@ -1,8 +1,3 @@
-<?php
-global $treks_src;
-$district_post = $args['district_post'];
-?>
-
 <style style="text/css">
     .district_input_box {
         padding: 0 0 30px !important;
@@ -22,6 +17,7 @@ $district_post = $args['district_post'];
             </div>
         <div class="modal-body">
             <form class="row g-3" id="districtForm">
+            <input type="hidden" name="site_admin_id" id="site_admin_id" value="<?php echo get_current_user_id(); ?>">
             <input type="hidden" name="district_post_id" id="district_post_id" value="0">
 
             <div class="input_section">

@@ -16,7 +16,6 @@ $district_posts = get_posts(array(
 
 
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
-while (have_posts()) : the_post();
 ?>
 
 <!DOCTYPE html>
@@ -29,12 +28,12 @@ while (have_posts()) : the_post();
         
         <link href="<?php echo $treks_src; ?>/style/main.css" rel="stylesheet" />
         <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
-        <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/districtAdminTeachers.css" />
+        <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolAdminTeachers.css" />
         <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/addNewTeacherModal.css" />
         <!-- <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/adminInternalTeacherView.css" /> -->
-        <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/districtDashboard.css" />
+        <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolDashboard.css" />
         <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/calendar.css" />
-        <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/adminDistricts.css" />
+        <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/adminSchools.css" />
         <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
             integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
@@ -108,19 +107,16 @@ while (have_posts()) : the_post();
         <!-- District: heading-->
         <div class="welcome-content">
             <h2 class="welcome-heading">Districts</h2>
-            <p class="welcome-text">Manage your districts</p>
+            <p class="welcome-text">Manage your Districts</p>
         </div>
 
         <!-- Districts: section-->
         <section class="district-section">
             <section class="district_teacher_cards">
                 <div class="add-teacher-box">
-                    <div class="row" style="width: 50%;">
-                        <div class="col-md-8">
-                            
-                        </div>
-                        <div class="col-md-4">                   
-                            <button class="add-heading" type="button" id="addDistrictModal" class="primary-btn" style="margin-top: 25px;">Add New District</button>
+                    <div class="row">
+                        <div class="col-md-12">                   
+                            <button class="add-heading" type="button" id="addDistrictModal" class="primary-btn">Add New District</button>
                         </div>
                     </div>
                 </div>
@@ -191,7 +187,7 @@ while (have_posts()) : the_post();
                                     </th>
                                     <th>
                                         <div class="th1 th4">
-                                            Districts
+                                            Schools
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>
@@ -217,7 +213,7 @@ while (have_posts()) : the_post();
                             </thead>
                             <tbody>
                                 <?php 
-                                    foreach ($districts as $district) {
+                                    foreach ($district_posts as $district) {
                                 ?>
                                     <tr>
                                         <td class="user-box">
@@ -229,12 +225,12 @@ while (have_posts()) : the_post();
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="table-status"><?php echo get_userdata(get_post_meta($district->ID, 'lxp_district_admin_id', true))->display_name; ?></div>
+                                            <div class="table-status"><?php echo get_userdata(get_post_meta($district->ID, 'lxp_district_admin', true))->display_name; ?></div>
                                         </td>
                                         <td><?php echo $district->ID; ?></td>
-                                        <td><?php echo count(lxp_get_district_districts($district->ID)); ?></td>
-                                        <td><?php echo count(lxp_get_district_teachers($district->ID)); ?></td>
-                                        <td><?php echo count(lxp_get_district_students($district->ID)); ?></td>
+                                        <td><?php echo count(lxp_get_district_schools($district->ID)); ?></td>
+                                        <td><?php echo count(lxp_get_school_teachers($district->ID)); ?></td>
+                                        <td><?php echo count(lxp_get_school_students($district->ID)); ?></td>
                                         <td>Texas</td>
                                         <td>
                                             <div class="dropdown">
@@ -293,42 +289,7 @@ while (have_posts()) : the_post();
         
         <?php // echo do_shortcode("[Districts-Short-Code]"); ?>
         <?php
-            if (isset($_GET['district_id'])) {
-                get_template_part('lxp/admin-district-modal', 'district_modal',  array('district_post' => $district_post)); 
-            } else {
-        ?>
-                <div class="modal fade modal-lg" id="districtModal" tabindex="-1" aria-labelledby="districtModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered class-modal">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <div class="modal-header-title">
-                                    <h2 class="modal-title" id="exampleModalLabel"><span class="district-action">New</span> District</h2>
-                                </div>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                    Please select <strong>District</strong> to add/edit a District</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <script>
-                    jQuery(document).ready(function() {
-                        var districtModal = document.getElementById('districtModal');
-                        districtModalObj = new bootstrap.Modal(districtModal);
-                        window.districtModalObj = districtModalObj;
-
-                        jQuery("#addDistrictModal").on('click', function() {
-                            districtModalObj.show();
-                        });
-                    });
-                </script>
-        <?php
-            }
+            get_template_part('lxp/admin-district-modal'); 
         ?>
 
         <script type="text/javascript">
