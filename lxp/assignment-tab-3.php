@@ -105,12 +105,12 @@
         <!-- Assign Content -->
         <div class="select-trek-box assign-content">
             <h3 class="new-assignment-heading assign-heading">Assign Content</h3>
-            <p class="date-time assign-text">What class would you like to assign to?
+            <p class="date-time assign-text">What class would you like to assign?
             <div class="search_box">
                 <label class="trek-label">Classes/Other Group</label>
                 <input type="hidden" id="class_id" name="class_id" value="" />
                 <select onChange="class_select()" class="form-select form-control" aria-label="Default select example" name="classes_other_group" id="classes_other_group">
-                    <option value="0">Select Classe/Other Group</option>
+                    <option value="0">Select Class/Other Group</option>
                     <optgroup value="classes" label="Classes">
                         <?php
                             foreach ($classes as $class) {
@@ -132,7 +132,7 @@
                 </select>
             </div>
             <div class="invalid-feedback" id="class_select_error">
-                Please Select Classe/Other Group
+                Please Select Class/Other Group
             </div>
 
             <!-- Select a Students -->
@@ -149,10 +149,7 @@
                         <div id="small-groups-container"></div>                        
                     </div>
                 </div> 
-            </div>
-            <div class="invalid-feedback" id="group_select_error">
-                Please Select Small Group
-            </div>
+            </div>            
             
             <!-- Select a Students -->
             <div class="search_box">
@@ -208,13 +205,18 @@
         jQuery('#class_id').val(class_id);
         jQuery('#group_id').val("");
         jQuery('#group_title').text("Select Small Group");
+        empty_student();
+        fetch_small_groups(class_id);
+        fetch_class_student(class_id);        
+    }
+
+    function empty_student() {
         jQuery("#select-students-label").text("Select Students");
         jQuery("#select-all-students").prop("checked", false);
         jQuery("#students-container").empty();
         window.selected_students_ids = [];
         jQuery('.select-students-logos').html("");
         jQuery('.students_count_label').text("0");
-        fetch_small_groups(class_id);
     }
 
     function fetch_small_groups(class_id) {        
@@ -240,9 +242,25 @@
         </button>
         `;
     }
-    
+
+    function fetch_class_student(class_id) {
+        $.ajax({
+            method: "POST",
+            enctype: 'multipart/form-data',
+            url: apiUrl + "class/students",
+            data: {class_id}
+        }).done(function( response ) {
+            window.class_students = response.data.students;
+            let class_students_dd_html = window.class_students.map(student => class_student_dd_html(student)).join('\n');
+            jQuery('#students-container').html(class_students_dd_html);
+            class_students_select_event_init();
+        }).fail(function (response) {
+            console.error("Can not load class");
+        });
+    }    
 
     function fetch_group_student(group_id, group_title) {
+        empty_student();
         jQuery('#group_id').val(group_id);
         jQuery('#group_title').text(group_title);
         $.ajax({
@@ -256,7 +274,7 @@
             jQuery('#students-container').html(class_students_dd_html);
             class_students_select_event_init();
         }).fail(function (response) {
-            console.error("Can not load class");
+            console.error("Can not load small group");
         });
     }
 
@@ -294,20 +312,15 @@
     }
 
     function create_assignment() {
-
+        const url_params = new URL(window.location.href).searchParams;
+        const url_trek_id = url_params.get('trek');
+        const url_segment_id = url_params.get('segment');
         let ok = true;
         if (!parseInt(jQuery("#class_id").val())) {
             ok = false;
             jQuery("#class_select_error").show();
         } else {
             jQuery("#class_select_error").hide();
-        }
-
-        if (!parseInt(jQuery("#group_id").val())) {
-            ok = false;
-            jQuery("#group_select_error").show();
-        } else {
-            jQuery("#group_select_error").hide();
         }
 
         if (window.selected_students_ids.length == 0) {
@@ -347,11 +360,12 @@
                 contentType: false,
                 cache: false,
             }).done(function( response ) {
-                resetWizard();
-                bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-1-tab')).show();
+                //resetWizard();
+                //bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-1-tab')).show();
                 window.calendar.refetchEvents();
                 console.log("assignment created successfully.");
                 jQuery("#assignment-create-btn").removeAttr("disabled");
+                window.location = "<?php echo site_url("assignment"); ?>" + "?trek=" + url_trek_id + "&segment=" + url_segment_id;
             }).fail(function (response) {
                 console.error(response);
                 jQuery("#assignment-create-btn").removeAttr("disabled");
