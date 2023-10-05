@@ -271,11 +271,13 @@
 </div>
 
 <script type="text/javascript">
-    jQuery(document).ready(function() {
-        jQuery("input[name='segments[]']").on('change', function(e) {
+    jQuery(document).ready(function() {        
+        set_rpa_segment();
+        jQuery("input[name='segments[]']").on('change', function(e) {            
             let segments_count = jQuery("input[name='segments[]']:checked").length;
             if (segments_count) {
-                jQuery('#select-segment-title').text(segments_count);
+                //jQuery('#select-segment-title').text(segments_count);
+                set_rpa_segment();
             } else {
                 jQuery('#select-segment-title').text("Select a RPA segment");
             }
@@ -287,6 +289,27 @@
             );
         });
     });
+
+    function set_rpa_segment() {
+        let segments_count = jQuery("input[name='segments[]']:checked").length;
+        if ( segments_count ) {
+            var segment_array = jQuery("input[name='segments[]']:checked").map( function () {
+                var segment_title = jQuery(this).attr('title');
+                var color = '';
+                if ( segment_title == 'Overview' ) {
+                    color = '#979797';
+                } else if ( segment_title == 'Recall' ) {
+                    color = '#ca2738';
+                } else if ( segment_title == 'Practice A' || segment_title == 'Practice B' ) {
+                    color = '#1fa5d4';
+                } else if ( segment_title == 'Apply' ) {
+                    color = '#9fc33b';
+                }
+                return `<span style='color:`+color+`'>` + segment_title + `</span> `;
+            }).get().join(', ');
+            jQuery('#select-segment-title').html(segment_array);
+        }
+    }
 
     function set_date_time() {
         jQuery('#set_date_time').val(1);
