@@ -16,9 +16,9 @@ global $post;
                     <button type="button" class="btn btn-outline-secondary" onclick="back()"><i class="bi bi-arrow-return-left"></i> Back</button>
                 </div>
                 <div class="col-md-3 offset-md-6">
-                    <div class="alert alert-info" role="alert" style="padding-left: 38px;">
+                    <div class="btn btn-info" role="alert">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="markGraded" <?php echo boolval($mark_as_graded) ? 'checked' : '/'; ?>>
+                            <input class="form-check-input" type="checkbox" id="markGraded" <?php echo $mark_as_graded === 'true' ? 'checked' : ''; ?> />
                             <label class="form-check-label" for="markGraded"><strong>Mark Graded</strong></label>
                         </div>
                     </div>
@@ -74,12 +74,12 @@ global $post;
                                                 }
                                     ?>
                                                 <div class="row">
-                                                    <div class="col col-3">
+                                                    <div class="col col-4">
                                                         <div class="<?php echo $progress_class; ?> rounded-pill" style="height: 25px; width: 100%;">
                                                             <center><i class="bi bi-<?php echo $icon; ?> text-white"></i></center>
                                                         </div>
                                                     </div>
-                                                    <div class="col col-9">
+                                                    <div class="col col-8">
                                                         <div class="progress" style="height: 25px;">
                                                             <div class="progress-bar <?php echo $progress_class; ?>" role="progressbar" style="width: <?php echo $percentage; ?>%;" aria-valuenow="<?php echo $score; ?>" aria-valuemin="0" aria-valuemax="<?php echo $max; ?>">
                                                                 <?php echo round(($score / $max) * 100); ?>%
@@ -91,12 +91,12 @@ global $post;
                                             } else {
                                     ?>
                                             <div class="row">
-                                                <div class="col col-3">
+                                                <div class="col col-4">
                                                     <div class="bg-warning rounded-pill" style="height: 25px; width: 100%;">
                                                         <center><i class="bi bi-dash-lg text-white"></i></center>
                                                     </div>
                                                 </div>
-                                                <div class="col col-9">
+                                                <div class="col col-8">
                                                     To Be Graded
                                                 </div>
                                             </div>
@@ -117,12 +117,12 @@ global $post;
                                                 }
                                     ?>
                                                 <div class="row">
-                                                    <div class="col col-3">
+                                                    <div class="col col-4">
                                                         <div class="<?php echo $progress_class; ?> rounded-pill" style="height: 25px; width: 100%;">
                                                             <center><i class="bi bi-<?php echo $icon; ?> text-white"></i></center>
                                                         </div>
                                                     </div>
-                                                    <div class="col col-9">
+                                                    <div class="col col-8">
                                                         <div class="progress" style="height: 25px;">
                                                             <div class="progress-bar <?php echo $progress_class; ?>" role="progressbar" style="width: <?php echo $percentage; ?>%;" aria-valuenow="<?php echo $score; ?>" aria-valuemin="0" aria-valuemax="<?php echo $max; ?>"><?php echo round(($score / $max) * 100); ?>%</div>
                                                         </div>
@@ -132,12 +132,12 @@ global $post;
                                             } else {
                                     ?>
                                             <div class="row">
-                                                <div class="col col-3">
+                                                <div class="col col-4">
                                                     <div class="bg-secondary rounded-pill" style="height: 25px; width: 100%;">
                                                         <center><i class="bi bi-dash-lg text-white"></i></center>
                                                     </div>
                                                 </div>
-                                                <div class="col col-9">
+                                                <div class="col col-8">
                                                     Not Auto-graded
                                                 </div>
                                             </div>

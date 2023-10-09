@@ -1,6 +1,16 @@
 <?php
   global $treks_src;
   $assignments = $args["assignments"];
+  // filter $assignments based on "To Do", "In Progress" statuses and not having "Completed" status
+  $assignments = array_filter($assignments, function($assignment) {
+    $student_stats = lxp_assignment_stats($assignment->ID);
+    $statuses = array("To Do", "In Progress");
+    $students_in_progress = array_filter($student_stats, function($studentStat) use ($statuses) {
+      return in_array($studentStat["status"], $statuses);
+    });
+    return count($students_in_progress) > 0;
+  });
+  
 ?>
 <!--  table -->
 <div id="pending-tab-content" class="pending-assignments-table tab-pane fade" role="tabpanel">
@@ -31,10 +41,22 @@
           $students_in_progress = array_filter($student_stats, function($studentStat) use ($statuses) {
             return in_array($studentStat["status"], $statuses);
           });
+          
           $statuses = array("Completed");
-          $students_completed = array_filter($student_stats, function($studentStat) use ($statuses) {
-            return in_array($studentStat["status"], $statuses);
+          $students_graded = 0;
+          $students_completed = array_filter($student_stats, function($studentStat) use ($statuses, $assignment, &$students_graded) {
+            $ok = false;
+            $ok = in_array($studentStat["status"], $statuses);
+            if ($ok) {
+              $assignment_submission_item = lxp_get_assignment_submissions($assignment->ID, $studentStat["ID"]);
+              if (count($assignment_submission_item) > 0 && get_post_meta($assignment_submission_item['ID'], 'mark_as_graded', true) === 'true') {
+                $students_graded++;
+                $ok = false;
+              }
+            }
+            return $ok;
           });
+          
       ?>
         <tr>
           <td><?php echo $class_post ? $class_post->post_title : 'Demo Class'; ?></td>
@@ -66,7 +88,7 @@
             <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Completed'])"><?php echo count($students_completed); ?>/<?php echo count($student_stats); ?></a></div>
           </td>
           <td>
-            0
+            <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Graded'])"><?php echo $students_graded; ?>/<?php echo count($student_stats); ?></a></div>
           </td>
         </tr>  
       <?php } ?>

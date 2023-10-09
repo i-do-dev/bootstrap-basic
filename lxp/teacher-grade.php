@@ -14,10 +14,36 @@ if ( (isset($_GET['student']) && intval($_GET['student']) > 0) ) {
 
 $assignment = lxp_get_assignment($assignment_id);
 $assignment_submission = lxp_get_assignment_submissions($assignment->ID, $student_id);
+$mark_as_graded = $assignment_submission ? get_post_meta($assignment_submission['ID'], 'mark_as_graded', true) : null;
 ?>
 <div class="tab-content" id="myTabContent">
     <!-- Teachers Table -->
     <h1 class="stu_heading">Submissions</h1>
+    <?php if ($assignment_submission) {
+    ?>
+        <div class="row justify-content-end">
+            <div class="col-md-3">
+                <div class="row justify-content-end">
+                    <div class="col-md-11">
+                        <a href="<?php echo site_url('grade-assignment/?assignment=' . $_GET['assignment'] . '&student='. $_GET['student'] . '&action=grade&slide=' . $slidesData->totalSlides); ?>" class="primary-btn lx-space summary_link">View Summary</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row justify-content-start">
+                    <div class="col-md-10">
+                        <div class="btn btn-info" role="alert">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="markGraded" <?php echo $mark_as_graded === 'true' ? 'checked' : ''; ?> />
+                                <label class="form-check-label" for="markGraded"><strong>Mark Graded</strong></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
+    
     <div
     class="tab-pane fade show active"
     id="one-tab-pane"

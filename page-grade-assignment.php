@@ -28,6 +28,7 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Grade Assignment</title>
+    <link href="<?php echo $treks_src; ?>/style/common.css" rel="stylesheet" />
     <link href="<?php echo $treks_src; ?>/style/main.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/assignments.css" />
@@ -102,9 +103,23 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
       .bg-green {
           background: #6dc200 !important;
       }
+
+      .bg-blue {
+          background: #1fa5d4 !important;
+      }
+
       .no-right-border {
           border-right: 0px !important;
       }
+
+      .summary_link {
+        text-decoration: none;
+      }
+
+      .summary_link:hover {
+        color: #fff;
+      }
+
     </style>
   </head>
 
@@ -254,7 +269,25 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
                       </div>
                     </div>
                     <div class="stu_tag">
-                      <span class="student_label label_red <?php echo $statusClass; ?>"><?php echo $status && $status === 'Completed' ? 'Submitted' : $status; ?></span>
+                      <?php 
+                        if ($status && $status === 'Completed') {
+                          $status = 'Submitted';
+                        }
+
+                        if (is_array($assignment_submission) && $status && $status === 'Submitted' && get_post_meta($assignment_submission['ID'], 'mark_as_graded', true) === 'true') {
+                          $status = 'Graded';
+                          $statusClass = 'bg-blue';
+                        }
+
+                        if (!$assignment_submission && $status && $status === 'Submitted') {
+                          $assignment_submission_item = lxp_get_assignment_submissions($assignment->ID, $student->ID);
+                          if (count($assignment_submission_item) > 0 && get_post_meta($assignment_submission_item['ID'], 'mark_as_graded', true) === 'true') {
+                            $status = 'Graded';
+                            $statusClass = 'bg-blue';
+                          }
+                        }
+                      ?>
+                      <span class="student_label label_red <?php echo $statusClass; ?>"><?php echo $status; ?></span>
                       <img src="<?php echo $treks_src; ?>/assets/img/select-arrow-up.svg" alt="" />
                     </div>
                   </div>
@@ -631,6 +664,7 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
             },
             success: function (response) {
               console.log(response);
+              window.location.reload();
             },
             error: function (error) {
               console.log(error);

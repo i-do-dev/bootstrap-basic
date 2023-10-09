@@ -1,6 +1,16 @@
 <?php
   global $treks_src;
   $assignments = $args["assignments"];
+  // filter $assignments based on "Completed" status and not having "To Do", "In Progress" statuses and count should be equal to total students
+  $assignments = array_filter($assignments, function($assignment) {
+    $student_stats = lxp_assignment_stats($assignment->ID);
+    $statuses = array("Completed");
+    $students_completed = array_filter($student_stats, function($studentStat) use ($statuses) {
+      return in_array($studentStat["status"], $statuses);
+    });
+    return count($students_completed) > 0 && count($students_completed) === count($student_stats);
+    //return count($students_completed) > 0;
+  });
 ?>
 <!--  table -->
 <div id="completed-tab-content" class="pending-assignments-table tab-pane fade" role="tabpanel">
@@ -13,6 +23,7 @@
         <th>Due Date</th>
         <th>Student Progress</th>
         <th>Students Submitted</th>
+        <th>Students Graded</th>
       </tr>
     </thead>
     <tbody>
@@ -30,11 +41,23 @@
           $students_in_progress = array_filter($student_stats, function($studentStat) use ($statuses) {
             return in_array($studentStat["status"], $statuses);
           });
+
           $statuses = array("Completed");
-          $students_completed = array_filter($student_stats, function($studentStat) use ($statuses) {
-            return in_array($studentStat["status"], $statuses);
+          $students_graded = 0;
+          $students_completed = array_filter($student_stats, function($studentStat) use ($statuses, $assignment, &$students_graded) {
+            $ok = false;
+            $ok = in_array($studentStat["status"], $statuses);
+            if ($ok) {
+              $assignment_submission_item = lxp_get_assignment_submissions($assignment->ID, $studentStat["ID"]);
+              if (count($assignment_submission_item) > 0 && get_post_meta($assignment_submission_item['ID'], 'mark_as_graded', true) === 'true') {
+                $students_graded++;
+                $ok = false;
+              }
+            }
+            return $ok;
           });
-          if ( count($students_completed) > 0 ) { 
+
+          if ( $students_graded === count($student_stats) ) { 
       ?>
         <tr>
           <td><?php echo $class_post ? $class_post->post_title : 'Demo Class'; ?></td>
@@ -61,6 +84,9 @@
           </td>
           <td>
             <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Completed'])"><?php echo count($students_completed); ?>/<?php echo count($student_stats); ?></a></div>
+          </td>
+          <td>
+            <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Graded'])"><?php echo $students_graded; ?>/<?php echo count($student_stats); ?></a></div>
           </td>
         </tr>  
       <?php } } ?>
