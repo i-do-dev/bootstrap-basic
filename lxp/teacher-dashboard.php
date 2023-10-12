@@ -5,6 +5,11 @@ $teacher_post = lxp_get_teacher_post( get_userdata(get_current_user_id())->ID );
 if (is_null($teacher_post)) {
   die("This account is inactive. Please contact site administrator. ". '<a href="' . wp_logout_url("login") . '">Logout</a>');
 }
+
+$treks = array();
+$treks_assigned = get_post_meta($teacher_post->ID, 'treks_assigned');
+$treks_assigned = is_array($treks_assigned) && count($treks_assigned) > 0 ? $treks_assigned : array(0);
+
 // Start the loop.
 $courseId =  isset($_GET['courseid']) ? $_GET['courseid'] : get_post_meta($post->ID, 'tl_course_id', true);
 $trek_count = 6;
@@ -14,6 +19,11 @@ $args = array(
 );
 
 $treks_saved = get_post_meta($teacher_post->ID, 'treks_saved');
+// filter $treks_saved to only include treks that are in $treks_assigned
+$treks_saved = array_filter($treks_saved, function($trek_id) use ($treks_assigned) {
+  return in_array($trek_id, $treks_assigned);
+});
+
 if ($treks_saved) {
   $args['post__not_in'] = $treks_saved;
   if (is_array($treks_saved) && count($treks_saved) < $trek_count) {
@@ -25,9 +35,14 @@ if ($treks_saved) {
 }
 
 $lxp_visited_treks = get_post_meta($teacher_post->ID, 'lxp_visited_treks');
+// filter $lxp_visited_treks to only include treks that are in $treks_assigned
+$lxp_visited_treks = array_filter($lxp_visited_treks, function($trek_id) use ($treks_assigned) {
+  return in_array($trek_id, $treks_assigned);
+});
 $lxp_visited_treks_to_show = is_array($lxp_visited_treks) && count($lxp_visited_treks) > 0 ? array_diff(array_reverse($lxp_visited_treks), $treks_saved) : array();
+
 if (count($lxp_visited_treks_to_show) > 0) {
-  $args['post__in'] = $lxp_visited_treks_to_show;
+  $args['post__in'] = array_merge($lxp_visited_treks_to_show);
   $args['orderby'] = 'post__in';
 } else {
   $args['meta_key'] = 'sort';
@@ -43,7 +58,14 @@ if ( get_userdata(get_current_user_id())->user_email === "guest@rpatreks.com" ) 
   );
 }
 
-$treks = get_posts($args);
+$args_include = isset($args['post__not_in']) ? array_diff($args['post__not_in'], $treks_assigned) : $treks_assigned;
+if (is_array($args_include) && count($args_include) > 0) {
+  $args['include'] = $args_include;
+  $treks = get_posts($args);
+} else {
+  $treks = get_posts($args);
+}
+
 while (have_posts()) : the_post();
 
 if (is_null($teacher_post)) {

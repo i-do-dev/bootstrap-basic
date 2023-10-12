@@ -9,13 +9,21 @@ if (!isset($_GET['filter'])) {
 global $post;
 global $treks_src;
 $teacher_post = lxp_get_teacher_post( get_userdata(get_current_user_id())->ID );
+$treks_assigned = get_post_meta($teacher_post->ID, 'treks_assigned');
+$treks_assigned = is_array($treks_assigned) && count($treks_assigned) > 0 ? $treks_assigned : array(0);
+
 $treks_filtered = array();
 $treks_saved = get_post_meta($teacher_post->ID, 'treks_saved');
+// filter $treks_saved to only include treks that are in $treks_assigned
+$treks_saved = array_filter($treks_saved, function ($trek) use ($treks_assigned) { return in_array($trek, $treks_assigned); });
+
 if ($_GET['filter'] == 'saved') {
     $treks_filtered = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_saved, urldecode($_GET['strand']), urldecode($_GET['sort']), urldecode($_GET['search']));
 } else if ($_GET['filter'] == 'recent'){
     $lxp_visited_treks = get_post_meta($teacher_post->ID, 'lxp_visited_treks');
     $lxp_visited_treks_to_show = is_array($lxp_visited_treks) && count($lxp_visited_treks) > 0 ? array_reverse($lxp_visited_treks) : array();
+    // filter $lxp_visited_treks_to_show to only include treks that are in $treks_assigned
+    $lxp_visited_treks_to_show = array_filter($lxp_visited_treks_to_show, function ($trek) use ($treks_assigned) { return in_array($trek, $treks_assigned); });
     $recent_query_args = array( 'post_type' => TL_TREK_CPT , 'posts_per_page'   => -1, 'post_status' => array( 'publish' ), 'post__in' => $lxp_visited_treks_to_show, 'orderby' => 'post__in' );
     $searchVal = urldecode($_GET['search']);
     if(!($searchVal === '' || $searchVal === 'none')) {
@@ -38,7 +46,7 @@ $args = array(
 );
 
 if (count($treks_filtered_ids) > 0) {
-    $args['post__not_in'] = $treks_filtered_ids;
+    //$args['post__not_in'] = $treks_filtered_ids;
 }
 
 $strandVal = urldecode($_GET['strand']);
@@ -65,6 +73,7 @@ if ( get_userdata(get_current_user_id())->user_email === "guest@rpatreks.com" ) 
     );
 }
 
+$args['include'] = $treks_assigned;
 $treks = get_posts($args);
 
 // Start the loop.
@@ -273,7 +282,8 @@ while (have_posts()) : the_post();
                             role="tabpanel" aria-labelledby="all-tab" tabindex="0">
                             <!-- each cards  -->
                             <?php
-                            foreach($treks_filtered as $trek) {
+                            if ($_GET['filter'] == 'saved' || $_GET['filter'] == 'recent') {
+                                foreach($treks_filtered as $trek) {
                             ?>
                                 <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
                                     <div class="recent-treks-card-body treks-card">
@@ -291,10 +301,11 @@ while (have_posts()) : the_post();
                                     </div>
                                 </a>
                             <?php
-                            }
+                                }
+                            } else {
                             ?>
                             <?php
-                            foreach($treks as $trek) {
+                                foreach($treks as $trek) {
                             ?>
                                 <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
                                     <div class="recent-treks-card-body treks-card">
@@ -312,6 +323,7 @@ while (have_posts()) : the_post();
                                     </div>
                                 </a>
                             <?php
+                                }
                             }
                             ?>
                         </div>
