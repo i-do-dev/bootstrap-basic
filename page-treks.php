@@ -12,6 +12,9 @@ switch ($userRole) {
   case 'lxp_student':
     get_template_part('lxp/student-treks');
     break;
+  case 'administrator':
+    get_template_part('lxp/admin-treks');
+    break;
   default:
     echo 'Not a valid User role';
     break;
