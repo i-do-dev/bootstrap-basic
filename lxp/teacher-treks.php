@@ -1,7 +1,6 @@
 <?php
 if (!isset($_GET['filter'])) {
-    $filterDefaultParams = array('filter' => 'all', 'strand' => 'none', 'search' => 'none', 'sort' => 'none');
-    get_permalink($post->ID);
+    $filterDefaultParams = array('filter' => 'all', 'strand' => 'none', 'search' => 'none', 'sort' => 'none', 'tekversion' => '2017');
     wp_redirect( get_permalink($post->ID) . '?' . build_query($filterDefaultParams) );
     die();
 }
@@ -75,6 +74,12 @@ if ( get_userdata(get_current_user_id())->user_email === "guest@rpatreks.com" ) 
 
 $args['include'] = $treks_assigned;
 $treks = get_posts($args);
+
+$tekversion = isset($_GET['tekversion']) ? $_GET['tekversion'] : '2017';
+// filter $treks to only include treks that has tekversion meta value equal to $tekversion
+$treks = array_filter($treks, function ($trek) use ($tekversion) { return get_post_meta($trek->ID, 'tekversion', true) == $tekversion; });
+// filter $treks_filtered to only include treks that has tekversion meta value equal to $tekversion
+$treks_filtered = array_filter($treks_filtered, function ($trek) use ($tekversion) { return get_post_meta($trek->ID, 'tekversion', true) == $tekversion; });
 
 // Start the loop.
 while (have_posts()) : the_post();
@@ -213,7 +218,22 @@ while (have_posts()) : the_post();
                 <div class="recent-treks-section-div">
                     <!--  TREKs header-->
                     <div class="section-div-header">
-                        <h2>My TREKs</h2>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col col-md-2">
+                                    <h2 style="margin-top: 8px;">My TREKs</h2>
+                                </div>  
+                                <div class="col col-md-3">
+                                    <select id="tekversion-drop-down" class="form-select" aria-label="Default select example">
+                                        <option value="2017" <?php echo isset($_GET['tekversion']) && $_GET['tekversion'] == '2017' ? 'selected=selected' : ''; ?>>2017 TEKS (Beta)</option>
+                                        <option value="2021" <?php echo isset($_GET['tekversion']) && $_GET['tekversion'] == '2021' ? 'selected=selected' : ''; ?>>2021 TEKS (New TEKS)</option>
+                                    </select>
+                                </div>
+                                <div class="col col-md-3"></div>
+                                <div class="col col-md-4"></div>
+                            </div>
+                            <hr />
+                        </div>
                     </div>
                     <nav class="nav-section treks_nav" style="padding-top: 10px;">
                         <!-- make bootstrap row with 5 columns -->
@@ -343,7 +363,7 @@ while (have_posts()) : the_post();
         crossorigin="anonymous"></script>
 
     <script type="text/javascript">
-        var urlQueryParams = {filter: "<?php echo $_GET['filter']; ?>", strand: "<?php echo $_GET['strand']; ?>", search: "<?php echo $_GET['search'] ?>", sort: "<?php echo $_GET['sort']; ?>"};
+        var urlQueryParams = {filter: "<?php echo $_GET['filter']; ?>", strand: "<?php echo $_GET['strand']; ?>", search: "<?php echo $_GET['search'] ?>", sort: "<?php echo $_GET['sort']; ?>", tekversion: "<?php echo $_GET['tekversion']; ?>"};
         function apply_filter(filter) {
             urlQueryParams = {...urlQueryParams, filter};
             window.location = window.filterUrl + "?" + jQuery.param(urlQueryParams);
@@ -379,6 +399,13 @@ while (have_posts()) : the_post();
 
                 urlQueryParams = {...urlQueryParams, sort: sortVal};
                 window.location = window.filterUrl + "?" + jQuery.param(urlQueryParams);
+            });
+
+            $('#tekversion-drop-down').change(function () {
+                var tekversion = $(this).val();
+                var url = new URL(window.location.href);
+                url.searchParams.set('tekversion', tekversion);
+                window.location.href = url.href;
             });
         })
     </script>
