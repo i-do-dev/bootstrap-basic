@@ -537,15 +537,14 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
                                 <span class="grade-box-slide"><?php echo $slide_filtered->title; ?></span>
                                 <?php if ($slide_filtered->type == 'Essay') { ?>
                                   <div class="grade-select">
-                                    
                                     <select name="grade" id="grade" class="form-select">
-                                        <option value="">----</option>
-                                        <?php foreach (range(0, 10) as $grade_number) { ?>
-                                          <option value="<?php echo $grade_number; ?>"><?php echo $grade_number; ?></option>
-                                        <?php } ?>
-                                      </select>
-                                      <button class="grade-box-btn" onclick="assign_grade(<?php echo $_GET['slide']; ?>, jQuery('#grade').val())">Grade</button>
-
+                                      <option value="">----</option>
+                                      <?php foreach (range(0, 10) as $grade_number) { ?>
+                                        <option value="<?php echo $grade_number; ?>"><?php echo $grade_number; ?></option>
+                                      <?php } ?>
+                                    </select>
+                                    <button class="grade-box-btn" onclick="assign_grade(<?php echo $_GET['slide']; ?>)">Grade</button>
+                                    <button class="grade-box-btn" id="addFeedbackModal">Feedback</button>
                                     <button class="grade-box-btn" onclick="back()">Back</button>
                                   </div>
                                 <?php 
@@ -598,7 +597,8 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
 
       <?php if($assignment_submission) { ?>
       // function assign_grade() assign grade and selected grade to student
-      function assign_grade(slide, grade) {
+      function assign_grade(slide) {
+        let grade = jQuery("#grade").val();
         let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
         let apiUrl = host + '/wp-json/lms/v1/';
         $.ajax({
@@ -673,6 +673,11 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
         });
         
       });
-    </script>    
+    </script>
+    <?php
+      if (isset($_GET['assignment']) && isset($_GET['slide']) && isset($_GET['student'])) {
+        get_template_part("lxp/teacher-grading-feedback-modal", "teacher-grading-feedback-modal", array( 'assignment' => intval($_GET['assignment']), 'slide' => $_GET['slide'], 'assignment_submission_id' => $assignment_submission['ID'], 'student' => $_GET['student'] ));
+      } 
+    ?>
   </body>
 </html>
