@@ -543,7 +543,7 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
                                         <option value="<?php echo $grade_number; ?>"><?php echo $grade_number; ?></option>
                                       <?php } ?>
                                     </select>
-                                    <button class="grade-box-btn" onclick="assign_grade(<?php echo $_GET['slide']; ?>)">Grade</button>
+                                    <button class="grade-box-btn" onclick="assign_grade(<?php echo $_GET['slide']; ?>)">&nbsp;&nbsp;&nbsp;Grade&nbsp;&nbsp;&nbsp;</button>
                                     <button class="grade-box-btn" id="addFeedbackModal">Feedback</button>
                                     <button class="grade-box-btn" onclick="back()">Back</button>
                                   </div>
@@ -610,7 +610,8 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
             "grade": grade
           },
           success: function (response) {
-            back();
+            // back();
+            window.location.reload();
           },
           error: function (error) {
             console.log(error);
@@ -678,6 +679,14 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
       if (isset($_GET['assignment']) && isset($_GET['slide']) && isset($_GET['student'])) {
         get_template_part("lxp/teacher-grading-feedback-modal", "teacher-grading-feedback-modal", array( 'assignment' => intval($_GET['assignment']), 'slide' => $_GET['slide'], 'assignment_submission_id' => $assignment_submission['ID'], 'student' => $_GET['student'] ));
       } 
+      
+      if ($assignment_submission) {
+        get_template_part(
+          "lxp/teacher-grading-feedback-view-modal", 
+          "teacher-grading-feedback-view-modal", 
+          array('assignment_submission_id' => $assignment_submission['ID'] )
+        ) ;
+      }
     ?>
   </body>
 </html>

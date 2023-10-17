@@ -16,6 +16,15 @@ $assignment = lxp_get_assignment($assignment_id);
 $assignment_submission = lxp_get_assignment_submissions($assignment->ID, $student_id);
 $mark_as_graded = $assignment_submission ? get_post_meta($assignment_submission['ID'], 'mark_as_graded', true) : null;
 ?>
+
+<style type="text/css">
+    .feedback-btn {
+        margin-bottom: 10px;
+        border: none;
+        background: none;
+    }
+</style>
+
 <div class="tab-content" id="myTabContent">
     <!-- Teachers Table -->
     <h1 class="stu_heading">Submissions</h1>
@@ -57,7 +66,7 @@ $mark_as_graded = $assignment_submission ? get_post_meta($assignment_submission[
         data-bs-touch="false"
         data-bs-interval="false"
     >
-        <div class="carousel-inner" style="height: 250px;">
+        <div class="carousel-inner" style="height: 350px;">
             <?php foreach ($slides_pages as $page_key => $slide_page) { ?>
                 <div class="carousel-item<?php echo $page_key == 0 ? ' active' : ''; ?>">
                     <div class="slider_cards_flex">
@@ -77,6 +86,9 @@ $mark_as_graded = $assignment_submission ? get_post_meta($assignment_submission[
                                     <p><?php echo $slide->title; ?></p>
                                 
                                     <h2 class="gray_grade"><?php echo $grade === "" ? "Not Graded" : $grade; ?></h2>
+                                    <button class="feedback-btn" onclick="grade(<?php echo $slide->slide; ?>)">
+                                        <img width="30" src="<?php echo $treks_src . "/assets/img/feedback-icon.png"; ?>" />
+                                    </button>
                                     <button class="grade_btn" onclick="grade(<?php echo $slide->slide; ?>)">Grade</button>
                                     <?php if ($grade !== "") { ?>
                                         <img src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" />
@@ -95,9 +107,10 @@ $mark_as_graded = $assignment_submission ? get_post_meta($assignment_submission[
                                 
                                     <?php if($max) { ?>
                                         <h2 class="gray_grade"><?php echo $score . '/' . $max; ?></h2>
+                                        <br />
                                         <a href="#" onclick="grade(<?php echo $slide->slide; ?>)"><span class="badge bg-secondary" style="margin-bottom:18px;">Auto-graded</span></a>
                                         <br />
-                                        <img src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" />
+                                        <img src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" style="margin-top: 25px;" />
                                     <?php } else { ?>
                                         <h2 class="gray_grade">Not Attempted</h2>
                                     <?php } ?>
