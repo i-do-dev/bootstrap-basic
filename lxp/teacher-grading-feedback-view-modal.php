@@ -25,21 +25,20 @@ $assignment_submission_id = $args['assignment_submission_id'];
             </div>
         <div class="modal-body">
             <form class="row g-3" id="feedbackViewForm">
-                <input type="hidden" name="slide" value="0" />
+                <input type="hidden" name="slide" id="slide" value="0" />
                 <input type="hidden" name="assignment_submission_id" value="<?php echo $assignment_submission_id; ?>" />
 
                 <div class="input_section">
                     <div class="input_box brief_input_box">
                         <div class="label_box brief_label_box">
-                            <label class="label">Feedback</label> <br />
-                            <?php echo $feedback; ?>
+                            <div id="feedback-container"></div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="input_section">
                     <div class="btn_box">
-                        <button class="grade-box-btn feedback-btn" type="button" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                        <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal" aria-label="Close">Close</button>
                     </div>
                 </div>
             </form>
@@ -48,6 +47,12 @@ $assignment_submission_id = $args['assignment_submission_id'];
 </div>
 
 <script type="text/javascript">
+
+    function viewFeedback(slide) {
+        jQuery("#feedbackViewForm #slide").val(slide);
+        jQuery("#feedbackViewForm").submit();
+    }
+
     jQuery(document).ready(function() {
         let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
         let apiUrl = host + '/wp-json/lms/v1/';
@@ -55,10 +60,6 @@ $assignment_submission_id = $args['assignment_submission_id'];
         var feedbackViewModal = document.getElementById('feedbackViewModal');
         feedbackViewModalObj = new bootstrap.Modal(feedbackViewModal);
         window.feedbackViewModalObj = feedbackViewModalObj;
-
-        jQuery("#viewFeedbackModal").on('click', function() {
-            feedbackViewModalObj.show();
-        });
         
         let feedbackViewForm = jQuery("#feedbackViewForm");
         jQuery(feedbackViewForm).on('submit', function(e) {
@@ -75,8 +76,8 @@ $assignment_submission_id = $args['assignment_submission_id'];
                 contentType: false,
                 cache: false,
             }).done(function( response ) {
-                jQuery('#feedbackViewForm .form-control').removeClass('is-invalid');
-                feedbackModalObj.hide();
+                response.data.length > 0 ? jQuery('#feedback-container').html(response.data) : jQuery('#feedback-container').html('<p><i>No feedback added.</i></p>');
+                feedbackViewModalObj.show();
             }).fail(function (response) {
                 console.log('fail');
             });

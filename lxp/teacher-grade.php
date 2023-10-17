@@ -86,7 +86,7 @@ $mark_as_graded = $assignment_submission ? get_post_meta($assignment_submission[
                                     <p><?php echo $slide->title; ?></p>
                                 
                                     <h2 class="gray_grade"><?php echo $grade === "" ? "Not Graded" : $grade; ?></h2>
-                                    <button class="feedback-btn" onclick="grade(<?php echo $slide->slide; ?>)">
+                                    <button class="feedback-btn" onclick="viewFeedback(<?php echo $slide->slide; ?>)">
                                         <img width="30" src="<?php echo $treks_src . "/assets/img/feedback-icon.png"; ?>" />
                                     </button>
                                     <button class="grade_btn" onclick="grade(<?php echo $slide->slide; ?>)">Grade</button>

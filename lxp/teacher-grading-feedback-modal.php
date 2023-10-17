@@ -44,7 +44,7 @@ $feedback = get_post_meta($assignment_submission_id, "slide_{$slide}_feedback", 
                 
                 <div class="input_section">
                     <div class="btn_box">
-                        <button class="grade-box-btn feedback-btn" id="assignFeedbackBtn"><span class="feedback-action">Add</span></button>
+                        <button class="grade-box-btn feedback-btn" id="assignFeedbackBtn"><span class="feedback-action">Save</span></button>
                         <button class="grade-box-btn feedback-btn" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
                     </div>
                 </div>

@@ -120,6 +120,13 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
         color: #fff;
       }
 
+      .add-feedback-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        font-size: 14px;
+      }
     </style>
   </head>
 
@@ -544,7 +551,8 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
                                       <?php } ?>
                                     </select>
                                     <button class="grade-box-btn" onclick="assign_grade(<?php echo $_GET['slide']; ?>)">&nbsp;&nbsp;&nbsp;Grade&nbsp;&nbsp;&nbsp;</button>
-                                    <button class="grade-box-btn" id="addFeedbackModal">Feedback</button>
+                                    <br />
+                                    <button class="add-feedback-btn btn btn-outline-info btn-lg" id="addFeedbackModal">Add Feedback</button>
                                     <button class="grade-box-btn" onclick="back()">Back</button>
                                   </div>
                                 <?php 
