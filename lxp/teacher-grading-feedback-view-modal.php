@@ -23,25 +23,26 @@ $assignment_submission_id = $args['assignment_submission_id'];
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        <div class="modal-body">
-            <form class="row g-3" id="feedbackViewForm">
-                <input type="hidden" name="slide" id="slide" value="0" />
-                <input type="hidden" name="assignment_submission_id" value="<?php echo $assignment_submission_id; ?>" />
+            <div class="modal-body">
+                <form class="row g-3" id="feedbackViewForm">
+                    <input type="hidden" name="slide" id="slide" value="0" />
+                    <input type="hidden" name="assignment_submission_id" value="<?php echo $assignment_submission_id; ?>" />
 
-                <div class="input_section">
-                    <div class="input_box brief_input_box">
-                        <div class="label_box brief_label_box">
-                            <div id="feedback-container"></div>
+                    <div class="input_section">
+                        <div class="input_box brief_input_box">
+                            <div class="label_box brief_label_box">
+                                <div id="feedback-container"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="input_section">
-                    <div class="btn_box">
-                        <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                    
+                    <div class="input_section">
+                        <div class="btn_box">
+                            <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -76,7 +77,7 @@ $assignment_submission_id = $args['assignment_submission_id'];
                 contentType: false,
                 cache: false,
             }).done(function( response ) {
-                response.data.length > 0 ? jQuery('#feedback-container').html(response.data) : jQuery('#feedback-container').html('<p><i>No feedback added.</i></p>');
+                response.data.length > 0 ? jQuery('#feedback-container').html(response.data) : jQuery('#feedback-container').html('<p><i>No feedback given.</i></p>');
                 feedbackViewModalObj.show();
             }).fail(function (response) {
                 console.log('fail');

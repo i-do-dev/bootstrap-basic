@@ -31,32 +31,34 @@ global $post;
                     <thead>
                         <tr>
                             <th scope="col">Slide</th>
-                            <th scope="col">Score/Total</th>
-                            <th scope="col">Status</th>
+                            <th scope="col">Feedback</th>
+                            <th scope="col">Result</th>
+                            <th scope="col">Points/Total</th>
+                            <th scope="col">Progress</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($slides as $slide) { ?>
+                        <?php 
+                            foreach ($slides as $slide) { 
+                                
+                        ?>
                             <tr>
                                 <td>Slide <?php echo $slide->slide; ?>: <?php echo $slide->title; ?></td>
                                 <td>
                                     <?php
-                                        if(in_array($slide->type, array('Essay'))) {
-                                            $grade = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true) : "";
-                                            echo $grade === "" ? "---" : "$grade/10";
+                                        $feedback = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_feedback", true) : "";
+                                        if ($feedback) {
+                                    ?>
+                                            <button class="btn btn-link" onclick="viewFeedback(<?php echo $slide->slide; ?>)"><strong>Yes</strong></button>
+                                    <?php
                                         } else {
-                                            $auto_score = lxp_assignment_submission_auto_score($assignment_submission['ID'], intval($slide->slide));
-                                            $score = $auto_score['score'];
-                                            $max = $auto_score['max'];
-                                            if ($max > 0) {
-                                                echo $score. '/' . $max;
-                                            } else {
-                                                echo "---";
-                                            }
+                                    ?>
+                                            <button class="btn btn-link" onclick="viewFeedback(<?php echo $slide->slide; ?>)">No</button>
+                                    <?php
                                         }
                                     ?>
+                                    
                                 </td>
-                                <td>
                                     <?php
                                         if(in_array($slide->type, array('Essay'))) {
                                             $grade = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true) : "";
@@ -73,33 +75,67 @@ global $post;
                                                     $icon = 'x-lg';
                                                 }
                                     ?>
-                                                <div class="row">
-                                                    <div class="col col-4">
+                                                
+                                                    <td>
                                                         <div class="<?php echo $progress_class; ?> rounded-pill" style="height: 25px; width: 100%;">
                                                             <center><i class="bi bi-<?php echo $icon; ?> text-white"></i></center>
                                                         </div>
-                                                    </div>
-                                                    <div class="col col-8">
+                                                    </td>
+                                                    <td>
+                                                        <?php
+                                                            if(in_array($slide->type, array('Essay'))) {
+                                                                $grade = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true) : "";
+                                                                echo $grade === "" ? "---" : "$grade/10";
+                                                            } else {
+                                                                $auto_score = lxp_assignment_submission_auto_score($assignment_submission['ID'], intval($slide->slide));
+                                                                $score = $auto_score['score'];
+                                                                $max = $auto_score['max'];
+                                                                if ($max > 0) {
+                                                                    echo $score. '/' . $max;
+                                                                } else {
+                                                                    echo "---";
+                                                                }
+                                                            }
+                                                        ?>
+                                                    </td>
+                                                    <td>
                                                         <div class="progress" style="height: 25px;">
                                                             <div class="progress-bar <?php echo $progress_class; ?>" role="progressbar" style="width: <?php echo $percentage; ?>%;" aria-valuenow="<?php echo $score; ?>" aria-valuemin="0" aria-valuemax="<?php echo $max; ?>">
                                                                 <?php echo round(($score / $max) * 100); ?>%
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </div>
+                                                    </td>
+                                                
                                     <?php        
                                             } else {
                                     ?>
-                                            <div class="row">
-                                                <div class="col col-4">
-                                                    <div class="bg-warning rounded-pill" style="height: 25px; width: 100%;">
-                                                        <center><i class="bi bi-dash-lg text-white"></i></center>
-                                                    </div>
+                                            
+                                            <td>
+                                                <div class="bg-warning rounded-pill" style="height: 25px; width: 100%;">
+                                                    <center><i class="bi bi-dash-lg text-white"></i></center>
                                                 </div>
-                                                <div class="col col-8">
-                                                    To Be Graded
-                                                </div>
-                                            </div>
+                                            </td>
+                                            <td>
+                                                <?php
+                                                    if(in_array($slide->type, array('Essay'))) {
+                                                        $grade = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true) : "";
+                                                        echo $grade === "" ? "---" : "$grade/10";
+                                                    } else {
+                                                        $auto_score = lxp_assignment_submission_auto_score($assignment_submission['ID'], intval($slide->slide));
+                                                        $score = $auto_score['score'];
+                                                        $max = $auto_score['max'];
+                                                        if ($max > 0) {
+                                                            echo $score. '/' . $max;
+                                                        } else {
+                                                            echo "---";
+                                                        }
+                                                    }
+                                                ?>
+                                            </td>
+                                            <td>
+                                                To Be Graded
+                                            </td>
+                                            
                                     <?php
                                             }
                                         } else {
@@ -116,36 +152,69 @@ global $post;
                                                     $icon = 'x-lg';
                                                 }
                                     ?>
-                                                <div class="row">
-                                                    <div class="col col-4">
+                                                
+                                                    <td>
                                                         <div class="<?php echo $progress_class; ?> rounded-pill" style="height: 25px; width: 100%;">
                                                             <center><i class="bi bi-<?php echo $icon; ?> text-white"></i></center>
                                                         </div>
-                                                    </div>
-                                                    <div class="col col-8">
+                                                    </td>
+                                                    <td>
+                                                        <?php
+                                                            if(in_array($slide->type, array('Essay'))) {
+                                                                $grade = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true) : "";
+                                                                echo $grade === "" ? "---" : "$grade/10";
+                                                            } else {
+                                                                $auto_score = lxp_assignment_submission_auto_score($assignment_submission['ID'], intval($slide->slide));
+                                                                $score = $auto_score['score'];
+                                                                $max = $auto_score['max'];
+                                                                if ($max > 0) {
+                                                                    echo $score. '/' . $max;
+                                                                } else {
+                                                                    echo "---";
+                                                                }
+                                                            }
+                                                        ?>
+                                                    </td>
+                                                    <td>
                                                         <div class="progress" style="height: 25px;">
                                                             <div class="progress-bar <?php echo $progress_class; ?>" role="progressbar" style="width: <?php echo $percentage; ?>%;" aria-valuenow="<?php echo $score; ?>" aria-valuemin="0" aria-valuemax="<?php echo $max; ?>"><?php echo round(($score / $max) * 100); ?>%</div>
                                                         </div>
-                                                    </div>
-                                                </div>
+                                                    </td>
+                                                
                                     <?php
                                             } else {
                                     ?>
-                                            <div class="row">
-                                                <div class="col col-4">
+                                            
+                                                <td>
                                                     <div class="bg-secondary rounded-pill" style="height: 25px; width: 100%;">
                                                         <center><i class="bi bi-dash-lg text-white"></i></center>
                                                     </div>
-                                                </div>
-                                                <div class="col col-8">
+                                                </td>
+                                                <td>
+                                                    <?php
+                                                        if(in_array($slide->type, array('Essay'))) {
+                                                            $grade = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true) : "";
+                                                            echo $grade === "" ? "---" : "$grade/10";
+                                                        } else {
+                                                            $auto_score = lxp_assignment_submission_auto_score($assignment_submission['ID'], intval($slide->slide));
+                                                            $score = $auto_score['score'];
+                                                            $max = $auto_score['max'];
+                                                            if ($max > 0) {
+                                                                echo $score. '/' . $max;
+                                                            } else {
+                                                                echo "---";
+                                                            }
+                                                        }
+                                                    ?>
+                                                </td>
+                                                <td>
                                                     Not Auto-graded
-                                                </div>
-                                            </div>
+                                                </td>
+                                            
                                     <?php
                                             }
                                         }
                                     ?>
-                                </td>
                             </tr>    
                         <?php } ?>
                     </tbody>

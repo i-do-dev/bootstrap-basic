@@ -26,29 +26,30 @@ $feedback = get_post_meta($assignment_submission_id, "slide_{$slide}_feedback", 
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        <div class="modal-body">
-            <form class="row g-3" id="feedbackForm">
-                <input type="hidden" name="assignment" value="<?php echo $assignment; ?>" />
-                <input type="hidden" name="slide" value="<?php echo $slide; ?>" />
-                <input type="hidden" name="student" value="<?php echo $student; ?>" />
-                <input type="hidden" name="assignment_submission_id" value="<?php echo $assignment_submission_id; ?>" />
+            <div class="modal-body">
+                <form class="row g-3" id="feedbackForm">
+                    <input type="hidden" name="assignment" value="<?php echo $assignment; ?>" />
+                    <input type="hidden" name="slide" value="<?php echo $slide; ?>" />
+                    <input type="hidden" name="student" value="<?php echo $student; ?>" />
+                    <input type="hidden" name="assignment_submission_id" value="<?php echo $assignment_submission_id; ?>" />
 
-                <div class="input_section">
-                    <div class="input_box brief_input_box">
-                        <div class="label_box brief_label_box">
-                            <label class="label">Feedback</label>
-                            <textarea class="brief_info form-control feedback_input_box" id="inputFeedback" name="feedback" placeholder="Enter grade feedback"><?php echo $feedback; ?></textarea>
+                    <div class="input_section">
+                        <div class="input_box brief_input_box">
+                            <div class="label_box brief_label_box">
+                                <label class="label">Feedback</label>
+                                <textarea class="brief_info form-control feedback_input_box" id="inputFeedback" name="feedback" placeholder="Enter grade feedback"><?php echo $feedback; ?></textarea>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="input_section">
-                    <div class="btn_box">
-                        <button class="grade-box-btn feedback-btn" id="assignFeedbackBtn"><span class="feedback-action">Save</span></button>
-                        <button class="grade-box-btn feedback-btn" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                    
+                    <div class="input_section">
+                        <div class="btn_box">
+                            <button class="grade-box-btn feedback-btn" id="assignFeedbackBtn"><span class="feedback-action">Save</span></button>
+                            <button class="grade-box-btn feedback-btn" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>
