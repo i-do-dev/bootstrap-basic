@@ -355,6 +355,16 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
           <!-- breadcrumbs -->
           <img class="bc-img-1" src="<?php echo $treks_src; ?>/assets/img/bc_img.svg" />
           <p>My TREKs</p>
+
+          <?php $tekversion = get_post_meta(get_the_ID(), 'tekversion', true); ?>
+          <?php if ($tekversion && $tekversion == '2017') { ?>
+            <img class="bc-img-2" src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" />
+            <p>2017 TEKS (BETA)</p>
+          <?php } ?>
+          <?php if ($tekversion && $tekversion == '2021') { ?>
+            <img class="bc-img-2" src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" />
+            <p>2017 TEKS (New TEKS)</p>
+          <?php } ?>
           <img class="bc-img-2" src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" />
           <p><?php the_title(); ?></p>
         </div>
