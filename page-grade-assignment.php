@@ -538,6 +538,7 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
                       <?php 
                         if (count($slide_filtered_arr) > 0) {
                           $slide_filtered = array_values($slide_filtered_arr)[0];
+                          $max_grades = $slide_filtered->gradedManually && $slide_filtered->totalGrades ? $slide_filtered->totalGrades : 10;
                       ?>
                         <div class="col col-md-4">
                             <div class="grade-box">
@@ -546,7 +547,7 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
                                   <div class="grade-select">
                                     <select name="grade" id="grade" class="form-select">
                                       <option value="">----</option>
-                                      <?php foreach (range(0, 10) as $grade_number) { ?>
+                                      <?php foreach (range(0, intval($max_grades)) as $grade_number) { ?>
                                         <option value="<?php echo $grade_number; ?>"><?php echo $grade_number; ?></option>
                                       <?php } ?>
                                     </select>
