@@ -65,7 +65,7 @@ global $post;
                                             
                                             if ($grade) {
                                                 $score = $grade;
-                                                $max = 10;
+                                                $max = $slide->gradedManually && $slide->totalGrades ? $slide->totalGrades : 10;
                                                 $percentage = ($score / $max) * 100;
                                                 if ($percentage >= 80) {
                                                     $progress_class = "bg-success";
@@ -85,7 +85,7 @@ global $post;
                                                         <?php
                                                             if(in_array($slide->type, array('Essay'))) {
                                                                 $grade = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true) : "";
-                                                                echo $grade === "" ? "---" : "$grade/10";
+                                                                echo $grade === "" ? "---" : "$grade/$max";
                                                             } else {
                                                                 $auto_score = lxp_assignment_submission_auto_score($assignment_submission['ID'], intval($slide->slide));
                                                                 $score = $auto_score['score'];
@@ -119,7 +119,8 @@ global $post;
                                                 <?php
                                                     if(in_array($slide->type, array('Essay'))) {
                                                         $grade = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true) : "";
-                                                        echo $grade === "" ? "---" : "$grade/10";
+                                                        $max = $slide->gradedManually && $slide->totalGrades ? $slide->totalGrades : 10;
+                                                        echo $grade === "" ? "---" : "$grade/$max";
                                                     } else {
                                                         $auto_score = lxp_assignment_submission_auto_score($assignment_submission['ID'], intval($slide->slide));
                                                         $score = $auto_score['score'];
@@ -162,7 +163,8 @@ global $post;
                                                         <?php
                                                             if(in_array($slide->type, array('Essay'))) {
                                                                 $grade = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true) : "";
-                                                                echo $grade === "" ? "---" : "$grade/10";
+                                                                $max = $slide->gradedManually && $slide->totalGrades ? $slide->totalGrades : 10;
+                                                                echo $grade === "" ? "---" : "$grade/$max";
                                                             } else {
                                                                 $auto_score = lxp_assignment_submission_auto_score($assignment_submission['ID'], intval($slide->slide));
                                                                 $score = $auto_score['score'];
@@ -194,7 +196,8 @@ global $post;
                                                     <?php
                                                         if(in_array($slide->type, array('Essay'))) {
                                                             $grade = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true) : "";
-                                                            echo $grade === "" ? "---" : "$grade/10";
+                                                            $max = $slide->gradedManually && $slide->totalGrades ? $slide->totalGrades : 10;
+                                                            echo $grade === "" ? "---" : "$grade/$max";
                                                         } else {
                                                             $auto_score = lxp_assignment_submission_auto_score($assignment_submission['ID'], intval($slide->slide));
                                                             $score = $auto_score['score'];

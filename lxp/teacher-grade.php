@@ -85,7 +85,7 @@ $mark_as_graded = $assignment_submission ? get_post_meta($assignment_submission[
                                     <span class="student_slide <?php echo $score == 0 ? "gray" : 'green'; ?>_slide <?php echo $green_class; ?>">Slide <?php echo $slide->slide; ?></span>
                                     <p><?php echo $slide->title; ?></p>
                                 
-                                    <h2 class="gray_grade"><?php echo $grade === "" ? "Not Graded" : $grade; ?></h2>
+                                    <h2 class="gray_grade"><?php echo $grade === "" ? "Not Graded" : $grade . ($slide->gradedManually ? "/$slide->totalGrades" : ""); ?></h2>
                                     <button class="feedback-btn" onclick="viewFeedback(<?php echo $slide->slide; ?>)">
                                         <img width="30" src="<?php echo $treks_src . "/assets/img/feedback-icon.png"; ?>" />
                                     </button>
