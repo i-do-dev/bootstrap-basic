@@ -359,11 +359,11 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
           <?php $tekversion = get_post_meta(get_the_ID(), 'tekversion', true); ?>
           <?php if ($tekversion && $tekversion == '2017') { ?>
             <img class="bc-img-2" src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" />
-            <p>2017 TEKS (BETA)</p>
+            <p><a href="<?php echo site_url("/treks"); ?>">2017 TEKS (BETA)</a></p>
           <?php } ?>
           <?php if ($tekversion && $tekversion == '2021') { ?>
             <img class="bc-img-2" src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" />
-            <p>2017 TEKS (New TEKS)</p>
+            <p><a href="<?php echo site_url("/treks"); ?>">2021 TEKS (New TEKS)</a></p>
           <?php } ?>
           <img class="bc-img-2" src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" />
           <p><?php the_title(); ?></p>
