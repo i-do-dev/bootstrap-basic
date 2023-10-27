@@ -27,17 +27,11 @@ $teacher_post =  isset($_GET['teacher_id']) ? get_post($_GET['teacher_id']) : nu
 $teacher_school_id = $teacher_post ? get_post_meta($teacher_post->ID, 'lxp_teacher_school_id', true) : 0;
 $school_post = $teacher_school_id > 0 ? get_post($teacher_school_id) : null;
 $students = [];
-if(isset($_GET['teacher_id'])) {
-    $students = get_posts(array(
-        'post_type' => 'tl_student',
-        'meta_query' => array(
-            array(
-                'key' => 'lxp_teacher_id',
-                'value' => $_GET['teacher_id'],
-                'compare' => '='
-            )
-        )
-    ));
+if($_GET['school_id'] && isset($_GET['teacher_id'])) {
+    $students = lxp_get_school_students($teacher_school_id);
+    $students = array_filter($students, function($student) use ($teacher_post) {
+        return get_post_meta($student->ID, 'lxp_teacher_id', true) == $teacher_post->ID;
+    });
 } else if(isset($_GET['school_id'])) {
     $students = lxp_get_school_students($_GET['school_id']);
     $school_post = get_post($_GET['school_id']);
@@ -398,11 +392,14 @@ if(isset($_GET['teacher_id'])) {
         crossorigin="anonymous"></script>
     
     <?php 
-        if(isset($_GET['teacher_id'])) {
-            get_template_part('lxp/admin-student-modal', 'student-modal', array("school_post" => $school_post)); 
-        } else {
+        //if(isset($_GET['teacher_id'])) {
+        if( $school_post ) {
+            get_template_part('lxp/admin-student-modal', 'student-modal', array("school_post" => $school_post, "teachers" => $district_schools_teachers)); 
+        }
+
+        if( !isset($_GET['teacher_id']) ) {
     ?>
-        <div class="modal fade students-modal" id="studentModal" tabindex="-1" aria-labelledby="studentModalLabel" aria-hidden="true">
+        <div class="modal fade students-modal" id="studentModalAlert" tabindex="-1" aria-labelledby="studentModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -415,7 +412,7 @@ if(isset($_GET['teacher_id'])) {
                     <div class="modal-body">
                         <!-- Bootstrap alert with text: Please select District and School to add new student. -->
                         <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            Please select <strong>Teacher</strong> to add/edit a student.</strong>
+                            Please select <strong>Teacher</strong>.</strong>
                         </div>
                     </div>
                 </div>
@@ -423,10 +420,48 @@ if(isset($_GET['teacher_id'])) {
         </div>
         
         <script type="text/javascript">
-            $(document).ready(function() {
+            jQuery(document).ready(function() {
                 jQuery("#import-student").on("change", function(e) {
-                    $('#studentModal').modal('show');
+                    $('#studentModalAlert').modal('show');
                     jQuery("#import-student").val("");
+                });
+            });
+        </script>
+    <?php } ?>
+    
+    <?php if(isset($_GET['teacher_id'])) { ?>
+        <input type="hidden" name="school_admin_id_imp" id="school_admin_id_imp" value="<?php echo get_post_meta( $school_post->ID, 'lxp_school_admin_id', true ); ?>">
+        <input type="hidden" name="student_school_id_imp" id="student_school_id_imp" value="<?php echo $school_post->ID; ?>">
+        <input type="hidden" name="teacher_id_imp" id="teacher_id_imp" value="<?php echo isset($_GET['teacher_id']) ? $_GET['teacher_id'] : 0; ?>">
+
+        <script>
+            jQuery(document).ready(function() {
+                let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+                let apiUrl = host + '/wp-json/lms/v1/';
+                
+                jQuery("#import-student").on("change", function(e) {
+                    let formData = new FormData();
+                    formData.append('student_school_id', jQuery("#student_school_id_imp").val());
+                    formData.append('school_admin_id', jQuery("#school_admin_id_imp").val());
+                    formData.append('teacher_id', jQuery("#teacher_id_imp").val());
+                    formData.append('students', e.target.files[0]);
+                    $.ajax({
+                        method: "POST",
+                        enctype: 'multipart/form-data',
+                        url: apiUrl + "students/import",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        cache: false,
+                    }).done(function( response ) {
+                        jQuery("#import-student").val("");
+                        window.location.reload();
+                    }).fail(function (response) {
+                        jQuery("#import-student").val("");
+                        if (response.responseJSON) {
+                            alert(response.responseJSON.data);
+                        }
+                    });
                 });
             });
         </script>

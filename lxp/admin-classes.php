@@ -33,16 +33,10 @@ $school_post = $teacher_school_id > 0 ? get_post($teacher_school_id) : null;
 $students = [];
 if ($teacher_post) {
     // get students by 'lxp_teacher_id' post meta
-    $students = get_posts(array(
-        'post_type' => 'tl_student',
-        'meta_query' => array(
-            array(
-                'key' => 'lxp_teacher_id',
-                'value' => $teacher_post->ID,
-                'compare' => '='
-            )
-        )
-    ));
+    $students = lxp_get_school_students($teacher_school_id);
+    $students = array_filter($students, function($student) use ($teacher_post) {
+        return get_post_meta($student->ID, 'lxp_teacher_id', true) == $teacher_post->ID;
+    });
 }
 
 $default_classes = $teacher_post ? lxp_get_teacher_default_classes($teacher_post->ID) : [];

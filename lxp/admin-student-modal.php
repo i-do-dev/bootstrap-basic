@@ -1,6 +1,7 @@
 <?php
 global $treks_src;
 $school_post = $args['school_post'];
+$teachers = $args['teachers'];
 ?>
 
 <!-- Modal -->
@@ -18,7 +19,7 @@ $school_post = $args['school_post'];
                 <form class="row g-3" id="studentForm">
                     <input type="hidden" name="school_admin_id" id="school_admin_id" value="<?php echo get_post_meta( $school_post->ID, 'lxp_school_admin_id', true ); ?>">
                     <input type="hidden" name="student_school_id" id="student_school_id" value="<?php echo $school_post->ID; ?>">
-                    <input type="hidden" name="teacher_id" id="teacher_id" value="<?php echo isset($_GET['teacher_id']) ? $_GET['teacher_id'] : 0; ?>">
+                    <!-- <input type="hidden" name="teacher_id" id="teacher_id" value="<?php // echo isset($_GET['teacher_id']) ? $_GET['teacher_id'] : 0; ?>"> -->
                     <input type="hidden" name="student_post_id" id="student_post_id" value="0">
 
                     <div class="personal_box">
@@ -76,6 +77,18 @@ $school_post = $args['school_post'];
                                 <label class="label">About</label>
                                 <input class="brief_info form-control" type="text" name="about" id="aboutStudent"
                                     placeholder="Enter a brief description here" />
+                            </div>
+                        </div>
+                        <div class="input_box">
+                            <div class="label_box">
+                                <label class="label">Assign Teacher</label>
+                                <!-- <input class="form-control" type="xxx" name="xxx" id="xxx" placeholder="***" /> -->
+                                <select name="teacher_id" id="teacher_id" class="form-select">
+                                    <option value="0">Select Teacher</option>
+                                    <?php foreach ($teachers as $teacher) { ?>
+                                        <option value="<?php echo $teacher->ID; ?>" <?php echo isset($_GET['teacher_id']) && $_GET['teacher_id'] == $teacher->ID ? "selected=selected" : ""; ?> ><?php echo $teacher->post_title; ?></option>
+                                    <?php } ?>
+                                </select>
                             </div>
                         </div>
                         <!-- 
@@ -207,6 +220,7 @@ function onStudentEdit(student_id) {
         let admin = response.data.admin.data;
         jQuery('#studentForm .form-control').removeClass('is-invalid');
         jQuery('#studentModal #aboutStudent').val(student.post_content);
+        jQuery('#studentModal #teacher_id').val(student.teacher_id);
         jQuery('#studentModal #first_name_student').val(admin.first_name);
         jQuery('#studentModal #last_name_student').val(admin.last_name);
         jQuery('#studentModal #emailStudent').val(admin.user_email);
@@ -228,32 +242,6 @@ function onStudentEdit(student_id) {
         var studentModal = document.getElementById('studentModal');
         studentModalObj = new bootstrap.Modal(studentModal);
         window.studentModalObj = studentModalObj;
-        
-
-        jQuery("#import-student").on("change", function(e) {
-            let formData = new FormData();
-            formData.append('student_school_id', jQuery("#student_school_id").val());
-            formData.append('school_admin_id', jQuery("#school_admin_id").val());
-            formData.append('teacher_id', jQuery("#teacher_id").val());
-            formData.append('students', e.target.files[0]);
-            $.ajax({
-                method: "POST",
-                enctype: 'multipart/form-data',
-                url: apiUrl + "students/import",
-                data: formData,
-                processData: false,
-                contentType: false,
-                cache: false,
-            }).done(function( response ) {
-                jQuery("#import-student").val("");
-                window.location.reload();
-            }).fail(function (response) {
-                jQuery("#import-student").val("");
-                if (response.responseJSON) {
-                    alert(response.responseJSON.data);
-                }
-            });
-        });
 
         studentModal.addEventListener('hide.bs.modal', function (event) {
             jQuery("#student_post_id").val(0);
@@ -287,6 +275,7 @@ function onStudentEdit(student_id) {
                     Object.keys(response.responseJSON.data.params).forEach(element => {
                         jQuery('#studentModal input[name="' + element + '"]').addClass('is-invalid');
                         jQuery('#studentModal textarea[name="' + element + '"]').addClass('is-invalid');
+                        jQuery('#studentModal select[name="' + element + '"]').addClass('is-invalid');
                     });
                 }
             });

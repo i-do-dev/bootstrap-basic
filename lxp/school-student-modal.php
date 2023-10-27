@@ -1,6 +1,7 @@
 <?php
 global $treks_src;
 $school_post = $args['school_post'];
+$teacher_post = $args['teacher_post'];
 ?>
 
 <!-- Modal -->
@@ -19,6 +20,7 @@ $school_post = $args['school_post'];
                     <input type="hidden" name="school_admin_id" id="school_admin_id" value="<?php echo get_current_user_id(); ?>">
                     <input type="hidden" name="student_school_id" id="student_school_id" value="<?php echo $school_post->ID; ?>">
                     <input type="hidden" name="student_post_id" id="student_post_id" value="0">
+                    <input type="hidden" name="teacher_id" id="teacher_id" value="<?php echo $teacher_post->ID; ?>">
 
                     <div class="personal_box">
                         <p class="personal-text">Personal information</p>
@@ -233,6 +235,7 @@ function onStudentEdit(student_id) {
             let formData = new FormData();
             formData.append('student_school_id', jQuery("#student_school_id").val());
             formData.append('school_admin_id', jQuery("#school_admin_id").val());
+            formData.append('teacher_id', jQuery("#teacher_id").val());
             formData.append('students', e.target.files[0]);
             $.ajax({
                 method: "POST",

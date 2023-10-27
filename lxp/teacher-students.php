@@ -6,6 +6,9 @@ $teacher_post = lxp_get_teacher_post($userdata->data->ID);
 $teacher_school_id = get_post_meta($teacher_post->ID, 'lxp_teacher_school_id', true);
 $school_post = get_post($teacher_school_id);
 $students = lxp_get_school_students($teacher_school_id);
+$students = array_filter($students, function($student) use ($teacher_post) {
+    return get_post_meta($student->ID, 'lxp_teacher_id', true) == $teacher_post->ID;
+});
 ?>
 
 <!DOCTYPE html>
@@ -312,7 +315,7 @@ $students = lxp_get_school_students($teacher_school_id);
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
     
-    <?php get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post)); ?>
+    <?php get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post, "teacher_post" => $teacher_post)); ?>
 </body>
 
 </html>

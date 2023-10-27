@@ -6,6 +6,9 @@ $teacher_post = lxp_get_teacher_post($userdata->data->ID);
 $teacher_school_id = get_post_meta($teacher_post->ID, 'lxp_teacher_school_id', true);
 $school_post = get_post($teacher_school_id);
 $students = lxp_get_school_students($teacher_school_id);
+$students = array_filter($students, function($student) use ($teacher_post) {
+    return get_post_meta($student->ID, 'lxp_teacher_id', true) == $teacher_post->ID;
+});
 //$classes = lxp_get_teacher_classes($teacher_post->ID);
 $default_classes = lxp_get_teacher_default_classes($teacher_post->ID);
 $classes = lxp_get_teacher_group_by_type($teacher_post->ID, 'classes');
