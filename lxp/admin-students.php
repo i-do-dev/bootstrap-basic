@@ -27,7 +27,7 @@ $teacher_post =  isset($_GET['teacher_id']) ? get_post($_GET['teacher_id']) : nu
 $teacher_school_id = $teacher_post ? get_post_meta($teacher_post->ID, 'lxp_teacher_school_id', true) : 0;
 $school_post = $teacher_school_id > 0 ? get_post($teacher_school_id) : null;
 $students = [];
-if($_GET['school_id'] && isset($_GET['teacher_id'])) {
+if(isset($_GET['school_id']) && isset($_GET['teacher_id'])) {
     $students = lxp_get_school_students($teacher_school_id);
     $students = array_filter($students, function($student) use ($teacher_post) {
         return get_post_meta($student->ID, 'lxp_teacher_id', true) == $teacher_post->ID;
