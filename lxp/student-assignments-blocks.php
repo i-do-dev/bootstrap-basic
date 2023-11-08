@@ -48,6 +48,7 @@ foreach ($assignments as $assignment) {
             <p><?php echo $trek->post_title; ?></p>
             </div>
         </div>
+        <!-- 
         <div class="progress" style="height: 4px">
             <div
             class="progress-bar"
@@ -58,6 +59,7 @@ foreach ($assignments as $assignment) {
             aria-valuemax="100"
             ></div>
         </div>
+         -->
     </div>
 </a>
 

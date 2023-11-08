@@ -57,7 +57,7 @@
             return $ok;
           });
 
-          if ( $students_graded === count($student_stats) ) { 
+          // if ( $students_graded === count($student_stats) ) { 
       ?>
         <tr>
           <td><?php echo $class_post ? $class_post->post_title : 'Demo Class'; ?></td>
@@ -89,7 +89,9 @@
             <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Graded'])"><?php echo $students_graded; ?>/<?php echo count($student_stats); ?></a></div>
           </td>
         </tr>  
-      <?php } } ?>
+      <?php 
+           // } 
+          } ?>
 <!--               <tr>
         <td>Elephants</td>
         <td>
