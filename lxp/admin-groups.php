@@ -79,14 +79,7 @@
     <!-- Header Section -->
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <div class="header-logo-search">
-                    <!-- logo -->
-                    <div class="header-logo">
-                        <img src="<?php echo $treks_src; ?>/assets/img/header_logo.svg" alt="svg" />
-                    </div>
-                </div>
-            </a>
+            <?php get_template_part('trek/header-logo'); ?>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">

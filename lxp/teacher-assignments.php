@@ -74,16 +74,7 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
 <body>
   <nav class="navbar navbar-expand-lg bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-
-        <div class="header-logo-search">
-          <!-- logo -->
-          <div class="header-logo">
-            <img src="<?php echo $treks_src; ?>/assets/img/header_logo.svg" alt="svg" />
-          </div>
-
-        </div>
-      </a>
+      <?php get_template_part('trek/header-logo'); ?>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -174,7 +165,7 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
                       </li>
                   </ul>
                   
-                  <a href="<?php echo site_url("assignment??trek=0&segment=0") ?>" title="Add Assignment" class='btn btn-success' style="color:#FFFFFF;" role='button'> Add Assignment
+                  <a href="<?php echo site_url("assignment??course=0&section=0") ?>" title="Add Assignment" class='btn btn-success' style="color:#FFFFFF;" role='button'> Add Assignment
                   </a>
                   <div>                    
                     <img src="<?php echo $treks_src; ?>/assets/img/calendar<?php echo $post->post_name === "calendar" ? "-selected" : ""; ?>.svg" />
@@ -190,54 +181,6 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
         
       </div>
     </section>
-
-    <!-- Calendar &  Activities Completed Overall -->
-    <!-- 
-    <section class="clen-act-section">
-      <div class="clen-act-section-div">
-        <div class="calendar-portion">
-          <div class="calendar-portion-header section-div-header">
-            <h2>Pending Assignments</h2>
-            <div>
-              <a href="#">See All</a>
-            </div>
-          </div>
-        </div>
-        <div class="activities-portion">
-          <div class="activities-portion-header section-div-header">
-            <h2>Activities Completed Overall</h2>
-          </div>
-
-          <div class="activities-portion-prap">
-            <p>This is the status of all the activities you have assigned.</p>
-
-            <div class="activities-portion-progress">
-               
-                <div class="portion-progress-div">
-                  <div class="recall-progress-bar"></div>
-                  <p>Recall</p>
-                </div>
-
-                <div class="portion-progress-div">
-                  <div class="pa-progress-bar"></div>
-                  <p>Practice A</p>
-                </div>
-
-                <div class="portion-progress-div">
-                  <div class="pb-progress-bar"></div>
-                  <p>Practice B</p>
-                </div>
-
-                <div class="portion-progress-div">
-                  <div class="apply-progress-bar"></div>
-                  <p>Apply</p>
-                </div>
-              </div>
-          </div>
-        </div>
-      </div>
-    </section>
-     -->
   </section>
   <?php get_template_part('lxp/assignment-stats-modal', 'assignment-stats-modal'); ?>
 
@@ -265,32 +208,12 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
       }
     });
 
-    function fetch_assignment_stats(assignment_id, trek, segment, statuses) {
-
-      jQuery('#student-progress-trek-title').text(trek);
-      jQuery('#student-progress-trek-segment').text(segment);
-      jQuery('#student-progress-trek-segment-char').text(segment[0]);
-      var segmentColor = "#979797";
-      switch (segment) {
-          case 'Overview':
-              segmentColor = "#979797";
-              break;
-          case 'Recall':
-              segmentColor = "#ca2738";
-              break;
-          case 'Practice A':
-              segmentColor = "#1fa5d4";
-              break;
-          case 'Practice B':
-              segmentColor = "#1fa5d4";
-              break;
-          case 'Apply':
-              segmentColor = "#9fc33b";
-              break;
-          default:
-              segmentColor = "#979797";
-              break;
-      }
+    function fetch_assignment_stats(assignment_id, course, segment, statuses, course_post_image) {
+      jQuery('#student-progress-course-title').text(course);
+      jQuery('#student-progress-course-post-image').html(`<img width="50" class="rounded wp-post-image" src="`+course_post_image+`" alt="logo" />`);
+      jQuery('#student-progress-course-segment').text(segment);
+      jQuery('#student-progress-course-segment-char').text('L');
+      var segmentColor = "#1fa5d4";
       jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-tab-polygon').css('background-color', segmentColor);
       jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon-name, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-user-name').css('color', segmentColor);
       

@@ -18,8 +18,8 @@
     <thead>
       <tr>
         <th>Class</th>
-        <th>TREK</th>
-        <th>Segment</th>
+        <th>Course</th>
+        <th>Lesson</th>
         <th>Due Date</th>
         <th>Student Progress</th>
         <th>Students Submitted</th>
@@ -30,18 +30,15 @@
       <?php 
         foreach ($assignments as $assignment) { 
           $class_post = get_post(get_post_meta($assignment->ID, 'class_id', true));
-          $trek_section_id = get_post_meta($assignment->ID, 'trek_section_id', true);
-          global $wpdb;
-          $trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id={$trek_section_id}");
-          $trek = get_post(get_post_meta($assignment->ID, 'trek_id', true));
-          $segment = implode("-", explode(" ", strtolower($trek_section->title)));
-
+          $lxp_lesson_post = get_post(get_post_meta($assignment->ID, 'lxp_lesson_id', true));
+          $course = get_post(get_post_meta($assignment->ID, 'course_id', true));
+          $lesson_segment = implode("-", explode(" ", strtolower($lxp_lesson_post->post_title))) ;
+          
           $student_stats = lxp_assignment_stats($assignment->ID);
           $statuses = array("To Do", "In Progress");
           $students_in_progress = array_filter($student_stats, function($studentStat) use ($statuses) {
             return in_array($studentStat["status"], $statuses);
           });
-          
           $statuses = array("Completed");
           $students_graded = 0;
           $students_completed = array_filter($student_stats, function($studentStat) use ($statuses, $assignment, &$students_graded) {
@@ -59,15 +56,21 @@
           
       ?>
         <tr>
-          <td><?php echo $class_post ? $class_post->post_title : 'Demo Class'; ?></td>
-          <td><?php echo $trek->post_title; ?></td>
+          <td><?php echo $class_post->post_title; ?></td>
+          <td>
+            <?php 
+              echo $course->post_title; 
+              $course_post_image = has_post_thumbnail( $course->ID ) ? get_the_post_thumbnail_url($course->ID) : $treks_src.'/assets/img/tr_main.jpg';                       
+            ?>
+          </td>
           <td>
             <div class="assignments-table-cs-td-poly">
-              <div class="polygon-shap polygonshape-<?php echo $segment; ?>">
-                <span><?php echo $trek_section->title[0]; ?></span>
+              <div class="polygon-shap">
+                <!-- <span><?php echo $lxp_lesson_post->post_title[0]; ?></span> -->
+                <span>L</span>
               </div>
               <div>
-                <span><?php echo $trek_section->title; ?></span>
+                <span><?php echo $lxp_lesson_post->post_title; ?></span>
               </div>
             </div>
           </td>
@@ -79,51 +82,16 @@
             ?>
           </td>
           <td>
-            <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['To Do', 'In Progress'])"><?php echo count($students_in_progress); ?>/<?php echo count($student_stats); ?></a></div>
+            <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $course->post_title; ?>', '<?php echo $lxp_lesson_post->post_title; ?>', ['To Do', 'In Progress'], '<?php echo $course_post_image; ?>')"><?php echo count($students_in_progress); ?>/<?php echo count($student_stats); ?></a></div>
           </td>
           <td>
-            <?php
-              $student_stats = lxp_assignment_stats($assignment->ID);
-            ?>
-            <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Completed'])"><?php echo count($students_completed); ?>/<?php echo count($student_stats); ?></a></div>
+            <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $course->post_title; ?>', '<?php echo $lxp_lesson_post->post_title; ?>', ['Completed'], '<?php echo $course_post_image; ?>')"><?php echo count($students_completed); ?>/<?php echo count($student_stats); ?></a></div>
           </td>
           <td>
-            <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Graded'])"><?php echo $students_graded; ?>/<?php echo count($student_stats); ?></a></div>
+            <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $course->post_title; ?>', '<?php echo $lxp_lesson_post->post_title; ?>', ['Graded'], '<?php echo $course_post_image; ?>')"><?php echo $students_graded; ?>/<?php echo count($student_stats); ?></a></div>
           </td>
         </tr>  
       <?php } ?>
-<!--               <tr>
-        <td>Elephants</td>
-        <td>
-          <div class="assignments-table-cs-td-poly">
-            <div class="polygon-shap">
-              <span>P</span>
-            </div>
-            <div>
-              <span>Physical Properties</span>
-              <span>Practice B</span>
-            </div>
-          </div>
-        </td>
-        <td>Jan 21, 2023</td>
-        <td>25/30</td>
-      </tr>
-      <tr>
-        <td>Elephants</td>
-        <td>
-          <div class="assignments-table-cs-td-poly">
-            <div class="polygon-shap">
-              <span>P</span>
-            </div>
-            <div>
-              <span>Physical Properties</span>
-              <span>Practice B</span>
-            </div>
-          </div>
-        </td>
-        <td>Jan 21, 2023</td>
-        <td>25/30</td>
-      </tr> -->
     </tbody>
   </table>
 </div>

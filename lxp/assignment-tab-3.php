@@ -2,7 +2,6 @@
     global $treks_src;
     $userdata = get_userdata(get_current_user_id());
     $teacher_post = lxp_get_teacher_post($userdata->data->ID);
-    //$classes = lxp_get_teacher_classes($teacher_post->ID);
     $default_classes = lxp_get_teacher_default_classes($teacher_post->ID);
     $classes = lxp_get_teacher_group_by_type($teacher_post->ID, 'classes');
     $classes = array_merge($default_classes, $classes);
@@ -196,10 +195,8 @@
 </div>
 
 <script type="text/javascript">
-    let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
-    let apiUrl = host + '/wp-json/lms/v1/';
     window.selected_students_ids = [];
-
+    
     function class_select() {
         var class_id = jQuery('#classes_other_group :selected').val();
         jQuery('#class_id').val(class_id);
@@ -313,8 +310,8 @@
 
     function create_assignment() {
         const url_params = new URL(window.location.href).searchParams;
-        const url_trek_id = url_params.get('trek');
-        const url_segment_id = url_params.get('segment');
+        const url_course_id = url_params.get('course');
+        const url_section_id = url_params.get('section');
         let ok = true;
         if (!parseInt(jQuery("#class_id").val())) {
             ok = false;
@@ -331,17 +328,17 @@
         }
 
         if (ok) {
-            let trek_id = jQuery("#trek_id").val()
-            let segments_ids = jQuery("input[name='segments[]']:checked").get().map(segment => jQuery(segment).val());
-            let segments_title = jQuery("input[name='segments[]']:checked").get().map(segment => jQuery(segment).attr('title'));
+            let course_id = jQuery("#course_id").val()
+            let lesson_ids = jQuery("input[name='lesson_ids[]']:checked").get().map(lesson_id => jQuery(lesson_id).val());
+            let lessons_title = jQuery("input[name='lesson_ids[]']:checked").get().map(lesson_id => jQuery(lesson_id).attr('title'));
             let class_id = jQuery('#class_id').val();
             let group_id = jQuery('#group_id').val();
             let teacher_id = jQuery('#teacher_id').val();
 
             let formData = new FormData();
-            formData.append('trek_id', trek_id);
-            formData.append('segments_ids', JSON.stringify(segments_ids));
-            formData.append('segments_title', JSON.stringify(segments_title));
+            formData.append('course_id', course_id);
+            formData.append('lesson_ids', JSON.stringify(lesson_ids));
+            formData.append('lessons_title', JSON.stringify(lessons_title));
             formData.append('class_id', class_id);
             formData.append('group_id', group_id);
             formData.append('student_ids', JSON.stringify(window.selected_students_ids));
@@ -365,7 +362,7 @@
                 window.calendar.refetchEvents();
                 console.log("assignment created successfully.");
                 jQuery("#assignment-create-btn").removeAttr("disabled");
-                window.location = "<?php echo site_url("assignment"); ?>" + "?trek=" + url_trek_id + "&segment=" + url_segment_id;
+                window.location = "<?php echo site_url("assignment"); ?>" + "?course=" + url_course_id + "&section=" + url_section_id;
             }).fail(function (response) {
                 console.error(response);
                 jQuery("#assignment-create-btn").removeAttr("disabled");

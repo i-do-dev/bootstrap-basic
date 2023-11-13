@@ -63,14 +63,7 @@ $statuses_count = array_reduce($assignments, function($carry, $assignment) use (
   <body>
     <nav class="navbar navbar-expand-lg bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-          <div class="header-logo-search">
-            <!-- logo -->
-            <div class="header-logo">
-              <img src="<?php echo $treks_src; ?>/assets/img/header_logo.svg" alt="svg" />
-            </div>
-          </div>
-        </a>
+        <?php get_template_part('trek/header-logo'); ?>
         <button
           class="navbar-toggler"
           type="button"

@@ -13,15 +13,19 @@
         <div class="modal-body">
             <div class="students-breadcrumb">
             <div class="interdependence-user">
-                <img src="<?php echo $treks_src; ?>/assets/img/tr_main.png" alt="user" class="inter-user-img" />
-                <h3 class="inter-user-name" id="student-progress-trek-title"></h3>
+                <!-- <img src="<?php echo $treks_src; ?>/assets/img/tr_main.png" alt="user" class="inter-user-img" />
+                <h3 class="inter-user-name" id="student-progress-trek-title"></h3> -->
+                <span id="student-progress-course-post-image">
+                    <img src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" alt="user" class="inter-user-img" />    
+                </span>
+                <h3 class="inter-user-name" id="student-progress-course-title"></h3>
             </div>
             <img src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" alt="user" class="students-breadcrumb-arrow" />
             <div class="interdependence-tab">
                 <div class="inter-tab-polygon">
-                <h4 id="student-progress-trek-segment-char"></h4>
+                <h4 id="student-progress-course-segment-char"></h4>
                 </div>
-                <h3 class="inter-tab-polygon-name" id="student-progress-trek-segment"></h3>
+                <h3 class="inter-tab-polygon-name" id="student-progress-course-segment"></h3>
             </div>
             </div>
 

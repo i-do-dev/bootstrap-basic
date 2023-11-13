@@ -1,78 +1,55 @@
 <?php
-// get_template_part('lxp/functions');
-global $treks_src;
-$teacher_post = lxp_get_teacher_post( get_userdata(get_current_user_id())->ID );
-if (is_null($teacher_post)) {
-  die("This account is inactive. Please contact site administrator. ". '<a href="' . wp_logout_url("login") . '">Logout</a>');
-}
-
-$treks = array();
-$treks_assigned = get_post_meta($teacher_post->ID, 'treks_assigned');
-$treks_assigned = is_array($treks_assigned) && count($treks_assigned) > 0 ? $treks_assigned : array(0);
-
-// Start the loop.
-$courseId =  isset($_GET['courseid']) ? $_GET['courseid'] : get_post_meta($post->ID, 'tl_course_id', true);
-$trek_count = 6;
-$args = array(
-	'posts_per_page'   => 3,
-	'post_type'        => 'tl_trek'
-);
-
-$treks_saved = get_post_meta($teacher_post->ID, 'treks_saved');
-// filter $treks_saved to only include treks that are in $treks_assigned
-$treks_saved = array_filter($treks_saved, function($trek_id) use ($treks_assigned) {
-  return in_array($trek_id, $treks_assigned);
-});
-
-if ($treks_saved) {
-  $args['post__not_in'] = $treks_saved;
-  if (is_array($treks_saved) && count($treks_saved) < $trek_count) {
-    $trek_count = $trek_count - count($treks_saved);
-    $args['posts_per_page']   = $trek_count;
-  } else {
-    $trek_count = 1;
+  global $treks_src;
+  $teacher_post = lxp_get_teacher_post( get_userdata(get_current_user_id())->ID );
+  if (is_null($teacher_post)) {
+    die("This account is inactive. Please contact site administrator. ". '<a href="' . wp_logout_url("login") . '">Logout</a>');
   }
-}
-
-$lxp_visited_treks = get_post_meta($teacher_post->ID, 'lxp_visited_treks');
-// filter $lxp_visited_treks to only include treks that are in $treks_assigned
-$lxp_visited_treks = array_filter($lxp_visited_treks, function($trek_id) use ($treks_assigned) {
-  return in_array($trek_id, $treks_assigned);
-});
-$lxp_visited_treks_to_show = is_array($lxp_visited_treks) && count($lxp_visited_treks) > 0 ? array_diff(array_reverse($lxp_visited_treks), $treks_saved) : array();
-
-if (count($lxp_visited_treks_to_show) > 0) {
-  $args['post__in'] = array_merge($lxp_visited_treks_to_show);
-  $args['orderby'] = 'post__in';
-} else {
-  $args['meta_key'] = 'sort';
-  $args['orderby'] = 'meta_value_num';
-  $args['order'] = 'ASC';
-}
-
-if ( get_userdata(get_current_user_id())->user_email === "guest@rpatreks.com" ) {
+  // Start the loop.
+  $courseId =  isset($_GET['courseid']) ? $_GET['courseid'] : get_post_meta($post->ID, 'tl_course_id', true);
+  $courses_count = 6;
   $args = array(
-    'include' => '15',
-    'post_type'        => 'tl_trek',
-    'order' => 'post__in'
+    'posts_per_page'   => 3,
+    'post_type'        => 'tl_course'
   );
-}
 
-$args_include = isset($args['post__not_in']) ? array_diff($args['post__not_in'], $treks_assigned) : $treks_assigned;
-if (is_array($args_include) && count($args_include) > 0) {
-  $args['include'] = $args_include;
-  $treks = get_posts($args);
-} else {
-  $treks = get_posts($args);
-}
+  $courses_saved = get_post_meta($teacher_post->ID, 'courses_saved');
+  if ($courses_saved) {
+    $args['post__not_in'] = $courses_saved;
+    if (is_array($courses_saved) && count($courses_saved) < $courses_count) {
+      $courses_count = $courses_count - count($courses_saved);
+      $args['posts_per_page']   = $courses_count;
+    } else {
+      $courses_count = 1;
+    }
+  }
 
-while (have_posts()) : the_post();
+  $lxp_visited_courses = get_post_meta($teacher_post->ID, 'lxp_visited_courses');
+  $lxp_visited_courses_to_show = is_array($lxp_visited_courses) && count($lxp_visited_courses) > 0 ? array_diff(array_reverse($lxp_visited_courses), $courses_saved) : array();
+  if (count($lxp_visited_courses_to_show) > 0) {
+    $args['post__in'] = $lxp_visited_courses_to_show;
+    $args['orderby'] = 'post__in';
+  } else {
+    $args['meta_key'] = 'sort';
+    $args['orderby'] = 'meta_value_num';
+    $args['order'] = 'ASC';
+  }
 
-if (is_null($teacher_post)) {
-  die("Teacher is not associated with any school. contact admin. <a href='". wp_logout_url("login") ."'>Logout</a>");
-}
-$assignments = lxp_get_teacher_assignments($teacher_post->ID);
-$teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_saved);
+  if ( get_userdata(get_current_user_id())->user_email === "guest@rpatreks.com" ) {
+    $args = array(
+      'include' => '15',
+      'post_type'        => 'tl_course',
+      'order' => 'post__in'
+    );
+  }
+
+  $courses = get_posts($args);
+  while (have_posts()) : the_post();
+
+  if (is_null($teacher_post)) {
+    die("Teacher is not associated with any school. contact admin. <a href='". wp_logout_url("login") ."'>Logout</a>");
+  }
+  $assignments = lxp_get_teacher_assignments($teacher_post->ID);
+  $teacher_saved_courses = lxp_get_teacher_saved_courses($teacher_post->ID, $courses_saved);
 ?>
 
 <!DOCTYPE html>
@@ -144,25 +121,13 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
       .bg-green {
           background: #6dc200 !important;
       }
-      .bg-blue {
-          background: #1fa5d4 !important;
-      }
     </style>
 </head>
 
 <body>
   <nav class="navbar navbar-expand-lg bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-
-        <div class="header-logo-search">
-          <!-- logo -->
-          <div class="header-logo">
-            <img src="<?php echo $treks_src; ?>/assets/img/header_logo.svg" alt="svg" />
-          </div>
-
-        </div>
-      </a>
+      <?php get_template_part('trek/header-logo'); ?>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -196,85 +161,68 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
       <?php get_template_part('trek/navigation') ?>
     </nav>
 
-    <!-- Reminders: section-->
-<!--     <section class="reminder-section">
-      <div class="reminder-section-div">
-        
-        <div class="reminder-title reminder-detail">
-          <img src="<?php // echo $treks_src; ?>/assets/img/rm_calendar.svg" />
-          <span>Reminders:</span>
-        </div>
-        
-        <div class="reminder-detail reminder-vli">
-          <span>Physical Properties Thu 9:00 AM</span>
-        </div>
-        
-        <div class="reminder-detail reminder-vli">
-          <span>Forces & Experimental Design Fri 10:00 AM</span>
-        </div>
-        
-        <div class="reminder-detail">
-          <span>Physics Fri 1:00 PM</span>
-        </div>
-        
-        <div class="reminder-detail">
-          <span>Mathematics Mon 11:00 AM</span>
-        </div>
-        
-        <div class="reminder-arrow">
-          <img src="<?php echo $treks_src; ?>/assets/img/rm_arrow down.svg" />
-        </div>
-      </div>
-    </section>
- -->
-    <!-- Recent TREKs -->
+    <!-- Recent Courses -->
     <section class="recent-treks-section">
       <div class="recent-treks-section-div">
-        <!--  TREKs header-->
+        <!--  Courses header-->
         <div class="recent-treks-header section-div-header">
-          <h2>My TREKs</h2>
+          <h2>My Courses</h2>
           <div>
-            <a href="<?php echo site_url('treks'); ?>">See All</a>
+            <a href="<?php echo site_url('courses'); ?>">See All</a>
           </div>
         </div>
-        <!-- TREKs cards -->
+        <!-- Courses cards -->
         <div class="recent-treks-cards-list">
-          <!-- each cards  -->
-          
+          <!-- Saved Courses cards -->
           <?php
-          foreach($teacher_saved_treks as $trek) {
+            foreach($teacher_saved_courses as $course) {
           ?>
-            <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
+            <a href="<?php echo get_post_permalink($course->ID); ?>" class="treks-card-link">
               <div class="recent-treks-card-body treks-card">
                   <div class="treks-card-saved"><img width="35" height="35" src="<?php echo $treks_src; ?>/assets/img/trek-save-filled-icon.svg" alt="svg" /></div>
                   <div class="treks-card-saved-back"></div>
                   <div>
-                    <?php echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
+                    <?php
+                      if ( has_post_thumbnail( $course->ID ) ) {
+                          echo get_the_post_thumbnail($course->ID, "medium", array( 'class' => 'rounded' )); 
+                      } else {
+                    ?>
+                      <img width="300" height="180" src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" class="rounded wp-post-image" /> 
+                    <?php        
+                        }
+                    ?>
                   </div>
                   <div>
-                    <h3><?php echo get_the_title($trek->ID); ?></h3>
-                    <!-- <span>Due date: May 17, 2023</span> -->
-                  </div>
-                </div>
-            </a>
-          <?php } ?>
-          
-          <?php
-          foreach($treks as $trek) {
-          ?>
-            <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
-              <div class="recent-treks-card-body treks-card">
-                  <div>
-                    <?php echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
-                  </div>
-                  <div>
-                    <h3><?php echo get_the_title($trek->ID); ?></h3>
+                    <h3><?php echo get_the_title($course->ID); ?></h3>
                     <span>Due date: May 17, 2023</span>
                   </div>
                 </div>
             </a>
           <?php } ?>
-
+          <!-- Visited Courses cards -->
+          <?php
+            foreach($courses as $course) {
+          ?>
+              <a href="<?php echo get_post_permalink($course->ID); ?>" class="treks-card-link">
+                <div class="recent-treks-card-body treks-card">
+                    <div>
+                      <?php
+                        if ( has_post_thumbnail( $course->ID ) ) {
+                            echo get_the_post_thumbnail($course->ID, "medium", array( 'class' => 'rounded' )); 
+                        } else {
+                      ?>
+                        <img width="300" height="180" src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" class="rounded wp-post-image" /> 
+                      <?php        
+                        }
+                      ?>
+                    </div>
+                    <div>
+                      <h3><?php echo get_the_title($course->ID); ?></h3>
+                      <span>Due date: May 17, 2023</span>
+                    </div>
+                  </div>
+              </a>
+            <?php } ?>       
         </div>
       </div>
     </section>
@@ -295,30 +243,27 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
             <thead>
               <tr>
                 <th>Class</th>
-                <th>TREK</th>
-                <th>Segment</th>
+                <th>Course</th>
+                <th>Lesson</th>
                 <th>Date</th>
                 <th>Student Progress</th>
                 <th>Students Submitted</th>
                 <th>Students Graded</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody>  
               <?php 
                 foreach ($assignments as $assignment) { 
                   $class_post = get_post(get_post_meta($assignment->ID, 'class_id', true));
-                  $trek_section_id = get_post_meta($assignment->ID, 'trek_section_id', true);
-                  global $wpdb;
-                  $trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id={$trek_section_id}");
-                  $trek = get_post(get_post_meta($assignment->ID, 'trek_id', true));
-                  $segment = implode("-", explode(" ", strtolower($trek_section->title))) ;
+                  $lxp_lesson_post = get_post(get_post_meta($assignment->ID, 'lxp_lesson_id', true));
+                  $course = get_post(get_post_meta($assignment->ID, 'course_id', true));
+                  $lesson_segment = implode("-", explode(" ", strtolower($lxp_lesson_post->post_title))) ;
                   
                   $student_stats = lxp_assignment_stats($assignment->ID);
                   $statuses = array("To Do", "In Progress");
                   $students_in_progress = array_filter($student_stats, function($studentStat) use ($statuses) {
                     return in_array($studentStat["status"], $statuses);
                   });
-
                   $statuses = array("Completed");
                   $students_graded = 0;
                   $students_completed = array_filter($student_stats, function($studentStat) use ($statuses, $assignment, &$students_graded) {
@@ -335,15 +280,21 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
                   });
               ?>
                 <tr>
-                  <td><?php echo $class_post ? $class_post->post_title : 'Demo Class'; ?></td>
-                  <td><?php echo $trek->post_title; ?></td>
+                  <td><?php echo $class_post->post_title; ?></td>
+                  <td>
+                    <?php 
+                      echo $course->post_title; 
+                      $course_post_image = has_post_thumbnail( $course->ID ) ? get_the_post_thumbnail_url($course->ID) : $treks_src.'/assets/img/tr_main.jpg';                       
+                    ?>
+                  </td>
                   <td>
                     <div class="assignments-table-cs-td-poly">
-                      <div class="polygon-shap polygonshape-<?php echo $segment; ?>">
-                        <span><?php echo $trek_section->title[0]; ?></span>
+                      <div class="polygon-shap">
+                        <!-- <span><?php echo $lxp_lesson_post->post_title[0]; ?></span> -->
+                        <span>L</span>
                       </div>
                       <div>
-                        <span><?php echo $trek_section->title; ?></span>
+                        <span><?php echo $lxp_lesson_post->post_title; ?></span>
                       </div>
                     </div>
                   </td>
@@ -355,104 +306,21 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
                     ?>
                   </td>
                   <td>
-                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['To Do', 'In Progress'])"><?php echo count($students_in_progress); ?>/<?php echo count($student_stats); ?></a></div>
+                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $course->post_title; ?>', '<?php echo $lxp_lesson_post->post_title; ?>', ['To Do', 'In Progress'], '<?php echo $course_post_image; ?>')"><?php echo count($students_in_progress); ?>/<?php echo count($student_stats); ?></a></div>
                   </td>
                   <td>
-                    <?php
-                      $student_stats = lxp_assignment_stats($assignment->ID);
-                    ?>
-                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Completed'])"><?php echo count($students_completed); ?>/<?php echo count($student_stats); ?></a></div>
+                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $course->post_title; ?>', '<?php echo $lxp_lesson_post->post_title; ?>', ['Completed'], '<?php echo $course_post_image; ?>')"><?php echo count($students_completed); ?>/<?php echo count($student_stats); ?></a></div>
                   </td>
                   <td>
-                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Graded'])"><?php echo $students_graded; ?>/<?php echo count($student_stats); ?></a></div>
+                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $course->post_title; ?>', '<?php echo $lxp_lesson_post->post_title; ?>', ['Graded'], '<?php echo $course_post_image; ?>')"><?php echo $students_graded; ?>/<?php echo count($student_stats); ?></a></div>
                   </td>
                 </tr>  
               <?php } ?>
-<!--               <tr>
-                <td>Elephants</td>
-                <td>
-                  <div class="assignments-table-cs-td-poly">
-                    <div class="polygon-shap">
-                      <span>P</span>
-                    </div>
-                    <div>
-                      <span>Physical Properties</span>
-                      <span>Practice B</span>
-                    </div>
-                  </div>
-                </td>
-                <td>Jan 21, 2023</td>
-                <td>25/30</td>
-              </tr>
-              <tr>
-                <td>Elephants</td>
-                <td>
-                  <div class="assignments-table-cs-td-poly">
-                    <div class="polygon-shap">
-                      <span>P</span>
-                    </div>
-                    <div>
-                      <span>Physical Properties</span>
-                      <span>Practice B</span>
-                    </div>
-                  </div>
-                </td>
-                <td>Jan 21, 2023</td>
-                <td>25/30</td>
-              </tr> -->
             </tbody>
           </table>
         </div>
       </div>
     </section>
-
-    <!-- Calendar &  Activities Completed Overall -->
-    <!-- 
-    <section class="clen-act-section">
-      <div class="clen-act-section-div">
-        <div class="calendar-portion">
-          <div class="calendar-portion-header section-div-header">
-            <h2>Pending Assignments</h2>
-            <div>
-              <a href="#">See All</a>
-            </div>
-          </div>
-        </div>
-        <div class="activities-portion">
-          <div class="activities-portion-header section-div-header">
-            <h2>Activities Completed Overall</h2>
-          </div>
-
-          <div class="activities-portion-prap">
-            <p>This is the status of all the activities you have assigned.</p>
-
-            <div class="activities-portion-progress">
-               
-                <div class="portion-progress-div">
-                  <div class="recall-progress-bar"></div>
-                  <p>Recall</p>
-                </div>
-
-                <div class="portion-progress-div">
-                  <div class="pa-progress-bar"></div>
-                  <p>Practice A</p>
-                </div>
-
-                <div class="portion-progress-div">
-                  <div class="pb-progress-bar"></div>
-                  <p>Practice B</p>
-                </div>
-
-                <div class="portion-progress-div">
-                  <div class="apply-progress-bar"></div>
-                  <p>Apply</p>
-                </div>
-              </div>
-          </div>
-        </div>
-      </div>
-    </section>
-     -->
   </section>
   <?php get_template_part('lxp/assignment-stats-modal', 'assignment-stats-modal'); ?>
 
@@ -463,32 +331,12 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
     crossorigin="anonymous"></script>
   
   <script type="text/javascript">
-    function fetch_assignment_stats(assignment_id, trek, segment, statuses) {
-
-      jQuery('#student-progress-trek-title').text(trek);
-      jQuery('#student-progress-trek-segment').text(segment);
-      jQuery('#student-progress-trek-segment-char').text(segment[0]);
-      var segmentColor = "#979797";
-      switch (segment) {
-          case 'Overview':
-              segmentColor = "#979797";
-              break;
-          case 'Recall':
-              segmentColor = "#ca2738";
-              break;
-          case 'Practice A':
-              segmentColor = "#1fa5d4";
-              break;
-          case 'Practice B':
-              segmentColor = "#1fa5d4";
-              break;
-          case 'Apply':
-              segmentColor = "#9fc33b";
-              break;
-          default:
-              segmentColor = "#979797";
-              break;
-      }
+    function fetch_assignment_stats(assignment_id, course, segment, statuses, course_post_image) {
+      jQuery('#student-progress-course-title').text(course);
+      jQuery('#student-progress-course-post-image').html(`<img width="50" class="rounded wp-post-image" src="`+course_post_image+`" alt="logo" />`);
+      jQuery('#student-progress-course-segment').text(segment);
+      jQuery('#student-progress-course-segment-char').text('L');
+      var segmentColor = "#1fa5d4";
       jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-tab-polygon').css('background-color', segmentColor);
       jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon-name, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-user-name').css('color', segmentColor);
       
@@ -524,11 +372,7 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
         case 'Completed':
           statusClass = 'bg-green';
           break;
-        case 'Graded':
-          statusClass = 'bg-blue';
-          break;
       }
-      
       return `
           <tr>
               <td>
@@ -540,7 +384,7 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
               </div>
               </td>
               <td>
-              <div class="table-status ` + statusClass + `">` + (student.status === 'Completed' ? 'Submitted' : student.status) + `</div>
+              <div class="table-status ` + statusClass + `">` + student.status + `</div>
               </td>
               <td><a class='student-progress-link' href='<?php echo site_url("grade-assignment"); ?>?assignment=` + assignment_id + `&student=` + student.ID + `'>` + student.progress + `</a></td>
               <td>` + student.score + `</td>

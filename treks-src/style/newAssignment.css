@@ -501,7 +501,8 @@
   background: #eaedf1;
 }
 .tags-body-polygon {
-  background: #ca2738;
+  /*background: #ca2738;*/
+  background: #1fa5d4;
 }
 .pa-poly-body .tags-body-polygon {
   background: #1fa5d4;

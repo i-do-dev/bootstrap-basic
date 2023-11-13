@@ -1,26 +1,11 @@
 <?php
-global $userdata;
-$teacher_post = lxp_get_teacher_post($userdata->data->ID);
-
-//$treks_src = plugin_dir_url( __FILE__ ) . 'treks-src';
-$treks_src = get_stylesheet_directory_uri() . '/treks-src';
-// Start the loop.
-$courseId =  isset($_GET['courseid']) ? $_GET['courseid'] : get_post_meta($post->ID, 'tl_course_id', true);
-$args = array(
-	'posts_per_page'   => -1,
-	'post_type'        => 'tl_lesson',
-	'meta_query' => array(
-		array(
-			'key'   => 'tl_course_id',
-			'value' =>  $courseId
-		)
-	)
-);
-$lessons = get_posts($args);
-$button_styles = array();
-while (have_posts()) : the_post();
-global $wpdb;
-$trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections WHERE trek_id={$post->ID} AND title='Overview' ORDER BY sort");
+  global $userdata;
+  global $treks_src;
+  $teacher_post = lxp_get_teacher_post($userdata->data->ID);
+  $treks_src = get_stylesheet_directory_uri() . '/treks-src';
+  $course_id = $post->ID;
+  $lxp_sections = get_post_meta($post->ID, "lxp_sections", true);
+  $lxp_sections = $lxp_sections ? json_decode($lxp_sections) : [];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,7 +19,6 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
     <link href="<?php echo $treks_src; ?>/style/style-trek-section.css" rel="stylesheet" />
     <link href="<?php echo $treks_src; ?>/style/trek-section.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
-    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/studentTreksOverview.css" />
     
     <link
       rel="stylesheet"
@@ -44,9 +28,6 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
     />
 
     <style type="text/css">
-      .student-assignment-block {
-        text-decoration: none !important;
-      }
       .header-notification-user .copy-anchor
       {
         display: none;
@@ -112,10 +93,6 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
         padding-left: 0.5rem !important;
       }
 
-      .overview-poly-body .tags-body-polygon {
-        width: 38px !important;
-        height: 32px !important;
-      } 
       /* overview active style */
       .tags-body.overview-poly-body-active {
         background: #979797;
@@ -250,32 +227,23 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
         cursor: pointer;
       }
 
+      #course-save-button {
+        border: 0px;
+      }
 
+      .my-trk-detail-prep {
+        width: 100% !important;
+      }
+
+      .lesson-link {
+        text-decoration: none !important;
+      }
     </style>
   </head>
   <body>
     
     <!-- Calendar Modal -->
     <?php get_template_part('trek/parts/assign-calendar'); ?>
-    <!-- <div class="modal fade" id="calendarModal" tabindex="-1" aria-labelledby="calendarModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="calendarModalLabel">Calendar</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="alert alert-primary" role="alert">
-              Loading Calendar ....
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
- -->
     <!-- Student Modal -->
     <div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="studentModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -317,9 +285,7 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
               <!-- searching input -->
               <div class="header-search">
                 <img src="<?php echo $treks_src; ?>/assets/img/header_search.svg" alt="svg" />
-                <form action="<?php echo site_url("search"); ?>">
-                  <input placeholder="Search" id="q" name="q" value="<?php echo isset($_GET["q"]) ? $_GET["q"]:''; ?>" />
-                </form>
+                <input placeholder="Search" />
               </div>
             </div>
           </div>
@@ -336,7 +302,7 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
     <section class="main-container">
       <!-- Nav Section -->
       <nav class="nav-section">
-        <?php get_template_part('trek/navigation-student') ?>
+        <?php get_template_part('trek/navigation') ?>
       </nav>
 
       <!-- My TREKs breadcrumbs -->
@@ -344,133 +310,131 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
         <div class="my-trk-bc-section-div">
           <!-- breadcrumbs -->
           <img class="bc-img-1" src="<?php echo $treks_src; ?>/assets/img/bc_img.svg" />
-          <p>My TREKs</p>
+          <p>My Courses</p>
           <img class="bc-img-2" src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" />
           <p><?php the_title(); ?></p>
         </div>
       </section>
-      <!-- My TREKs Detail -->
+      <!-- My Courses Detail -->
       <section class="my-trk-detail-section">
         <div class="my-trk-detail-section-div">
           <!-- TREKs image  -->
           <div class="my-trk-detail-img">
-            <!-- <img src="<?php //echo $treks_src; ?>/assets/img/tr_main.png" /> -->
-            <?php the_post_thumbnail('medium', array( 'class' => 'rounded' )); ?>
+            <?php
+              if ( has_post_thumbnail( $post->ID ) ) {
+                  the_post_thumbnail('medium', array( 'class' => 'rounded' ));
+              } else {
+            ?>
+              <img width="300" height="180" src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" class="rounded wp-post-image" alt="" decoding="async">
+            <?php        
+              }
+            ?>
           </div>
-          <!-- TREKs detail -->
+          <!-- Courses detail -->
           <div class="my-trk-detail-prep">
             <!-- Title -->
-            <div class="detail-prep-title">
-              <h2><?php the_title(); ?></h2>
+            <div class="row">
+              <div class="col col-10">
+                <div class="detail-prep-title">
+                  <h2><?php the_title(); ?></h2>
+                </div>
+              </div>
+              <div class="col col-2 text-end">
+                <?php
+                  $courses_saved = get_post_meta($teacher_post->ID, 'courses_saved');
+                  $is_saved = in_array($post->ID, $courses_saved);
+                ?>
+                <button id="course-save-button" onclick="set_course_saved(<?php echo !$is_saved; ?>)">
+                  <?php
+                    if ($is_saved) {
+                  ?>
+                    <img width="35" height="35" src="<?php echo $treks_src; ?>/assets/img/trek-save-filled-icon.svg" alt="svg" />
+                  <?php } else { ?>
+                    <img width="35" height="35" src="<?php echo $treks_src; ?>/assets/img/trek-save-icon.svg" alt="svg" />
+                  <?php } ?>
+                </button>
+              </div>
             </div>
             <!-- Description -->
             <div class="detail-prep-desc">
-				      <p><?php echo $post->post_content; ?></p>
+              <p><?php echo $post->post_content; ?></p>
             </div>
 
-            <!-- Navigation -->
-            <div class="detail-prep-tags">
-              <?php
-                if ( $trek_sections ) {
-                  foreach ( $trek_sections as $trek_section ) {
-                    $button_style = strrpos($trek_section->title, " ") ? implode('', array_map(function($section_title) { return strtolower(substr($section_title, 0, 1)); }, explode(' ', strtolower($trek_section->title)))) : strtolower($trek_section->title);
-                    $defined_button_styles = ['overview', 'recall', 'apply', 'pa', 'pb'];
-                    $button_style = in_array($button_style, $defined_button_styles) ? $button_style : 'other';
-                    $button_styles[trim($trek_section->title)] = "$button_style-poly-body";
-              ?>
-                  <!-- Navigation Button -->
-                  <a href="#<?php echo implode('_', explode(' ', $trek_section->title));?>" class="trek-section-nav-anchor"> 
-                    <div class="tags-body <?php echo $button_style; ?>-poly-body <?php echo $button_style === 'overview' ? 'overview-poly-body-active' : ''; ?>">
-                      <div class="tags-body-polygon">
-                        <span class="trek-section-character-<?php echo $button_style; ?>"><?php echo substr($trek_section->title, 0, 1);?></span>
+        </div>
+      </section>
+  
+      <section class="central-cncpt-section">
+        <section class="trk-assign-section">
+          <div class="trk-assign-section-div">
+              <h1 class="trek-main-heading">Sections</h1>            
+          </div>
+        </section>
+      </section>
+      <div class="accordion" id="accordionExample">
+        <?php
+          if ( is_array($lxp_sections) ) {
+            $i = 1;
+            foreach ($lxp_sections as $lxp_section) {
+              $lesson_query = new WP_Query( array(
+                    'posts_per_page'   => -1,
+                    'orderby' => 'ID',
+                    'order'   => 'ASC',
+                    'post_type' => TL_LESSON_CPT,
+                    'meta_query' => [
+                        [
+                          'key' => 'lti_content_title', 
+                          'value' => $lxp_section
+                        ],
+                        [
+                          'key' => 'tl_course_id', 
+                          'value' => $course_id,
+                          'compare' => '='
+                        ]
+                      ]
+                  ) );
+        ?>
+              <div class="accordion-item">
+                  <h2 class="accordion-header" id="heading-<?php echo $i; ?>">
+                      <button class="accordion-button<?php echo $i == 1 ? '' : ' collapsed'; ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<?php echo $i; ?>" aria-expanded="<?php echo $i == 1 ? 'true' : 'false'; ?>" aria-controls="collapse-<?php echo $i; ?>">
+                        <?php
+                            echo $lxp_section;
+                        ?>
+                      </button>
+                  </h2>
+                  <div id="collapse-<?php echo $i; ?>" class="accordion-collapse collapse<?php echo $i == 1 ? ' show' : ''; ?>" aria-labelledby="heading-<?php echo $i; ?>" data-bs-parent="#accordionExample">
+                      <div class="accordion-body">
+                        <section class="trk-assign-section">
+                          <div class="trk-assign-section-div">
+                            <h5>Lessons</h5>
+                          </div>
+                          <div class="">
+                            <button onclick="assign(<?php echo $course_id; ?>, '<?php echo $lxp_section; ?>')" class="primary-btn lx-space">Assign</button>
+                          </div>
+                        </section>
+                        <?php
+                            if (($lesson_query->have_posts())) {
+                              echo "<ul>";
+                              while ($lesson_query->have_posts()) {
+                                $lesson_query->the_post();
+                          ?>
+                            <li><a class="lesson-link" target="_blank" href="<?php echo get_permalink(get_the_ID()); ?>"><?php echo get_the_title(); ?></a></li>
+                            
+                          <?php
+                          
+                            }
+                            echo "</ul>";
+                          }
+                        ?>
                       </div>
-                      <div class="tags-body-detail">
-                        <span><?php echo $trek_section->title;?></span>
-                      </div>
-                    </div>
-                  </a>
-              <?php
-                  }
-                }
-              ?>
-                <a href="#Assignments" class="trek-section-nav-anchor nav-link"> 
-                  <div class="tags-body overview-poly-body">
-                    <div class="tags-body-detail">
-                      <span> &nbsp; Assignments</span>
-                    </div>
                   </div>
-                </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      
-      <section class="central-cncpt-section  trek-section-Overview">
-          <br>
-          <input type="hidden" name="buttonStyle" value="overview-poly-body">
-          <!-- section heading -->
-          <div class="trek-main-heading-wrapper">
-                            <h1 class="trek-main-heading" id="Overview" style="color:#000000">Overview </h1>                
-          </div>
-
-          <div class="trek-main-body-wrapper">
-            <?php
-            // get 'student_section_overview' post meatadata
-            $student_section_overview = get_post_meta( $post->ID, 'student_section_overview', true );
-            echo stripslashes($student_section_overview);
-            ?>
-          </div>
-      </section>
-
-      <?php 
-        if ( $trek_sections ) {
-          foreach ( $trek_sections as $trek_section ) {
-            $trek_section_hide = strtolower(trim($trek_section->title)) !== 'overview' ? 'trek-section-hide' : ''; 
-      ?>
-            <!-- 
-            <section class="central-cncpt-section <?php echo $trek_section_hide; ?> <?php echo 'trek-section-'.implode('_', explode(' ', $trek_section->title));?>">
-              <br />
-              <input type="hidden" name="buttonStyle" value="<?php echo $button_styles[trim($trek_section->title)]; ?>" />
-              
-              <div class="trek-main-heading-wrapper">
-                <?php
-                  $headingColor = "#000000";
-                  if ("overview" === strtolower(trim($trek_section->title))) {
-                    $headingColor = "#000000";
-                  } else if ("recall" === strtolower(trim($trek_section->title))) {
-                    $headingColor = "#ca2738";
-                  } else if ("practice a" === strtolower(trim($trek_section->title))) {
-                    $headingColor = "#1fa5d4";
-                  } else if ("practice b" === strtolower(trim($trek_section->title))) {
-                    $headingColor = "#1fa5d4";
-                  } else if ("apply" === strtolower(trim($trek_section->title))) {
-                    $headingColor = "#9fc33b";
-                  }
-                ?>
-                <h1 class="trek-main-heading" id="<?php // echo implode('_', explode(' ', $trek_section->title));?>" style="color:<?php // echo $headingColor?>"><?php // echo $trek_section->title;?> <?php // echo strtolower($trek_section->title) !== 'overview' ? 'Teacher Instructions' : ''; ?></h1>                
               </div>
-
-              <div class="trek-main-body-wrapper">
-                <?php // echo stripslashes($trek_section->content);?>
-              </div>
-            </section>    -->
-      <?php
+        <?php    
+              $i++;
+            }
           }
-        }
-      ?>
-      <section class="central-cncpt-section trek-section-hide trek-section-Assignments">
-        <div class="student-over-tab-content">
-          <div class="tab-pane">
-            <div class="stu-assig-cards">
-              <?php 
-                $trek_post_id = $post->ID;
-                get_template_part('lxp/student-assignments-blocks', null, array('trek_post_id' => $trek_post_id));
-              ?>
-            </div>
-          </div>
-        </div>
-      </section>
+        ?>
+      </div>
+
     </section>
 
     <script
@@ -488,8 +452,8 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js'></script>
 
     <script type="text/javascript">
-      function assign(trek_id, section_id) {
-        window.location = "<?php echo site_url("assignment"); ?>" + "?trek=" + trek_id + "&segment=" + section_id;
+      function assign(course_id, lxp_section) {
+        window.location = "<?php echo site_url("assignment"); ?>" + "?course=" + course_id + "&section=" + lxp_section;
       }
     </script>
 
@@ -921,7 +885,35 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
               </tr>
           `;
       }
+
+      // teacher course set 'is_saved' to true or false
+      function set_course_saved(is_saved) {
+        const is_saved_val = is_saved ? 1 : 0;
+        let course_id = <?php echo $course_id; ?>;
+        let teacher_post_id = <?php echo $teacher_post->ID; ?>;
+        let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+        let apiUrl = host + '/wp-json/lms/v1/';
+        
+        $.ajax({
+          method: "POST",
+          url: apiUrl + "teacher/courses/saved",
+          data: { course_id, is_saved: is_saved_val, teacher_post_id }
+        }).done(function( response ) {
+          if (response.success) {
+            window.location.reload();
+          }
+        });
+      }
     </script>
   </body>
 </html>
-<?php endwhile; ?>
+<?php 
+$lxp_visited_courses = get_post_meta($teacher_post->ID, 'lxp_visited_courses', $course_id);
+if (!$lxp_visited_courses) {
+  add_post_meta($teacher_post->ID, 'lxp_visited_courses', $course_id);
+} else {
+  // delete 'lxp_visited_courses' meta key and add it again with new value
+  delete_post_meta($teacher_post->ID, 'lxp_visited_courses', $course_id);
+  add_post_meta($teacher_post->ID, 'lxp_visited_courses', $course_id); 
+}
+?>
