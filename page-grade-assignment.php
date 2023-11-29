@@ -1,6 +1,13 @@
 <?php
 get_template_part('lxp/functions');
 lxp_login_check();
+
+$userdata = get_userdata(get_current_user_id());
+$userRole = count($userdata->roles) > 0 ? array_values($userdata->roles)[0] : '';
+if ($userRole !== 'lxp_teacher') {
+  wp_redirect(site_url("/dashboard"));
+}
+
 if ( !(isset($_GET['assignment']) && intval($_GET['assignment']) > 0) ) {
     wp_redirect(site_url("/calendar"));
 }
