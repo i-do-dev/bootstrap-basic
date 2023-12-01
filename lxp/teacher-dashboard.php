@@ -7,8 +7,8 @@ if (is_null($teacher_post)) {
 }
 
 $treks = array();
-$treks_assigned = get_post_meta($teacher_post->ID, 'treks_assigned');
-$treks_assigned = is_array($treks_assigned) && count($treks_assigned) > 0 ? $treks_assigned : array(0);
+$treks_restricted = get_post_meta($teacher_post->ID, 'treks_restricted');
+$treks_restricted = is_array($treks_restricted) && count($treks_restricted) > 0 ? $treks_restricted : array(0);
 
 // Start the loop.
 $courseId =  isset($_GET['courseid']) ? $_GET['courseid'] : get_post_meta($post->ID, 'tl_course_id', true);
@@ -19,9 +19,9 @@ $args = array(
 );
 
 $treks_saved = get_post_meta($teacher_post->ID, 'treks_saved');
-// filter $treks_saved to only include treks that are in $treks_assigned
-$treks_saved = array_filter($treks_saved, function($trek_id) use ($treks_assigned) {
-  return in_array($trek_id, $treks_assigned);
+// filter $treks_saved to only include treks that are not in $treks_restricted
+$treks_saved = array_filter($treks_saved, function($trek_id) use ($treks_restricted) {
+  return !in_array($trek_id, $treks_restricted);
 });
 
 if ($treks_saved) {
@@ -35,9 +35,9 @@ if ($treks_saved) {
 }
 
 $lxp_visited_treks = get_post_meta($teacher_post->ID, 'lxp_visited_treks');
-// filter $lxp_visited_treks to only include treks that are in $treks_assigned
-$lxp_visited_treks = array_filter($lxp_visited_treks, function($trek_id) use ($treks_assigned) {
-  return in_array($trek_id, $treks_assigned);
+// filter $lxp_visited_treks to only include treks that are not in $treks_restricted
+$lxp_visited_treks = array_filter($lxp_visited_treks, function($trek_id) use ($treks_restricted) {
+  return !in_array($trek_id, $treks_restricted);
 });
 $lxp_visited_treks_to_show = is_array($lxp_visited_treks) && count($lxp_visited_treks) > 0 ? array_diff(array_reverse($lxp_visited_treks), $treks_saved) : array();
 
@@ -58,13 +58,14 @@ if ( get_userdata(get_current_user_id())->user_email === "guest@rpatreks.com" ) 
   );
 }
 
-$args_include = isset($args['post__not_in']) ? array_diff($args['post__not_in'], $treks_assigned) : $treks_assigned;
-if (is_array($args_include) && count($args_include) > 0) {
-  $args['include'] = $args_include;
-  $treks = get_posts($args);
-} else {
-  $treks = get_posts($args);
+
+if (isset($args['post__not_in']) && count($treks_restricted) > 0) {
+  $args['post__not_in'] = array_merge($args['post__not_in'], $treks_restricted);
+} elseif (!isset($args['post__not_in']) && count($treks_restricted) > 0) {
+  $args['post__not_in'] = $treks_restricted;
 }
+
+$treks = get_posts($args);
 
 while (have_posts()) : the_post();
 
@@ -269,7 +270,7 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
                   </div>
                   <div>
                     <h3><?php echo get_the_title($trek->ID); ?></h3>
-                    <span>Due date: May 17, 2023</span>
+                    <!-- <span>Due date: May 17, 2023</span> -->
                   </div>
                 </div>
             </a>

@@ -22,7 +22,7 @@ $treks = get_posts($args);
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-header-title">
-                    <h2 class="modal-title" id="teacherTreksModalLabel"><span class="teacher-action-head">Assign</span> TREKs</h2>
+                    <h2 class="modal-title" id="teacherTreksModalLabel"><span class="teacher-action-head">Restrict</span> TREKs</h2>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-label="Close"></button>
@@ -58,7 +58,7 @@ $treks = get_posts($args);
                             </table>
                         </div>
                         <div class="btn_box">
-                            <button class="btn" id="saveTeacherBtn"><span class="teacher-action">Assign</span></button>
+                            <button class="btn" id="saveTeacherBtn"><span class="teacher-action">Restrict</span></button>
                             <button class="btn" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
                         </div>
                     </div>
@@ -89,7 +89,7 @@ $treks = get_posts($args);
             $.ajax({
                 method: "POST",
                 enctype: 'multipart/form-data',
-                url: apiUrl + "teacher/treks/assign",
+                url: apiUrl + "teacher/treks/restrict",
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -115,7 +115,7 @@ $treks = get_posts($args);
         });
     });
 
-    function onTeacherAssignTreksClick(teacher_post_id) {
+    function onTeacherRestrictTreksClick(teacher_post_id) {
         jQuery("#teacher_post_id").val(teacher_post_id);
 
         let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
@@ -124,7 +124,7 @@ $treks = get_posts($args);
         $.ajax({
             method: "POST",
             enctype: 'multipart/form-data',
-            url: apiUrl + "teacher/treks/assigned",
+            url: apiUrl + "teacher/treks/restricted",
             data: {teacher_post_id}
         }).done(function( response ) {
             const teacher_treks = response.data;

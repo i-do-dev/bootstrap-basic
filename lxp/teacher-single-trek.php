@@ -2,10 +2,10 @@
 global $userdata;
 global $treks_src;
 $teacher_post = lxp_get_teacher_post($userdata->data->ID);
-$treks_assigned = get_post_meta($teacher_post->ID, 'treks_assigned');
-$treks_assigned = is_array($treks_assigned) && count($treks_assigned) > 0 ? $treks_assigned : array(0);
-// if $post->ID is not in $treks_assigned, then show redirect to /dashboard
-if (!in_array($post->ID, $treks_assigned)) {
+$treks_restricted = get_post_meta($teacher_post->ID, 'treks_restricted');
+$treks_restricted = is_array($treks_restricted) && count($treks_restricted) > 0 ? $treks_restricted : array(0);
+// if $post->ID is not in $treks_restricted, then show redirect to /dashboard
+if (in_array($post->ID, $treks_restricted)) {
   wp_redirect(site_url('dashboard'));
   exit;
 }
