@@ -20,6 +20,8 @@ if ($_GET['filter'] == 'saved') {
     $treks_filtered = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_saved, urldecode($_GET['strand']), urldecode($_GET['sort']), urldecode($_GET['search']));
 } else if ($_GET['filter'] == 'recent'){
     $lxp_visited_treks = get_post_meta($teacher_post->ID, 'lxp_visited_treks');
+    $lxp_visited_treks = array_diff($lxp_visited_treks, $treks_restricted);
+    
     $lxp_visited_treks_to_show = is_array($lxp_visited_treks) && count($lxp_visited_treks) > 0 ? array_reverse($lxp_visited_treks) : array();
     // filter $lxp_visited_treks_to_show to only include treks that are not in $treks_restricted
     $lxp_visited_treks_to_show = array_filter($lxp_visited_treks_to_show, function ($trek) use ($treks_restricted) { return !in_array($trek, $treks_restricted); });
@@ -29,7 +31,7 @@ if ($_GET['filter'] == 'saved') {
         $recent_query_args['s'] = $searchVal;
     }
     $recent_query = new WP_Query( $recent_query_args );
-    $treks_filtered = $recent_query->get_posts();
+    $treks_filtered = count($lxp_visited_treks_to_show) > 0 ? $recent_query->get_posts() : array();
     if(!(urldecode($_GET['strand']) === '' || urldecode($_GET['strand']) === 'none')) {
         $treks_filtered = array_filter( $treks_filtered, function ($trek) { return in_array(urldecode($_GET['strand']), get_post_meta($trek->ID, 'strands')); });
     }
