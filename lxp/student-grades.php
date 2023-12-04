@@ -1,12 +1,12 @@
 <?php
 global $treks_src;
-$userdata = get_userdata(get_current_user_id());
+//$userdata = get_userdata(get_current_user_id());
 $student_post = lxp_get_student_post(get_current_user_id());
 $assignments = array_filter(lxp_get_student_assignments($student_post->ID), function($assignment) {
   $assignment_submission = lxp_get_assignment_submissions($assignment->ID, lxp_get_student_post(get_current_user_id())->ID);
   return $assignment_submission && get_post_meta($assignment_submission['ID'], 'mark_as_graded', true) == 'true';
 });
-$treks = lxp_get_assignments_treks($assignments);
+$courses = lxp_get_assignments_courses($assignments);
 $assignments_submissions = assignments_submissions($assignments, $student_post);
 
 $statuses_count = array_reduce($assignments, function($carry, $assignment) use ($assignments_submissions) {
@@ -34,7 +34,7 @@ $statuses_count = array_reduce($assignments, function($carry, $assignment) use (
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Student/Dashboard</title>
+    <title>Student Grades</title>
     <link href="<?php echo $treks_src; ?>/style/main.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/studentDashboard.css" />
@@ -129,7 +129,7 @@ $statuses_count = array_reduce($assignments, function($carry, $assignment) use (
             <table>
               <thead>
                 <tr>
-                  <th>SEGMENT / TREK</th>
+                  <th>Lesson</th>
                   <th>Due Date</th>
                   <th>Teacher</th>
                   <!-- <th>Graded</th> -->
@@ -138,30 +138,11 @@ $statuses_count = array_reduce($assignments, function($carry, $assignment) use (
               </thead>
               <tbody>
                 <!-- tr to iterate over assignments -->
-                  <?php 
+                  <?php
                     foreach ($assignments as $assignment) { 
-                      // gget assignment trek_id meta data
-                      $trek_id = get_post_meta($assignment->ID, "trek_id", true);
-                      // get trek by trek_id
-                      $trek = get_post($trek_id);
-                      // get assignment trek_section_id meta data
-                      $trek_section_id = get_post_meta($assignment->ID, "trek_section_id", true);
-                      // get trek section by trek_section_id using $wpdb row function
-                      $trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id = $trek_section_id");
-                      if ($trek_section->title === 'Overview') {
-                          $segmentColor = "#979797";
-                      } else if ($trek_section->title === 'Recall') {
-                          $segmentColor = "#ca2738";
-                      } else if ($trek_section->title === 'Practice A') {
-                          $segmentColor = "#1fa5d4";
-                      } else if ($trek_section->title === 'Practice B') {
-                          $segmentColor = "#1fa5d4";
-                      } else if ($trek_section->title === 'Apply') {
-                          $segmentColor = "#9fc33b";
-                      } else {
-                          $segmentColor = "#979797";
-                      }
-
+                      $course = get_post(get_post_meta($assignment->ID, 'course_id', true));
+                      $lxp_lesson_post = get_post(get_post_meta($assignment->ID, 'lxp_lesson_id', true));
+                      $segmentColor = "#1fa5d4";
                       $status_items = array_filter($assignments_submissions, function($submission) use ($assignment) {
                         return isset($submission[$assignment->ID]);
                       });
@@ -171,11 +152,11 @@ $statuses_count = array_reduce($assignments, function($carry, $assignment) use (
                     <td>
                       <div class="assignments-table-cs-td-poly">
                         <div class="polygon-shap" style="background-color: <?php echo $segmentColor; ?>">
-                          <span><?php echo $trek_section->title[0]; ?></span>
+                          <span><?php echo 'L'; ?></span>
                         </div>
                         <div>
-                          <span style="color: <?php echo $segmentColor; ?>"><?php echo $trek_section->title; ?></span>
-                          <span><?php echo $trek->post_title; ?></span>
+                          <span style="color: <?php echo $segmentColor; ?>"><?php echo $lxp_lesson_post->post_title; ?></span>
+                          <span><?php echo $course->post_title; ?></span>
                         </div>
                       </div>
                     </td>
@@ -187,19 +168,6 @@ $statuses_count = array_reduce($assignments, function($carry, $assignment) use (
                       echo $start_date;
                       ?>
                     </td>
-                    <!-- <td>
-                      <?php 
-                      //$slides = ["Overview" => 1, "Recall" => 2, "Practice A" => 3, "Practice B" => 4, "Apply" => 5];
-                      //$assignment_grade_key = "assignment_" . $assignment->ID . "_slide_" . $slides[$trek_section->title] . "_grade";
-                      // get student metadata for $assignment_grade_key
-                      //$assignment_grade = get_post_meta($student_post->ID, $assignment_grade_key, true);
-                      ?>
-                      <?php //if (intval($assignment_grade) > 0) {?>
-                        <span class="grade-label grade-report">Grade</span>
-                      <?php //} else { ?>
-                        <span class="grade-label pending-report"> <?php //echo $status === 'Completed' ? 'Submitted' : $status; ?> </span>
-                      <?php //} ?>
-                    </td> -->
                     <td>
                       <div class="teacher">
                         <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="student" />
@@ -216,18 +184,6 @@ $statuses_count = array_reduce($assignments, function($carry, $assignment) use (
                         </h3>
                       </div>
                     </td>
-                    <?php
-                      //$assignment_submission = lxp_get_assignment_submissions($assignment->ID, lxp_get_student_post(get_current_user_id())->ID);
-                    ?>
-                    <!-- 
-                    <td>
-                      <?php //if ($assignment_submission && get_post_meta($assignment_submission['ID'], 'mark_as_graded', true) == 'true') { ?>
-                        <span class="grade-label grade-report">Yes</span>
-                      <?php //} else { ?>
-                        <span class="grade-label pending-report">No</span>
-                      <?php //} ?>
-                    </td>
-                     -->
                     <td>
                       <a target="__blank" href="<?php echo site_url("grade-summary?assignment_id=" . $assignment->ID); ?>">
                         <img width="28" src="<?php echo $treks_src; ?>/assets/img/review-icon.svg" style="opacity: 0.7;" />

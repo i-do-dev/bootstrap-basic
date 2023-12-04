@@ -3,7 +3,7 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 $userdata = get_userdata(get_current_user_id());
 $student_post = lxp_get_student_post(get_current_user_id());
 $assignments = lxp_get_student_assignments($student_post->ID);
-$treks = lxp_get_assignments_treks($assignments);
+$courses = lxp_get_assignments_courses($assignments);
 // Start the loop.
 while (have_posts()) : the_post();
 ?>
@@ -92,10 +92,10 @@ while (have_posts()) : the_post();
                     <div class="tab-content" id="myTabContent">
                         <div class="student-over-tab-content">
                             <div class="tab-pane">
-                                <?php foreach ($treks as $trek) { ?>
-                                    <h6 class="trek-assignments-heading"><?php echo $trek->post_title; ?></h6>
+                                <?php foreach ($courses as $course) { ?>
+                                    <h6 class="trek-assignments-heading"><?php echo $course->post_title; ?></h6>
                                     <div class="stu-assig-cards">
-                                        <?php get_template_part('lxp/student-assignments-blocks', null, array("trek_post_id" => $trek->ID, "userdata" => $userdata, "student_post" => $student_post, "assignments" => $assignments)); ?>
+                                        <?php get_template_part('lxp/student-assignments-blocks', null, array("course_id" => $course->ID, "userdata" => $userdata, "student_post" => $student_post, "assignments" => $assignments)); ?>
                                     </div>
                                     <br />
                                 <?php } ?>

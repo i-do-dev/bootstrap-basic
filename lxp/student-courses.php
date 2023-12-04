@@ -1,9 +1,9 @@
 <?php
 global $treks_src;
-$userdata = get_userdata(get_current_user_id());
+//$userdata = get_userdata(get_current_user_id());
 $student_post = lxp_get_student_post(get_current_user_id());
 $assignments = lxp_get_student_assignments($student_post->ID);
-$treks = lxp_get_assignments_treks($assignments);
+$courses = lxp_get_assignments_courses($assignments);
 // Start the loop.
 while (have_posts()) : the_post();
 ?>
@@ -69,16 +69,16 @@ while (have_posts()) : the_post();
                 <?php get_template_part('trek/navigation-student') ?>
             </nav>
         </div>
-        <!-- Recent Filters & TREKs flex -->
+        <!-- Recent Filters & Courses flex -->
         <div class="filter_treks_flx">
             <!-- Recent Filters -->
             
-            <!-- Recent TREKs -->
+            <!-- Recent Courses -->
             <section class="recent-treks-section filter_treks_section filter_my_treks_sec" style="width: 80%; margin: 0 auto;">
                 <div class="recent-treks-section-div">
-                    <!--  TREKs header-->
+                    <!--  Courses header-->
                     <div class="section-div-header">
-                        <h2>My TREKs</h2>
+                        <h2>My Courses</h2>
                     </div>
                     <nav class="nav-section treks_nav">
                         <ul class="treks_ul" id="myTab" role="tablist">
@@ -87,21 +87,6 @@ while (have_posts()) : the_post();
                                     data-bs-target="#all-tab-pane" type="button" role="tab" aria-controls="all-tab-pane"
                                     aria-selected="true">All</button>
                             </li>
-                            <!-- <li>
-                                <button class="nav-link" id="to-tab" data-bs-toggle="tab"
-                                    data-bs-target="#todo-tab-pane" type="button" role="tab"
-                                    aria-controls="todo-tab-pane" aria-selected="true">To Do</button>
-                            </li>
-                            <li>
-                                <button class="nav-link" id="inprogress-tab" data-bs-toggle="tab"
-                                    data-bs-target="#inprogress-tab-pane" type="button" role="tab"
-                                    aria-controls="inprogress-tab-pane" aria-selected="true">In Progress</button>
-                            </li>
-                            <li>
-                                <button class="nav-link" id="completed-tab" data-bs-toggle="tab"
-                                    data-bs-target="#completed-tab-pane" type="button" role="tab"
-                                    aria-controls="completed-tab-pane" aria-selected="true">Completed</button>
-                            </li> -->
                         </ul>
                         <div class="treks_inner_flx">
                             <img src="<?php echo $treks_src; ?>/assets/img/filter-right-logo.svg" />
@@ -111,84 +96,29 @@ while (have_posts()) : the_post();
                             </div>
                         </div>
                     </nav>
-                    <!-- TREKs cards -->
+                    <!-- Courses cards -->
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active recent-treks-cards-list treks_card_list" id="all-tab-pane"
                             role="tabpanel" aria-labelledby="all-tab" tabindex="0">
                             <!-- each cards  -->
                             <?php
-                            foreach($treks as $trek) {
+                            foreach($courses as $course) {
                             ?>
-                            <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
+                            <a href="<?php echo get_post_permalink($course->ID); ?>" class="treks-card-link">
                                 <div class="recent-treks-card-body treks-card">
                                     <div>
-                                    <?php echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
+                                    <?php
+                                        if ( has_post_thumbnail( $course->ID ) ) {
+                                            echo get_the_post_thumbnail($course->ID, "medium", array( 'class' => 'rounded' )); 
+                                        } else {
+                                        ?>
+                                        <img width="300" height="180" src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" class="rounded wp-post-image" />
+                                        <?php        
+                                        }
+                                    ?>
                                     </div>
                                     <div>
-                                    <h3><?php echo get_the_title($trek->ID); ?></h3>
-                                    <span>Due date: May 17, 2023</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <?php
-                            }
-                            ?>
-                        </div>
-                        <div class="tab-pane fade show recent-treks-cards-list treks_card_list" id="todo-tab-pane"
-                            role="tabpanel" aria-labelledby="todo-tab" tabindex="1">
-                            <!-- each cards  -->
-                            <?php
-                            foreach($treks as $trek) {
-                            ?>
-                            <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
-                                <div class="recent-treks-card-body treks-card">
-                                    <div>
-                                    <?php echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
-                                    </div>
-                                    <div>
-                                    <h3><?php echo get_the_title($trek->ID); ?></h3>
-                                    <span>Due date: May 17, 2023</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <?php
-                            }
-                            ?>
-                        </div>
-                        <div class="tab-pane fade show recent-treks-cards-list treks_card_list" id="inprogress-tab-pane"
-                            role="tabpanel" aria-labelledby="inprogress-tab" tabindex="2">
-                            <!-- each cards  -->
-                            <?php
-                            foreach($treks as $trek) {
-                            ?>
-                            <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
-                                <div class="recent-treks-card-body treks-card">
-                                    <div>
-                                    <?php echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
-                                    </div>
-                                    <div>
-                                    <h3><?php echo get_the_title($trek->ID); ?></h3>
-                                    <span>Due date: May 17, 2023</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <?php
-                            }
-                            ?>
-                        </div>
-                        <div class="tab-pane fade show recent-treks-cards-list treks_card_list" id="completed-tab-pane"
-                            role="tabpanel" aria-labelledby="completed-tab" tabindex="3">
-                            <!-- each cards  -->
-                            <?php
-                            foreach($treks as $trek) {
-                            ?>
-                            <a href="<?php echo get_post_permalink($trek->ID); ?>" class="treks-card-link">
-                                <div class="recent-treks-card-body treks-card">
-                                    <div>
-                                    <?php echo get_the_post_thumbnail($trek->ID, "medium", array( 'class' => 'rounded' )); ?>
-                                    </div>
-                                    <div>
-                                    <h3><?php echo get_the_title($trek->ID); ?></h3>
+                                    <h3><?php echo get_the_title($course->ID); ?></h3>
                                     <span>Due date: May 17, 2023</span>
                                     </div>
                                 </div>

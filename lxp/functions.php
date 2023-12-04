@@ -276,14 +276,13 @@ function lxp_get_students($students_ids) {
     return $students;
 }
 
-function lxp_get_trek_digital_journals($trek_id) {
-    $courseId =  get_post_meta($trek_id, 'tl_course_id', true);
+function lxp_get_course_digital_journals($course_id) {
     $journal_query = new WP_Query( array( 
         'post_type' => "tl_lesson", 
         'post_status' => array( 'publish' ),
         'posts_per_page'   => -1,        
         'meta_query' => array(
-            array('key' => 'tl_course_id', 'value' => $courseId, 'compare' => '=')
+            array('key' => 'tl_course_id', 'value' => $course_id, 'compare' => '=')
         )
     ) );
     return $journal_query->get_posts();
@@ -324,10 +323,18 @@ function lxp_get_student_assignments($student_post_id)
     return $school_query->get_posts();
 }
 
-function lxp_get_assignments_treks($assignments)
+function lxp_get_assignments_courses($assignments)
 {
-    $treks = array_map(function ($assignment) { return get_post($assignment->trek_id)->ID; }, $assignments);
-    $query = new WP_Query( array( 'post_type' => TL_TREK_CPT , 'posts_per_page'   => -1, 'post_status' => array( 'publish' ), 'post__in' => array_values(array_unique($treks)), 'meta_key' => 'sort', 'orderby' => 'meta_value_num', 'order' => 'ASC' ) );
+    $courses = array_map(function ($assignment) { return get_post($assignment->course_id)->ID; }, $assignments);
+    $query = new WP_Query( array( 
+        'post_type' => TL_COURSE_CPT, 
+        'posts_per_page' => -1, 
+        'post_status' => array( 'publish' ), 
+        'post__in' => array_values(array_unique($courses)), 
+        //'meta_key' => 'sort', 
+        'orderby' => 'meta_value_num', 
+        'order' => 'ASC' 
+    ) );
     return $query->get_posts();
 }
 
@@ -449,23 +456,19 @@ function assignments_submissions($assignments, $student_post)
 }
 
 function get_assignment_lesson_slides($assignment_post_id) {
-
-    $trek_id = get_post_meta($assignment_post_id, 'trek_id', true);
-    $course_id = get_post_meta($trek_id, 'tl_course_id', true);
-    $trek_section_id = get_post_meta($assignment_post_id, 'trek_section_id', true);
-    global $wpdb;
-    $trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id={$trek_section_id}");	
+    $course = get_post(get_post_meta($assignment_post_id, 'course_id', true));
+    $lxp_lesson_post = get_post(get_post_meta($assignment_post_id, 'lxp_lesson_id', true));
     $lesson_query = new WP_Query( array( 
         'post_type' => "tl_lesson", 
         'post_status' => array( 'publish' ),
         'posts_per_page'   => -1,        
         'meta_query' => array(
-            array('key' => 'tl_course_id', 'value' => $course_id, 'compare' => '=')
+            array('key' => 'tl_course_id', 'value' => $course->ID, 'compare' => '=')
         )
     ) );
     $activity_id = 0;
     foreach ($lesson_query->get_posts() as $lesson) {
-        if ($lesson->post_title == $trek_section->title) {
+        if ( $lesson->ID == $lxp_lesson_post->ID ) {
             $tool_url_parts = parse_url(get_post_meta($lesson->ID, 'lti_tool_url', true));
             if (isset($tool_url_parts['query'])) {
                 $q = [];
@@ -476,8 +479,8 @@ function get_assignment_lesson_slides($assignment_post_id) {
     }
 
     $curriki_studio_host = 'https://studio.edtechmasters.us';
-    // get tekversion post meta data based on $trek_id
-    $tekversion = get_post_meta($trek_id, 'tekversion', true);
+    // get tekversion post meta data based on $course->ID
+    $tekversion = get_post_meta($course->ID, 'tekversion', true);
     if ($tekversion == '2021') {
         $curriki_studio_host = 'https://rpaprivate.edtechmasters.us';
     }

@@ -1,13 +1,10 @@
 <?php
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
-
 if (isset($_GET['assignment_id'])) {
 	$student_post = lxp_get_student_post(get_current_user_id());
 	lxp_check_assignment_submission($_GET['assignment_id'], $student_post->ID);
 }
-
 $content = get_post_meta($post->ID);
-
 $attrId =  isset($content['lti_post_attr_id'][0]) ? $content['lti_post_attr_id'][0] : "";
 $title =  isset($content['lti_content_title'][0]) ? $content['lti_content_title'][0] : "";
 $toolCode =  isset($content['lti_tool_code'][0]) ? $content['lti_tool_code'][0] : "";
@@ -18,30 +15,24 @@ $content = '<p>' . $post->post_content . '</p>';
 if ($attrId) {
 	$content .= '<p> [' . $plugin_name . ' tool=' . $toolCode . ' id=' . $attrId . ' title=\"' . $title . '\" url=' . $toolUrl . ' custom=' . $customAttr . ']' . "" . '[/' . $plugin_name . ']  </p>';
 }
-
 $lessonCourseId = get_post_meta($post->ID, 'tl_course_id', true);
-$trekTitle = "";
-$trekPermaLink="";
-
-
+$courseTitle = "";
+$coursePermaLink="";
 $args = array(
-	'post_type' => 'tl_trek',
+	'post_type' => 'tl_course',
 	'orderby'    => 'ID',
 	'post_status' => 'publish,draft',
 	'order'    => 'DESC',
 	'posts_per_page' => -1
  );
- $treks = get_posts($args);
-
-foreach( $treks as  $trek){
-	$trekCourseId = get_post_meta($trek->ID, 'tl_course_id', true);
-	if($trekCourseId == $lessonCourseId ){
-		$trekTitle = $trek->post_title;
-		$trekPermaLink = get_permalink($trek->ID);
+$courses = get_posts($args);
+foreach( $courses as  $course ){
+	if( $course->ID == $lessonCourseId ){
+		$courseTitle = $course->post_title;
+		$coursePermaLink = get_permalink($course->ID);
 	}
 
 }
-
 $queryParam = '';
 if (isset($_GET['slide'])) {
 	$queryParam = "&slideNumber=" . $_GET['slide'];
@@ -54,12 +45,8 @@ if (isset($_GET["assignment_id"])) {
 $toolUrl = $toolUrl . $queryParam;
 $assignment = isset($_GET['assignment_id']) ? lxp_get_assignment($_GET['assignment_id']) : null;
 ?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 	<meta charset="UTF-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -113,24 +100,6 @@ $assignment = isset($_GET['assignment_id']) ? lxp_get_assignment($_GET['assignme
 			<!-- Nav Section -->
 			<nav class="nav-section nav_section_interpendence">
 				<?php get_template_part('trek/navigation-student') ?>
-				<!-- <ul>
-					<li class="nav-section-selected">
-						<img src="<?php echo $treks_src; ?>/assets/img/nav_dashboard-dots.svg" />
-						<a href="/">Dashboard</a>
-					</li>
-					<li>
-						<img src="<?php echo $treks_src; ?>/assets/img/nav_Treks.svg" />
-						<a href="/treks.html">TREKs</a>
-					</li>
-					<li>
-						<img src="<?php echo $treks_src; ?>/assets/img/nav_students.svg" />
-						<a href="/">Students</a>
-					</li>
-					<li>
-						<img src="<?php echo $treks_src; ?>/assets/img/nav_reports.svg" />
-						<a href="/">Reports</a>
-					</li>
-				</ul> -->
 			</nav>
 		</section>
 		<!-- Interpendence Practice Section -->
@@ -138,23 +107,18 @@ $assignment = isset($_GET['assignment_id']) ? lxp_get_assignment($_GET['assignme
 			<div class="treks_practice_bx">
 				<div class="practice_flx">
 					<img src="<?php echo $treks_src; ?>/assets/img/nav_Treks.svg" />
-					<p class="practice_text">My TREKs</p>
+					<p class="practice_text">My Course</p>
 				</div>
 				<div class="practice_flx">
-
-
-				
-
-
 					<img src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" />
-					<p class="practice_text"><a  style = "color: #979797 !important;text-decoration: none !important;" href="<?php echo $trekPermaLink ?> "  target="_self"><?php echo $trekTitle ?></a></p>
+					<p class="practice_text"><a  style = "color: #979797 !important;text-decoration: none !important;" href="<?php echo $coursePermaLink ?> "  target="_self"><?php echo $courseTitle ?></a></p>
 				</div>
 				<div class="practice_flx">
 					<img src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" />
 					<p class="practice_text"><?php the_title(); ?></p>
 				</div>
 			</div>
-			<p class="interpendence_text"><?php echo $trekTitle ?></p>
+			<p class="interpendence_text"><?php echo $courseTitle ?></p>
 			<!-- <p class="practice_text student_text">Digital Student Journal &nbsp;<span><a id="dsj_link" href="#"><img class="copy-anchor-icon-img" src="<?php // echo $treks_src; ?>/assets/img/link_icon.png" width="18" height="18" /></a></span></p> -->
 			<?php if ($assignment) { ?>
 				<!-- make row with 2 columns -->
@@ -231,5 +195,4 @@ $assignment = isset($_GET['assignment_id']) ? lxp_get_assignment($_GET['assignme
 
 	</script>
 </body>
-
 </html>

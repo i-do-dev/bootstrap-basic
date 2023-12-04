@@ -2,10 +2,14 @@
 <?php
 global $treks_src;
 $assignment_id = $args['assignment'];
-$slides =  $args['slides'];
-$slidesData = $slides->data;
-$slides = $slides->slides;
-$slides_pages = array_chunk($slides, 4);
+$totalSlidesData = 0;
+if ( $args['slides'] ) {
+    $slides =  $args['slides'];
+    $slidesData = $slides->data;
+    $totalSlidesData = $slidesData->totalSlides;
+    $slides = $slides->slides;
+    $slides_pages = array_chunk($slides, 4);
+}
 
 $student_id = 0;
 if ( (isset($_GET['student']) && intval($_GET['student']) > 0) ) {
@@ -28,13 +32,13 @@ $mark_as_graded = $assignment_submission ? get_post_meta($assignment_submission[
 <div class="tab-content" id="myTabContent">
     <!-- Teachers Table -->
     <h1 class="stu_heading">Submissions</h1>
-    <?php if ($assignment_submission) {
+    <?php if ($assignment_submission) {        
     ?>
         <div class="row justify-content-end">
             <div class="col-md-3">
                 <div class="row justify-content-end">
                     <div class="col-md-11">
-                        <a href="<?php echo site_url('grade-assignment/?assignment=' . $_GET['assignment'] . '&student='. $_GET['student'] . '&action=grade&slide=' . $slidesData->totalSlides); ?>" class="primary-btn lx-space summary_link">View Summary</a>
+                        <a href="<?php echo site_url('grade-assignment/?assignment=' . $_GET['assignment'] . '&student='. $_GET['student'] . '&action=grade&slide=' . $totalSlidesData); ?>" class="primary-btn lx-space summary_link">View Summary</a>
                     </div>
                 </div>
             </div>
@@ -67,63 +71,66 @@ $mark_as_graded = $assignment_submission ? get_post_meta($assignment_submission[
         data-bs-interval="false"
     >
         <div class="carousel-inner" style="height: 350px;">
-            <?php foreach ($slides_pages as $page_key => $slide_page) { ?>
-                <div class="carousel-item<?php echo $page_key == 0 ? ' active' : ''; ?>">
-                    <div class="slider_cards_flex">
-                        <?php 
-                        if($assignment_submission)
-                        {
-                            foreach ($slide_page as $slide_key => $slide) { 
-                            $no_right_border = count($slide_page) == $slide_key + 1 ? ' no-right-border' : '';
-                        ?>
-                            <?php 
-                                if(in_array($slide->type, array('Essay'))) { 
-                                    $grade = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true) : "";
-                                    $green_class = $grade === "" ? "" : "green_slide";
-                            ?>
-                                <div class="student_grade_card<?php echo $no_right_border; ?>">
-                                    <span class="student_slide <?php echo $score == 0 ? "gray" : 'green'; ?>_slide <?php echo $green_class; ?>">Slide <?php echo $slide->slide; ?></span>
-                                    <p><?php echo $slide->title; ?></p>
-                                
-                                    <h2 class="gray_grade"><?php echo $grade === "" ? "Not Graded" : $grade . ($slide->gradedManually ? "/$slide->totalGrades" : ""); ?></h2>
-                                    <button class="feedback-btn" onclick="viewFeedback(<?php echo $slide->slide; ?>)">
-                                        <img width="30" src="<?php echo $treks_src . "/assets/img/feedback-icon.png"; ?>" />
-                                    </button>
-                                    <button class="grade_btn" onclick="grade(<?php echo $slide->slide; ?>)">Grade</button>
-                                    <?php if ($grade !== "") { ?>
-                                        <img src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" />
+            <?php 
+                if ( $args['slides'] ) {
+                    foreach ($slides_pages as $page_key => $slide_page) { 
+            ?>
+                        <div class="carousel-item<?php echo $page_key == 0 ? ' active' : ''; ?>">
+                            <div class="slider_cards_flex">
+                                <?php 
+                                if($assignment_submission)
+                                {
+                                    foreach ($slide_page as $slide_key => $slide) { 
+                                    $no_right_border = count($slide_page) == $slide_key + 1 ? ' no-right-border' : '';
+                                ?>
+                                    <?php 
+                                        if(in_array($slide->type, array('Essay'))) { 
+                                            $grade = $assignment_submission ? get_post_meta($assignment_submission['ID'], "slide_" . $slide->slide . "_grade", true) : "";
+                                            $green_class = $grade === "" ? "" : "green_slide";
+                                    ?>
+                                        <div class="student_grade_card<?php echo $no_right_border; ?>">
+                                            <span class="student_slide <?php echo $score == 0 ? "gray" : 'green'; ?>_slide <?php echo $green_class; ?>">Slide <?php echo $slide->slide; ?></span>
+                                            <p><?php echo $slide->title; ?></p>
+                                        
+                                            <h2 class="gray_grade"><?php echo $grade === "" ? "Not Graded" : $grade . ($slide->gradedManually ? "/$slide->totalGrades" : ""); ?></h2>
+                                            <button class="feedback-btn" onclick="viewFeedback(<?php echo $slide->slide; ?>)">
+                                                <img width="30" src="<?php echo $treks_src . "/assets/img/feedback-icon.png"; ?>" />
+                                            </button>
+                                            <button class="grade_btn" onclick="grade(<?php echo $slide->slide; ?>)">Grade</button>
+                                            <?php if ($grade !== "") { ?>
+                                                <img src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" />
+                                            <?php } ?>
+                                        </div>
+                                    <?php 
+                                        } else { 
+                                            $auto_score = $assignment_submission ? lxp_assignment_submission_auto_score($assignment_submission['ID'], $slide->slide) : array('score' => 0 , 'max' => 0);
+                                            $score = $auto_score['score'];
+                                            $max = $auto_score['max'];
+                                            $green_class = $max > 0 ? 'green_slide' : '';
+                                    ?>
+                                        <div class="student_grade_card<?php echo $no_right_border; ?>">
+                                            <span class="student_slide <?php echo $score == 0 ? "gray" : 'green'; ?>_slide <?php echo $green_class; ?>">Slide <?php echo $slide->slide; ?></span>
+                                            <p><?php echo $slide->title; ?></p>
+                                        
+                                            <?php if($max) { ?>
+                                                <h2 class="gray_grade"><?php echo $score . '/' . $max; ?></h2>
+                                                <br />
+                                                <a href="#" onclick="grade(<?php echo $slide->slide; ?>)"><span class="badge bg-secondary" style="margin-bottom:18px;">Auto-graded</span></a>
+                                                <br />
+                                                <img src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" style="margin-top: 25px;" />
+                                            <?php } else { ?>
+                                                <h2 class="gray_grade">Not Attempted</h2>
+                                            <?php } ?>
+                                        </div>    
                                     <?php } ?>
-                                </div>
-                            <?php 
-                                } else { 
-                                    $auto_score = $assignment_submission ? lxp_assignment_submission_auto_score($assignment_submission['ID'], $slide->slide) : array('score' => 0 , 'max' => 0);
-                                    $score = $auto_score['score'];
-                                    $max = $auto_score['max'];
-                                    $green_class = $max > 0 ? 'green_slide' : '';
-                            ?>
-                                <div class="student_grade_card<?php echo $no_right_border; ?>">
-                                    <span class="student_slide <?php echo $score == 0 ? "gray" : 'green'; ?>_slide <?php echo $green_class; ?>">Slide <?php echo $slide->slide; ?></span>
-                                    <p><?php echo $slide->title; ?></p>
+                                <?php } ?>
                                 
-                                    <?php if($max) { ?>
-                                        <h2 class="gray_grade"><?php echo $score . '/' . $max; ?></h2>
-                                        <br />
-                                        <a href="#" onclick="grade(<?php echo $slide->slide; ?>)"><span class="badge bg-secondary" style="margin-bottom:18px;">Auto-graded</span></a>
-                                        <br />
-                                        <img src="<?php echo $treks_src; ?>/assets/img/check-g.svg" alt="" class="check-g" style="margin-top: 25px;" />
-                                    <?php } else { ?>
-                                        <h2 class="gray_grade">Not Attempted</h2>
-                                    <?php } ?>
-                                </div>    
-                            <?php } ?>
-                        <?php } ?>
-                        
-                        <?php } else {?>
-                            <p>Student has not attempted yet.</p>
-                        <?php } ?>
-                    </div>
-                </div>
-            <?php } ?>   
+                                <?php } else {?>
+                                    <p>Student has not attempted yet.</p>
+                                <?php } ?>
+                            </div>
+                        </div>
+            <?php } } ?>   
         </div>
 
         <button

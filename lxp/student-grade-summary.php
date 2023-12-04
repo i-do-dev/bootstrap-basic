@@ -8,10 +8,9 @@ if (isset($_GET['assignment_id'])) {
 
 $assignment = isset($_GET['assignment_id']) ? lxp_get_assignment($_GET['assignment_id']) : null;
 $assignment_submission = lxp_get_assignment_submissions($assignment->ID, lxp_get_student_post(get_current_user_id())->ID);
-$trek_id = get_post_meta($assignment->ID, 'trek_id', true);
-
+$course = get_post(get_post_meta($assignment->ID, 'course_id', true));
+$lxp_lesson_post = get_post(get_post_meta($assignment->ID, 'lxp_lesson_id', true));
 $content = get_post_meta($post->ID);
-
 $attrId =  isset($content['lti_post_attr_id'][0]) ? $content['lti_post_attr_id'][0] : "";
 $title =  isset($content['lti_content_title'][0]) ? $content['lti_content_title'][0] : "";
 $toolCode =  isset($content['lti_tool_code'][0]) ? $content['lti_tool_code'][0] : "";
@@ -22,28 +21,17 @@ $content = '<p>' . $post->post_content . '</p>';
 if ($attrId) {
 	$content .= '<p> [' . $plugin_name . ' tool=' . $toolCode . ' id=' . $attrId . ' title=\"' . $title . '\" url=' . $toolUrl . ' custom=' . $customAttr . ']' . "" . '[/' . $plugin_name . ']  </p>';
 }
-
-$trek = get_post($trek_id);
-$trekTitle = $trek->post_title;
-$trekPermaLink = get_permalink($trek->ID);
-$trek_section_id = get_post_meta($assignment->ID, 'trek_section_id', true);
-// get section from  trek_sections table by $trek_section_id
-global $wpdb;
-$trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id={$trek_section_id}");
+$courseTitle = $course->post_title;
+$coursePermaLink = get_permalink($course->ID);
 $queryParam = '';
 if (isset($_GET['slide'])) {
 	$queryParam = "&slideNumber=" . $_GET['slide'];
 }
-
 if (isset($_GET["assignment_id"])) {
 	$queryParam = $queryParam . "&assignment_id=" . $_GET["assignment_id"];	
 }
-
 $toolUrl = $toolUrl . $queryParam;
 ?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -105,24 +93,6 @@ $toolUrl = $toolUrl . $queryParam;
 			<!-- Nav Section -->
 			<nav class="nav-section nav_section_interpendence">
 				<?php get_template_part('trek/navigation-student') ?>
-				<!-- <ul>
-					<li class="nav-section-selected">
-						<img src="<?php echo $treks_src; ?>/assets/img/nav_dashboard-dots.svg" />
-						<a href="/">Dashboard</a>
-					</li>
-					<li>
-						<img src="<?php echo $treks_src; ?>/assets/img/nav_Treks.svg" />
-						<a href="/treks.html">TREKs</a>
-					</li>
-					<li>
-						<img src="<?php echo $treks_src; ?>/assets/img/nav_students.svg" />
-						<a href="/">Students</a>
-					</li>
-					<li>
-						<img src="<?php echo $treks_src; ?>/assets/img/nav_reports.svg" />
-						<a href="/">Reports</a>
-					</li>
-				</ul> -->
 			</nav>
 		</section>
 		<!-- Interpendence Practice Section -->
@@ -130,22 +100,22 @@ $toolUrl = $toolUrl . $queryParam;
 			<div class="treks_practice_bx">
 				<div class="practice_flx">
 					<img src="<?php echo $treks_src; ?>/assets/img/nav_Treks.svg" />
-					<p class="practice_text">My TREKs</p>
+					<p class="practice_text">My Course</p>
 				</div>
 				<div class="practice_flx">
 					<img src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" />
-					<p class="practice_text"><a  style = "color: #979797 !important;text-decoration: none !important;" href="<?php echo $trekPermaLink ?> "  target="_self"><?php echo $trekTitle ?></a></p>
+					<p class="practice_text"><a  style = "color: #979797 !important;text-decoration: none !important;" href="<?php echo $coursePermaLink ?> "  target="_self"><?php echo $courseTitle ?></a></p>
 				</div>
 				<div class="practice_flx">
 					<img src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" />
-					<p class="practice_text"><?php echo $trek_section->title; ?></p>
+					<p class="practice_text"><?php echo $lxp_lesson_post->post_title; ?></p>
 				</div>
 				<div class="practice_flx">
 					<img src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" />
 					<p class="practice_text"><?php the_title(); ?></p>
 				</div>
 			</div>
-			<p class="interpendence_text"><?php echo $trekTitle ?> > <?php echo $trek_section->title; ?></p>
+			<p class="interpendence_text"><?php echo $courseTitle ?> > <?php echo $lxp_lesson_post->post_title; ?></p>
 			<!-- <p class="practice_text student_text">Digital Student Journal &nbsp;<span><a id="dsj_link" href="#"><img class="copy-anchor-icon-img" src="<?php // echo $treks_src; ?>/assets/img/link_icon.png" width="18" height="18" /></a></span></p> -->
 			<?php if ($assignment) { ?>
 				<!-- make row with 2 columns -->

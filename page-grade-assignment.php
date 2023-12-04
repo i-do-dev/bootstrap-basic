@@ -12,8 +12,8 @@ if ( (isset($_GET['student']) && intval($_GET['student']) > 0) ) {
 
 $assignment = lxp_get_assignment($_GET['assignment']);
 $students = lxp_get_students($assignment->lxp_student_ids);
-$trek = get_post($assignment->trek_id);
-$trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id={$assignment->trek_section_id}");
+$course = get_post(get_post_meta($assignment->ID, 'course_id', true));
+$lxp_lesson_post = get_post(get_post_meta($assignment->ID, 'lxp_lesson_id', true));
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 $slide_current = isset($_GET['slide']) ? $_GET['slide'] : 0;
 $assignment_submission = lxp_get_assignment_submissions($assignment->ID, $student_id);
@@ -191,28 +191,26 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
 
         <div class="students-breadcrumb">
           <div class="interdependence-user">
-            <img src="<?php echo $treks_src; ?>/assets/img/tr_main.png" alt="user" class="inter-user-img" />
-            <h3 class="inter-user-name"><?php echo $trek->post_title; ?></h3>
+            <?php
+              if ( has_post_thumbnail( $course->ID ) ) {
+                  echo get_the_post_thumbnail($course->ID, array(50,50), array( 'class' => 'rounded wp-post-image')); 
+              } else {
+            ?>
+              <img width="50" height="50" src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" class="rounded wp-post-image" /> 
+            <?php        
+                }
+            ?>
+            <h3 class="inter-user-name"><?php echo $course->post_title; ?></h3>
           </div>
           <img src="<?php echo $treks_src; ?>/assets/img/bc_arrow_right.svg" alt="user" class="students-breadcrumb-arrow" />
           <div class="interdependence-tab">
             <?php
-            if ($trek_section->title === 'Overview') {
-                $segmentColor = "#979797";
-            } else if ($trek_section->title === 'Recall') {
-                $segmentColor = "#ca2738";
-            } else if ($trek_section->title === 'Practice A') {
-                $segmentColor = "#1fa5d4";
-            } else if ($trek_section->title === 'Practice B') {
-                $segmentColor = "#1fa5d4";
-            } else if ($trek_section->title === 'Apply') {
-                $segmentColor = "#9fc33b";
-            }
+            $segmentColor = "#1fa5d4"
             ?>
             <div class="inter-tab-polygon" style="background-color: <?php echo $segmentColor; ?>">
-              <h4><?php echo $trek_section->title[0]; ?></h4>
+              <h4><?php echo 'L'; ?></h4>
             </div>
-            <h3 class="inter-tab-polygon-name" style="color: <?php echo $segmentColor; ?>"><?php echo $trek_section->title; ?></h3>
+            <h3 class="inter-tab-polygon-name" style="color: <?php echo $segmentColor; ?>"><?php echo $lxp_lesson_post->post_title; ?></h3>
           </div>
           <div class="time-date-box">
             <p class="date-time"><span id="assignment_day"><?php echo date("D", strtotime($assignment->start_date)); ?></span>, <span id="assignment_month"><?php echo date("F", strtotime($assignment->start_date)); ?></span> <span id="assignment_date"><?php echo date("d", strtotime($assignment->start_date)); ?></span>, <span id="assignment_date"><?php echo date("Y", strtotime($assignment->start_date)); ?></span></p>
@@ -501,10 +499,10 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
           if (isset($_GET['slide']) && intval($_GET['slide']) === intval($slides->data->totalSlides)) {
             get_template_part("lxp/grade-book", "grade-book", array('slides' => $slides, 'assignment_submission' => $assignment_submission));
           }else if ( isset($_GET['action']) && $_GET['action'] == 'grade' ) {
-            $lessons = lxp_get_trek_digital_journals($trek->ID);
-            $trek_lesson = null;
-            foreach($lessons as $lesson){ if (trim($trek_section->title) === trim($lesson->post_title)) { $trek_lesson = $lesson; }; }
-            $lti_post_attr_id = get_post_meta($trek_lesson->ID, 'lti_post_attr_id', true);
+            $lessons = lxp_get_course_digital_journals($course->ID);
+            $course_lesson = null;
+            foreach($lessons as $lesson){ if ($lxp_lesson_post->ID == $lesson->ID) { $course_lesson = $lesson; }; }
+            $lti_post_attr_id = get_post_meta($course_lesson->ID, 'lti_post_attr_id', true);
             $attrId = $lti_post_attr_id ? $lti_post_attr_id : 0;
             $queryParam = '';
             if (isset($_GET['slide'])) {
@@ -526,7 +524,7 @@ $total_grades_str = $result ? '/' .json_decode($result)->score->max : '';
                   <div class="row">
                     
                       <div class="col col-md-8">
-                        <iframe style="border: none;width: 100%;height: 395px;" class="" src="<?php echo site_url() ?>?lti-platform&post=<?php echo $trek_lesson->ID ?>&id=<?php echo $attrId ?><?php echo $queryParam ?>" allowfullscreen></iframe>
+                        <iframe style="border: none;width: 100%;height: 395px;" class="" src="<?php echo site_url() ?>?lti-platform&post=<?php echo $course_lesson->ID ?>&id=<?php echo $attrId ?><?php echo $queryParam ?>" allowfullscreen></iframe>
                       </div>
                       <?php 
                         if (count($slide_filtered_arr) > 0) {
