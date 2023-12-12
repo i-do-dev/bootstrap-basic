@@ -1,3 +1,9 @@
+<style type="text/css">
+    .hidden {
+        display: none;
+    }
+</style>
+
 <?php
     global $treks_src;
     $userdata = get_userdata(get_current_user_id());
@@ -105,9 +111,18 @@
         <!-- Assign Content -->
         <div class="select-trek-box assign-content">
             <h3 class="new-assignment-heading assign-heading">Assign Content</h3>
-            <p class="date-time assign-text">What class would you like to assign?
+            <p class="date-time assign-text">What <strong>stdents</strong> would you like to assign?
             <div class="search_box">
-                <label class="trek-label">Classes/Other Group</label>
+                <label class="trek-label">From</label>
+                <select onChange="studentsFrom()" class="form-select form-control" aria-label="Default select example" name="students_from_select" id="students_from_select">
+                    <option value="none">Select...</option>
+                    <option value="all_students">All Students</option>
+                    <option value="classes_other_groups">Classes/Other Groups</option>
+                </select>
+            </div>
+
+            <div class="search_box assign-content-classes-groups hidden">
+                <label class="trek-label">Classes/Other Groups</label>
                 <input type="hidden" id="class_id" name="class_id" value="" />
                 <select onChange="class_select()" class="form-select form-control" aria-label="Default select example" name="classes_other_group" id="classes_other_group">
                     <option value="0">Select Class/Other Group</option>
@@ -136,7 +151,7 @@
             </div>
 
             <!-- Select a Students -->
-            <div class="search_box">
+            <div class="search_box assign-content-classes-groups hidden">
                 <label class="trek-label">Small Groups</label>                 
                 <div class="dropdown period-box">
                     <input type="hidden" id="group_id" name="group_id" value="" />
@@ -152,7 +167,7 @@
             </div>            
             
             <!-- Select a Students -->
-            <div class="search_box">
+            <div class="search_box assign-content-all-students hidden">
                 <label class="trek-label">Students</label>
                 <div class="dropdown period-box">
                     <button class="input_dropdown dropdown-button second-drop-button" type="button"
@@ -189,7 +204,7 @@
         <div class="input_section">
             <div class="btn_box profile_buttons">
                 <button class="btn profile_btn" type="button" onclick="go_previous()">Previous</button>
-                <button class="btn profile_btn" id="assignment-create-btn">Create</button>
+                <button class="btn profile_btn assign-content-create-btn" id="assignment-create-btn" disabled="disabled">Create</button>
             </div>
         </div>
     </section>
@@ -399,5 +414,27 @@
         window.selected_students_ids = [];
         jQuery('.select-students-logos').html("");
         jQuery('.students_count_label').text("0");
+    }
+
+    function studentsFrom() {
+        const students_from_select = jQuery("#students_from_select").val();
+        switch (students_from_select) {
+            case 'none':
+                jQuery(".assign-content-classes-groups").addClass("hidden");
+                jQuery(".assign-content-all-students").addClass("hidden");
+                jQuery("#assignment-create-btn").attr("disabled", "disabled");
+                break;
+            case 'all_students':
+                console.log('all students');
+                jQuery(".assign-content-all-students").removeClass("hidden");
+                jQuery(".assign-content-classes-groups").addClass("hidden");
+                jQuery(".assign-content-create-btn").removeClass("hidden");
+                break;
+            case 'classes_other_groups':
+                jQuery(".assign-content-classes-groups").removeClass("hidden");
+                jQuery(".assign-content-all-students").removeClass("hidden");
+                jQuery(".assign-content-create-btn").removeClass("hidden");
+                break;
+        }
     }
 </script>
