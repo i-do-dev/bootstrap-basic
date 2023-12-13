@@ -222,7 +222,7 @@
         jQuery('#group_title').text("Select Small Group");
         empty_student();
         fetch_small_groups(class_id);
-        fetch_class_student(class_id);        
+        fetch_class_student(class_id);
     }
 
     function empty_student() {
@@ -232,21 +232,26 @@
         window.selected_students_ids = [];
         jQuery('.select-students-logos').html("");
         jQuery('.students_count_label').text("0");
+        jQuery("#assignment-create-btn").attr("disabled", "disabled");
     }
 
     function fetch_small_groups(class_id) {        
-        $.ajax({
-            method: "POST",
-            enctype: 'multipart/form-data',
-            url: apiUrl + "class/groups",
-            data: {class_id}
-        }).done(function( response ) {
-            window.class_small_group = response.data.small_groups;
-            let class_small_group_html = window.class_small_group.map(small_group => class_small_group_dd_html(small_group)).join('\n');
-            jQuery('#small-groups-container').html(class_small_group_html);
-        }).fail(function (response) {
-            console.error("Can not load class");
-        });
+        if (parseInt(class_id) > 0) {
+            $.ajax({
+                method: "POST",
+                enctype: 'multipart/form-data',
+                url: apiUrl + "class/groups",
+                data: {class_id}
+            }).done(function( response ) {
+                window.class_small_group = response.data.small_groups;
+                let class_small_group_html = window.class_small_group.map(small_group => class_small_group_dd_html(small_group)).join('\n');
+                jQuery('#small-groups-container').html(class_small_group_html);
+            }).fail(function (response) {
+                console.error("Can not load class");
+            });
+        } else {
+            jQuery('#small-groups-container').html("");
+        }
     }
 
     function class_small_group_dd_html(small_group) {
@@ -259,16 +264,36 @@
     }
 
     function fetch_class_student(class_id) {
+        if (parseInt(class_id) > 0) {
+            $.ajax({
+                method: "POST",
+                enctype: 'multipart/form-data',
+                url: apiUrl + "class/students",
+                data: {class_id}
+            }).done(function( response ) {
+                window.class_students = response.data.students;
+                let class_students_dd_html = window.class_students.map(student => class_student_dd_html(student)).join('\n');
+                jQuery('#students-container').html(class_students_dd_html);
+                class_students_select_event_init();            
+            }).fail(function (response) {
+                console.error("Can not load class");
+            });
+        } else {
+            jQuery('#students-container').html("");
+        }
+    }
+
+    function fetch_teacher_students() {
         $.ajax({
             method: "POST",
             enctype: 'multipart/form-data',
-            url: apiUrl + "class/students",
-            data: {class_id}
+            url: apiUrl + "teacher/students",
+            data: {teacher_id: jQuery("#teacher_id").val()}
         }).done(function( response ) {
             window.class_students = response.data.students;
             let class_students_dd_html = window.class_students.map(student => class_student_dd_html(student)).join('\n');
             jQuery('#students-container').html(class_students_dd_html);
-            class_students_select_event_init();
+            class_students_select_event_init();            
         }).fail(function (response) {
             console.error("Can not load class");
         });
@@ -319,6 +344,11 @@
         jQuery("#select-students-label").text(selected_students_label);
         jQuery(".students_count_label").text(window.selected_students_ids.length);
         set_student_logos();
+        if (window.selected_students_ids.length > 0) {
+            jQuery("#assignment-create-btn").removeAttr("disabled");
+        } else {
+            jQuery("#assignment-create-btn").attr("disabled", "disabled");
+        }
     }
 
     function set_student_logos() {
@@ -331,13 +361,7 @@
         const url_trek_id = url_params.get('trek');
         const url_segment_id = url_params.get('segment');
         let ok = true;
-        if (!parseInt(jQuery("#class_id").val())) {
-            ok = false;
-            jQuery("#class_select_error").show();
-        } else {
-            jQuery("#class_select_error").hide();
-        }
-
+        
         if (window.selected_students_ids.length == 0) {
             ok = false;
             jQuery("#students_select_error").show();
@@ -422,18 +446,22 @@
             case 'none':
                 jQuery(".assign-content-classes-groups").addClass("hidden");
                 jQuery(".assign-content-all-students").addClass("hidden");
-                jQuery("#assignment-create-btn").attr("disabled", "disabled");
+                jQuery('#classes_other_group').val(0);
+                jQuery('#classes_other_group').trigger('change');
                 break;
             case 'all_students':
                 console.log('all students');
                 jQuery(".assign-content-all-students").removeClass("hidden");
                 jQuery(".assign-content-classes-groups").addClass("hidden");
-                jQuery(".assign-content-create-btn").removeClass("hidden");
+                jQuery('#classes_other_group').val(0);
+                jQuery('#classes_other_group').trigger('change');
+                fetch_teacher_students();
                 break;
             case 'classes_other_groups':
                 jQuery(".assign-content-classes-groups").removeClass("hidden");
                 jQuery(".assign-content-all-students").removeClass("hidden");
-                jQuery(".assign-content-create-btn").removeClass("hidden");
+                jQuery('#classes_other_group').val(0);
+                jQuery('#classes_other_group').trigger('change');
                 break;
         }
     }
