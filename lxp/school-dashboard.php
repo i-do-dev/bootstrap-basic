@@ -3,7 +3,20 @@
 global $treks_src;
 $school_post = lxp_get_user_school_post();
 $teachers = lxp_get_school_teachers($school_post->ID);
-$students = lxp_get_school_students($school_post->ID);
+
+$school_students = lxp_get_school_students($school_post->ID);
+$students = array();
+if (isset($_GET['teacher_id'])) {
+    $students = get_posts( array( 
+        'post_type' => TL_STUDENT_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_teacher_id', 'value' => $_GET['teacher_id'], 'compare' => '=')
+        )
+    ) );
+}
+
 $school_teachers_ids = array_map(function ($teacher) { return $teacher->ID; }, $teachers);
 $assignments = lxp_get_all_teachers_assignments($school_teachers_ids);
 //$classes = lxp_get_all_teachers_classes($school_teachers_ids);
@@ -117,7 +130,7 @@ $classes = array_merge($default_classes, $classes);
                     </div>
                     <div class="card">
                         <img src="<?php echo $treks_src; ?>/assets/img/user.svg" alt="logo" />
-                        <h3 class="numbers-heading"><?php echo count($students); ?></h3>
+                        <h3 class="numbers-heading"><?php echo count($school_students); ?></h3>
                         <p class="name-text">Students</p>
                     </div>
                     <div class="card">
@@ -171,7 +184,7 @@ $classes = array_merge($default_classes, $classes);
                     </nav>
                     <div class="tab-content">
                         <?php get_template_part('lxp/school-dashboard-teachers-tab', 'teacher-tab', array('teachers' => $teachers)); ?>
-                        <?php get_template_part('lxp/school-dashboard-students-tab', 'student-tab', array('students' => $students)); ?>
+                        <?php get_template_part('lxp/school-dashboard-students-tab', 'student-tab', array('students' => $students, 'teachers' => $teachers)); ?>
                         <?php get_template_part('lxp/school-dashboard-classes-tab', 'class-tab', array('classes' => $classes)); ?>
                         <?php get_template_part('lxp/school-dashboard-other-groups-tab', 'other-group-tab', array('other_groups' => $other_groups)); ?>
                         <?php get_template_part('lxp/school-dashboard-groups-tab', 'group-tab', array('groups' => $groups)); ?>
@@ -250,10 +263,16 @@ $classes = array_merge($default_classes, $classes);
         crossorigin="anonymous"></script>
     
     <?php get_template_part('lxp/school-teacher-modal'); ?>
-    <?php get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post)); ?>
+
+    <?php
+        if (isset($_GET['teacher_id'])) {
+            $teacher_post = get_post($_GET['teacher_id']);
+            get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post, "teacher_post" => $teacher_post)); 
+        }
+    ?>
     
     <script type="text/javascript">
-        jQuery(document).ready(function(){
+        jQuery(document).ready(function() {
             jQuery('.nav-link').on('show.bs.tab', function (event) {
                 localStorage.setItem("school_dashboard_tab", jQuery(event.target).attr('data-bs-target'));
             });
@@ -268,6 +287,16 @@ $classes = array_merge($default_classes, $classes);
                 var tab = new bootstrap.Tab(tabEl);
                 tab.show();
             }
+
+            $('#teacher-drop-down').change(function() {
+                var teacher_id = $(this).val();
+                var url = new URL(window.location.href);
+                url.searchParams.set('teacher_id', teacher_id);
+                if (teacher_id == 0) {
+                    url.searchParams.delete('teacher_id');
+                }
+                window.location = url.href;
+            });
         });
     </script>
 </body>

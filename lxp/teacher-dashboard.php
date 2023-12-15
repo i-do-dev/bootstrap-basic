@@ -307,7 +307,8 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
             <tbody>
               <?php 
                 foreach ($assignments as $assignment) { 
-                  $class_post = get_post(get_post_meta($assignment->ID, 'class_id', true));
+                  $class_id = intval(get_post_meta($assignment->ID, 'class_id', true));
+                  $class_post = get_post($class_id);
                   $trek_section_id = get_post_meta($assignment->ID, 'trek_section_id', true);
                   global $wpdb;
                   $trek_section = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}trek_sections WHERE id={$trek_section_id}");
@@ -336,7 +337,7 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
                   });
               ?>
                 <tr>
-                  <td><?php echo $class_post ? $class_post->post_title : 'Demo Class'; ?></td>
+                  <td><?php echo $class_id > 0 ? $class_post->post_title : '---'; ?></td>
                   <td><?php echo $trek->post_title; ?></td>
                   <td>
                     <div class="assignments-table-cs-td-poly">
