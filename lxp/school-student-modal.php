@@ -2,6 +2,7 @@
 global $treks_src;
 $school_post = $args['school_post'];
 $teacher_post = $args['teacher_post'];
+$teachers = $args['teachers'];
 ?>
 
 <!-- Modal -->

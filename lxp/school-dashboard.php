@@ -6,15 +6,16 @@ $teachers = lxp_get_school_teachers($school_post->ID);
 
 $school_students = lxp_get_school_students($school_post->ID);
 $students = array();
-if (isset($_GET['teacher_id'])) {
-    $students = get_posts( array( 
-        'post_type' => TL_STUDENT_CPT, 
-        'post_status' => array( 'publish' ),
-        'posts_per_page'   => -1,        
-        'meta_query' => array(
-            array('key' => 'lxp_teacher_id', 'value' => $_GET['teacher_id'], 'compare' => '=')
-        )
-    ) );
+if (isset($_GET['teacher_id']) && $_GET['teacher_id'] != 0) {
+    $teacher_id = $_GET['teacher_id'];
+    $students = array_filter($school_students, function ($student) use ($teacher_id) {
+        return get_post_meta($student->ID, 'lxp_teacher_id', true) == $teacher_id;
+    });
+} else {
+    // filter out students who are not assigned to any teacher
+    $students = array_filter($school_students, function ($student) {
+        return !get_post_meta($student->ID, 'lxp_teacher_id', true);
+    });
 }
 
 $school_teachers_ids = array_map(function ($teacher) { return $teacher->ID; }, $teachers);
@@ -265,10 +266,10 @@ $classes = array_merge($default_classes, $classes);
     <?php get_template_part('lxp/school-teacher-modal'); ?>
 
     <?php
-        if (isset($_GET['teacher_id'])) {
-            $teacher_post = get_post($_GET['teacher_id']);
-            get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post, "teacher_post" => $teacher_post)); 
-        }
+        
+        $teacher_post = isset($_GET['teacher_id']) && $_GET['teacher_id'] != 0 ? get_post($_GET['teacher_id']) : null;
+        get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post, "teachers" => $teachers, "teacher_post" => $teacher_post)); 
+        
     ?>
     
     <script type="text/javascript">
