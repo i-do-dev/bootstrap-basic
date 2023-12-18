@@ -3,6 +3,7 @@
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 $school_post = lxp_get_user_school_post();
 $students = lxp_get_school_students($school_post->ID);
+$teachers = lxp_get_school_teachers($school_post->ID);
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +12,7 @@ $students = lxp_get_school_students($school_post->ID);
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" conte nt="width=device-width, initial-scale=1.0" />
     <title>School Admin / Students</title>
     <link href="<?php echo $treks_src; ?>/style/main.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
@@ -23,6 +24,11 @@ $students = lxp_get_school_students($school_post->ID);
     <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+    <style type="text/css">
+        .add-teacher-box {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
@@ -81,24 +87,39 @@ $students = lxp_get_school_students($school_post->ID);
         <section class="school-section">
             <section class="school_teacher_cards">
                 <div class="add-teacher-box">
-                    <div class="search-filter-box">
-                        <div class="search_box">
-                            <label class="search-label">Search</label>
-                            <input type="text" name="text" placeholder="School, ID, admin" />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <form class="row">
+                                <div class="col-md-12">
+                                    <label for="district-drop-down" class="form-label">Teacher</label>
+                                    <select class="form-select" id="teacher-drop-down" name="teacher_id">
+                                        <option value="0">Choose...</option>
+                                        <?php foreach ($teachers as $teacher) { ?>
+                                            <option value="<?php echo $teacher->ID; ?>"<?php echo isset($_GET['teacher_id']) && $_GET['teacher_id'] == $teacher->ID ? ' selected=selected' : '' ?>><?php echo $teacher->post_title; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </form>
                         </div>
-                        <div class="filter-box">
-                            <img src="<?php echo $treks_src; ?>/assets/img/filter-alt.svg" alt="filter logo" />
-                            <p class="filter-heading">Filter</p>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <?php if (isset($_GET['teacher_id']) && $_GET['teacher_id'] > 0) { ?>
+                                <div>
+                                    <button id="studentModalBtn" class="add-heading" type="button" data-bs-toggle="modal" data-bs-target="#studentModal" class="primary-btn">
+                                        Add New Student
+                                    </button>
+                                    <label for="import-student" class="primary-btn add-heading">
+                                        Import Students (CSV)
+                                    </label >
+                                    <input type="file" id="import-student" hidden />
+                                </div>
+                           <?php } else { ?>
+                                <div class="alert alert-info" role="alert" style="margin-top: 10px;">
+                                    Please select a `Teacher` to add or import `Students`.
+                                </div>
+                           <?php } ?>
+                
                         </div>
-                    </div>
-                    <div>
-                        <button id="studentModalBtn" class="add-heading" type="button" data-bs-toggle="modal" data-bs-target="#studentModal" class="primary-btn">
-                            Add New Student
-                        </button>
-                        <label for="import-student" class="primary-btn add-heading">
-                            Import Students (CSV)
-                        </label >
-                        <input type="file" id="import-student" hidden />
                     </div>
                 </div>
 

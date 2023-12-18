@@ -49,6 +49,11 @@ $teacher_selected = is_array($teacher) && count($teacher) > 0 ? $teacher[0] : nu
                 </label >
                 <input type="file" id="import-student" hidden />
             </div>
+        <?php } else { ?>
+            <!-- guide alter which says 'Select `Teacher` to `Add` or `Import` the `Students`-->
+            <div class="alert alert-info" role="alert" style="margin-top: 10px;">
+                Please select a `Teacher` to add or import `Students`.
+            </div>
         <?php } ?>
     </div>
 
