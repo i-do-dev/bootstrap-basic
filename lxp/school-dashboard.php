@@ -6,6 +6,7 @@ $teachers = lxp_get_school_teachers($school_post->ID);
 
 $school_students = lxp_get_school_students($school_post->ID);
 $students = array();
+$is_teacher_assignment_needed = false;
 if (isset($_GET['teacher_id']) && $_GET['teacher_id'] != 0) {
     $teacher_id = $_GET['teacher_id'];
     $students = array_filter($school_students, function ($student) use ($teacher_id) {
@@ -16,6 +17,12 @@ if (isset($_GET['teacher_id']) && $_GET['teacher_id'] != 0) {
     $students = array_filter($school_students, function ($student) {
         return !get_post_meta($student->ID, 'lxp_teacher_id', true);
     });
+    // if all students are already assigned to teachers then show all students
+    if (count($students) == 0) {
+        $students = $school_students;
+    } else {
+        $is_teacher_assignment_needed = true;
+    }
 }
 
 $school_teachers_ids = array_map(function ($teacher) { return $teacher->ID; }, $teachers);
@@ -185,7 +192,7 @@ $classes = array_merge($default_classes, $classes);
                     </nav>
                     <div class="tab-content">
                         <?php get_template_part('lxp/school-dashboard-teachers-tab', 'teacher-tab', array('teachers' => $teachers)); ?>
-                        <?php get_template_part('lxp/school-dashboard-students-tab', 'student-tab', array('students' => $students, 'teachers' => $teachers)); ?>
+                        <?php get_template_part('lxp/school-dashboard-students-tab', 'student-tab', array('students' => $students, 'teachers' => $teachers, 'is_teacher_assignment_needed' => $is_teacher_assignment_needed)); ?>
                         <?php get_template_part('lxp/school-dashboard-classes-tab', 'class-tab', array('classes' => $classes)); ?>
                         <?php get_template_part('lxp/school-dashboard-other-groups-tab', 'other-group-tab', array('other_groups' => $other_groups)); ?>
                         <?php get_template_part('lxp/school-dashboard-groups-tab', 'group-tab', array('groups' => $groups)); ?>
@@ -268,8 +275,7 @@ $classes = array_merge($default_classes, $classes);
     <?php
         
         $teacher_post = isset($_GET['teacher_id']) && $_GET['teacher_id'] != 0 ? get_post($_GET['teacher_id']) : null;
-        get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post, "teachers" => $teachers, "teacher_post" => $teacher_post)); 
-        
+        get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post, "teachers" => $teachers)); 
     ?>
     
     <script type="text/javascript">

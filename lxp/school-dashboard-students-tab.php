@@ -2,6 +2,7 @@
 global $treks_src;
 $students = $args["students"];
 $teachers = $args["teachers"];
+$is_teacher_assignment_needed = $args["is_teacher_assignment_needed"];
 $teacher_id = isset($_GET['teacher_id']) ? $_GET['teacher_id'] : 0;
 $teacher = array_filter($teachers, function($teacher) use ($teacher_id) {
     return $teacher->ID == $teacher_id;
@@ -53,7 +54,7 @@ $teacher_selected = is_array($teacher) && count($teacher) > 0 ? $teacher[0] : nu
 
     <div class="students-table">
         <!-- notice to show message 'Select Teaher to list Students' -->
-        <?php if (is_null($teacher_selected) & count($students) > 0) { ?>
+        <?php if (is_null($teacher_selected) & $is_teacher_assignment_needed) { ?>
             <div class="alert alert-danger" role="alert">
                 Please assign a teacher to each student listed below.
             </div>
