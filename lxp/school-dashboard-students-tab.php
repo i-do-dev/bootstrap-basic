@@ -4,9 +4,9 @@ $students = $args["students"];
 $teachers = $args["teachers"];
 $is_teacher_assignment_needed = $args["is_teacher_assignment_needed"];
 $teacher_id = isset($_GET['teacher_id']) ? $_GET['teacher_id'] : 0;
-$teacher = array_filter($teachers, function($teacher) use ($teacher_id) {
+$teacher = array_values(array_filter($teachers, function($teacher) use ($teacher_id) {
     return $teacher->ID == $teacher_id;
-});
+}));
 $teacher_selected = is_array($teacher) && count($teacher) > 0 ? $teacher[0] : null;
 ?>
 <div id="student-tab-content" class="tab-pane fade" role="tabpanel">

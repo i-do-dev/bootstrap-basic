@@ -2,8 +2,27 @@
 // get_template_part('lxp/functions');
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 $school_post = lxp_get_user_school_post();
-$students = lxp_get_school_students($school_post->ID);
+$school_students = lxp_get_school_students($school_post->ID);
 $teachers = lxp_get_school_teachers($school_post->ID);
+
+$students = array();
+$is_teacher_assignment_needed = false;
+if (isset($_GET['teacher_id']) && $_GET['teacher_id'] != 0) {
+    $teacher_id = $_GET['teacher_id'];
+    $students = lxp_get_school_teacher_students($school_post->ID, $teacher_id);
+} else {
+    // filter out students who are not assigned to any teacher
+    $students = array_filter($school_students, function ($student) {
+        return !get_post_meta($student->ID, 'lxp_teacher_id', true);
+    });
+    // if all students are already assigned to teachers then show all students
+    if (count($students) == 0) {
+        $students = $school_students;
+    } else {
+        $is_teacher_assignment_needed = true;
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -301,7 +320,22 @@ $teachers = lxp_get_school_teachers($school_post->ID);
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
     
-    <?php get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post)); ?>
+    <?php get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post, "teachers" => $teachers)); ?>
+
+    <script>
+        // document ready
+        $(document).ready(function () {
+            // on change teacher drop down
+            $('#teacher-drop-down').on('change', function () {
+                var teacher_id = $(this).val();
+                if (teacher_id > 0) {
+                    window.location.href = '<?php echo get_permalink(); ?>?teacher_id=' + teacher_id;
+                } else {
+                    window.location.href = '<?php echo get_permalink(); ?>';
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

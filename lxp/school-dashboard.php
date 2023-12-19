@@ -9,9 +9,7 @@ $students = array();
 $is_teacher_assignment_needed = false;
 if (isset($_GET['teacher_id']) && $_GET['teacher_id'] != 0) {
     $teacher_id = $_GET['teacher_id'];
-    $students = array_filter($school_students, function ($student) use ($teacher_id) {
-        return get_post_meta($student->ID, 'lxp_teacher_id', true) == $teacher_id;
-    });
+    $students = lxp_get_school_teacher_students($school_post->ID, $teacher_id);
 } else {
     // filter out students who are not assigned to any teacher
     $students = array_filter($school_students, function ($student) {

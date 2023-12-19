@@ -315,7 +315,7 @@ $students = array_filter($students, function($student) use ($teacher_post) {
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
     
-    <?php get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post, "teacher_post" => $teacher_post)); ?>
+    <?php get_template_part('lxp/teacher-student-modal', 'student-modal', array("school_post" => $school_post, "teacher_post" => $teacher_post)); ?>
 </body>
 
 </html>
