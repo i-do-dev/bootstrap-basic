@@ -61,9 +61,9 @@ $teachers = $args['teachers'];
                         </div>
                         <div class="input_box">
                             <div class="label_box">
-                                <label class="label">Email</label>
-                                <input class="form-control" type="email" name="user_email" id="emailStudent" placeholder="johndoe@gmail.com" />
-                                <input type="hidden" id="inputEmailDefaultStudent" name="user_email_default" />
+                                <label class="label">Username</label>
+                                <input class="form-control" type="text" name="username" id="usernameStudent" placeholder="johndoe@gmail.com" />
+                                <input type="hidden" id="inputEmailDefaultStudent" name="username_default" />
                             </div>
                         </div>
                         <div class="input_box">

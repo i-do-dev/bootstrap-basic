@@ -94,7 +94,9 @@ function lxp_get_school_teacher_students($school_id, $teacher_id)
         'meta_query' => array(
             array('key' => 'lxp_student_school_id', 'value' => $school_id, 'compare' => '='),
             array('key' => 'lxp_teacher_id', 'value' => $teacher_id, 'compare' => '=')
-        )
+        ),
+        'orderby' => 'title',
+        'order' => 'ASC'
     ) );
     
     $posts = $school_query->get_posts();
