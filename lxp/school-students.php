@@ -39,7 +39,7 @@ if (isset($_GET['teacher_id']) && $_GET['teacher_id'] != 0) {
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/addNewTeacherModal.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolDashboard.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolAdminStudents.css" />
-    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/adminInternalTeacherView.css" />
+    
     <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
@@ -196,7 +196,7 @@ if (isset($_GET['teacher_id']) && $_GET['teacher_id'] != 0) {
                                     </th>
                                     <th>
                                         <div class="th1 th2">
-                                            Email
+                                            Username
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>
@@ -230,18 +230,19 @@ if (isset($_GET['teacher_id']) && $_GET['teacher_id'] != 0) {
                                 <?php 
                                     foreach ($students as $student) {
                                         $student_admin = get_userdata(get_post_meta($student->ID, 'lxp_student_admin_id', true));
+                                        $student_id = get_post_meta($student->ID, 'student_id', true);
                                 ?>
                                     <tr>
                                         <td class="user-box">
                                             <div class="table-user">
                                                 <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="student" />
                                                 <div class="user-about">
-                                                    <h5><?php echo $student_admin->display_name?></h5>
+                                                    <h5><?php echo $student->post_title; ?></h5>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="table-status"><?php echo $student_admin->user_email?></div>
+                                            <div class="table-status"><?php echo $student_admin->user_login; ?></div>
                                         </td>
                                         <td>
                                             <?php
@@ -264,7 +265,7 @@ if (isset($_GET['teacher_id']) && $_GET['teacher_id'] != 0) {
                                                 }
                                             ?>
                                         </td>
-                                        <td><?php echo $student->ID ?></td>
+                                        <td><?php echo $student_id ? $student_id : '--'; ?></td>
                                         <td>
                                             <div class="dropdown">
                                                 <button class="dropdown_btn" type="button" id="dropdownMenu2"
