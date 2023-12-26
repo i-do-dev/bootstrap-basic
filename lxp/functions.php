@@ -78,7 +78,9 @@ function lxp_get_school_students($school_id)
         'posts_per_page'   => -1,        
         'meta_query' => array(
             array('key' => 'lxp_student_school_id', 'value' => $school_id, 'compare' => '=')
-        )
+        ),
+        'orderby' => 'title',
+        'order' => 'ASC'
     ) );
     
     $posts = $school_query->get_posts();

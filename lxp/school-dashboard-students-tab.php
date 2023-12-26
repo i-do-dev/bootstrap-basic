@@ -77,7 +77,7 @@ $teacher_selected = is_array($teacher) && count($teacher) > 0 ? $teacher[0] : nu
                     </th>
                     <th>
                         <div class="th1 th2">
-                            Email
+                            Username
                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                         </div>
                     </th>
@@ -111,18 +111,19 @@ $teacher_selected = is_array($teacher) && count($teacher) > 0 ? $teacher[0] : nu
                 <?php 
                     foreach ($students as $student) {
                         $student_admin = get_userdata(get_post_meta($student->ID, 'lxp_student_admin_id', true));
+                        $student_id = get_post_meta($student->ID, 'student_id', true);
                 ?>
                     <tr>
                         <td class="user-box">
                             <div class="table-user">
                                 <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="student" />
                                 <div class="user-about">
-                                    <h5><?php echo $student_admin->display_name?></h5>
+                                    <h5><?php echo $student->post_title?></h5>
                                 </div>
                             </div>
                         </td>
                         <td>
-                            <div class="table-status"><?php echo $student_admin->user_email?></div>
+                            <div class="table-status"><?php echo $student_admin->user_login?></div>
                         </td>
                         <td>
                             <?php 
@@ -145,7 +146,7 @@ $teacher_selected = is_array($teacher) && count($teacher) > 0 ? $teacher[0] : nu
                                 }
                             ?>
                         </td>
-                        <td><?php echo $student->ID ?></td>
+                        <td><?php echo $student_id ? $student_id : '--'; ?></td>
                         <td>
                             <div class="dropdown">
                                 <button class="dropdown_btn" type="button" id="dropdownMenu2"
