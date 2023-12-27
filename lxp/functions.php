@@ -63,7 +63,9 @@ function lxp_get_school_teachers($school_id)
         'posts_per_page'   => -1,        
         'meta_query' => array(
             array('key' => 'lxp_teacher_school_id', 'value' => $school_id, 'compare' => '=')
-        )
+        ),
+        'orderby' => 'title',
+        'order' => 'ASC'
     ) );
     
     $posts = $school_query->get_posts();
@@ -117,7 +119,9 @@ function lxp_get_all_schools_teachers($school_ids)
         'posts_per_page'   => -1,        
         'meta_query' => array(
             array('key' => 'lxp_teacher_school_id', 'value' => $school_ids, 'compare' => 'IN')
-        )
+        ),
+        'orderby' => 'title',
+        'order' => 'ASC'
     ) );
     
     $posts = $school_query->get_posts();

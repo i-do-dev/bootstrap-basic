@@ -247,7 +247,6 @@ global $treks_src;
     });
 
     function onTeacherEdit(teacher_id) {
-        jQuery("#teacher_post_id").val(teacher_id);
         jQuery(".teacher-action").text("Update");
         jQuery(".teacher-action-head").text("Update");
         
@@ -262,6 +261,7 @@ global $treks_src;
         }).done(function( response ) {
             let teacher = response.data.teacher;
             let admin = response.data.admin.data;
+            jQuery("#teacherModal #teacher_post_id").val(teacher_id);
             jQuery('#teacherForm .form-control').removeClass('is-invalid');
             jQuery('#teacherModal #about').val(teacher.post_content);
             jQuery('#teacherModal #first_name').val(admin.first_name);
