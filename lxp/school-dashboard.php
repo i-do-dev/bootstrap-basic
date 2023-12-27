@@ -304,6 +304,38 @@ $classes = array_merge($default_classes, $classes);
             });
         });
     </script>
+
+    
+    <input type="hidden" name="school_admin_id_imp" id="school_admin_id_imp" value="<?php echo get_post_meta( $school_post->ID, 'lxp_school_admin_id', true ); ?>">
+    <input type="hidden" name="teacher_school_id_imp" id="teacher_school_id_imp" value="<?php echo $school_post->ID; ?>">
+    <script type="text/javascript">
+        let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+        let apiUrl = host + '/wp-json/lms/v1/';
+
+        jQuery("#import-teacher").on("change", function(e) {
+            let formData = new FormData();
+            formData.append('teacher_school_id', jQuery("#teacher_school_id_imp").val());
+            formData.append('school_admin_id', jQuery("#school_admin_id_imp").val());
+            formData.append('teachers', e.target.files[0]);
+            $.ajax({
+                method: "POST",
+                enctype: 'multipart/form-data',
+                url: apiUrl + "teachers/import",
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+            }).done(function( response ) {
+                jQuery("#import-teacher").val("");
+                window.location.reload();
+            }).fail(function (response) {
+                jQuery("#import-teacher").val("");
+                if (response.responseJSON) {
+                    alert(response.responseJSON.data);
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

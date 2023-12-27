@@ -80,7 +80,7 @@ $teachers = lxp_get_school_teachers($school_post->ID);
         <!-- Total Schools: section-->
         <section class="school-section">
             <section class="school_teacher_cards">
-                <div class="add-teacher-box">
+                <div class="add-teacher-box" style="width: 60%">
                     <div class="search-filter-box">
                         <div class="search_box">
                             <label class="search-label">Search</label>
@@ -95,6 +95,10 @@ $teachers = lxp_get_school_teachers($school_post->ID);
                         data-bs-target="#teacherModal" class="primary-btn">
                         Add New Teacher
                     </button>
+                    <label for="import-teacher" class="primary-btn add-heading">
+                        Import Teachers (CSV)
+                    </label >
+                    <input type="file" id="import-teacher" hidden />
                 </div>
 
                 <!-- Table Section -->
@@ -260,6 +264,37 @@ $teachers = lxp_get_school_teachers($school_post->ID);
         crossorigin="anonymous"></script>
 
         <?php get_template_part('lxp/school-teacher-modal'); ?>
+    
+    <input type="hidden" name="school_admin_id_imp" id="school_admin_id_imp" value="<?php echo get_post_meta( $school_post->ID, 'lxp_school_admin_id', true ); ?>">
+    <input type="hidden" name="teacher_school_id_imp" id="teacher_school_id_imp" value="<?php echo $school_post->ID; ?>">
+    <script type="text/javascript">
+        let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+        let apiUrl = host + '/wp-json/lms/v1/';
+
+        jQuery("#import-teacher").on("change", function(e) {
+            let formData = new FormData();
+            formData.append('teacher_school_id', jQuery("#teacher_school_id_imp").val());
+            formData.append('school_admin_id', jQuery("#school_admin_id_imp").val());
+            formData.append('teachers', e.target.files[0]);
+            $.ajax({
+                method: "POST",
+                enctype: 'multipart/form-data',
+                url: apiUrl + "teachers/import",
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+            }).done(function( response ) {
+                jQuery("#import-teacher").val("");
+                window.location.reload();
+            }).fail(function (response) {
+                jQuery("#import-teacher").val("");
+                if (response.responseJSON) {
+                    alert(response.responseJSON.data);
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

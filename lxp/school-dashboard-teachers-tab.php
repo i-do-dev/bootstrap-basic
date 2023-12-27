@@ -3,7 +3,7 @@ global $treks_src;
 $teachers = $args["teachers"];
 ?>
 <div id="teacher-tab-content" class="tab-pane fade" role="tabpanel">
-    <div class="add-teacher-box">
+    <div class="add-teacher-box" style="width: 80%">
         <div class="search-filter-box">
             <input type="text" name="text" placeholder="Search..." />
             <div class="filter-box">
@@ -15,6 +15,10 @@ $teachers = $args["teachers"];
             data-bs-target="#teacherModal" class="primary-btn">
             Add New Teacher
         </button>
+        <label for="import-teacher" class="primary-btn add-heading">
+            Import Teachers (CSV)
+        </label >
+        <input type="file" id="import-teacher" hidden />
     </div>
     <div class="students-table">
         <table class="table">
@@ -62,7 +66,7 @@ $teachers = $args["teachers"];
                             <div class="table-user">
                                 <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="teacher" />
                                 <div class="user-about">
-                                    <h5><?php echo $teacher_admin->display_name?></h5>
+                                    <h5><?php echo $teacher->post_title; ?></h5>
                                 </div>
                             </div>
                         </td>
