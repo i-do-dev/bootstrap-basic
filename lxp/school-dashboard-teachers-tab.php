@@ -3,14 +3,14 @@ global $treks_src;
 $teachers = $args["teachers"];
 ?>
 <div id="teacher-tab-content" class="tab-pane fade" role="tabpanel">
-    <div class="add-teacher-box" style="width: 80%">
-        <div class="search-filter-box">
+    <div class="add-teacher-box" style="width: 43%">
+        <!-- <div class="search-filter-box">
             <input type="text" name="text" placeholder="Search..." />
             <div class="filter-box">
                 <img src="<?php echo $treks_src; ?>/assets/img/filter-alt.svg" alt="filter logo" />
                 <p class="filter-heading">Filter</p>
             </div>
-        </div>
+        </div> -->
         <button class="add-heading" type="button" type="button" data-bs-toggle="modal"
             data-bs-target="#teacherModal" class="primary-btn">
             Add New Teacher
@@ -38,13 +38,19 @@ $teachers = $args["teachers"];
                     </th>
                     <th>
                         <div class="th1 th3">
-                            Classes
+                            District
                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                         </div>
                     </th>
                     <th>
-                        <div class="th1 th4">
-                            Grades
+                        <div class="th1 th3">
+                            School
+                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
+                        </div>
+                    </th>
+                    <th>
+                        <div class="th1 th3">
+                            Students
                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                         </div>
                     </th>
@@ -60,6 +66,20 @@ $teachers = $args["teachers"];
                 <?php 
                     foreach ($teachers as $teacher) {
                         $teacher_admin = get_userdata(get_post_meta($teacher->ID, 'lxp_teacher_admin_id', true));
+                        $lxp_teacher_school = null;
+                        $lxp_teacher_district = null;
+                        $lxp_teacher_school_id = get_post_meta($teacher->ID, 'lxp_teacher_school_id', true);
+                        if ($lxp_teacher_school_id) {
+                            $lxp_teacher_school = get_post($lxp_teacher_school_id);
+                            $lxp_teacher_district_id = get_post_meta($lxp_teacher_school->ID, 'lxp_school_district_id', true);
+                            if ($lxp_teacher_district_id) {
+                                $lxp_teacher_district = get_post($lxp_teacher_district_id);
+                            }
+                        }
+                        $lxp_teacher_students = array();
+                        if ($lxp_teacher_district && $lxp_teacher_school) {
+                            $lxp_teacher_students = lxp_get_school_teacher_students($lxp_teacher_school->ID,  $teacher->ID);
+                        }
                 ?>
                     <tr>
                         <td class="user-box">
@@ -73,18 +93,22 @@ $teachers = $args["teachers"];
                         <td>
                             <div class="table-status"><?php echo $teacher_admin->user_email?></div>
                         </td>
-                        <td><?php echo count(lxp_get_teacher_classes($teacher->ID)); ?></td>
+                        <td><?php echo $lxp_teacher_district ? $lxp_teacher_district->post_title : '---'; ?></td>
+                        <td><?php echo $lxp_teacher_school ? $lxp_teacher_school->post_title : '---' ?></td>
+                        <td><?php echo $lxp_teacher_students ? count($lxp_teacher_students) : 0 ?></td>
+                        <!-- 
                         <td class="grade">
                             <?php 
-                                $teacher_grades = json_decode(get_post_meta($teacher->ID, 'grades', true));
+                                /* $teacher_grades = json_decode(get_post_meta($teacher->ID, 'grades', true));
                                 $teacher_grades = $teacher_grades ? $teacher_grades : array();
-                                foreach ($teacher_grades as $grade) {
+                                foreach ($teacher_grades as $grade) { */
                             ?>
-                                <span><?php echo $grade; ?></span>
+                                <span><?php //echo $grade; ?></span>
                             <?php        
-                                }
+                                // }
                             ?>
                         </td>
+                         -->
                         <td><?php echo $teacher->ID ?></td>
                         <td>
                             <div class="dropdown">
