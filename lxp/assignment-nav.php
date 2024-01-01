@@ -60,7 +60,7 @@
                 console.log('event.target >>> ', jQuery(event.target).attr('id'));                
                 switch (jQuery(event.target).attr('id')) {
                     case 'step-1-tab':
-                        window.calendar.render();
+                        //window.calendar.render();
                         if ( jQuery('#set_date_time').val() == 1 ) {
                             jQuery('#set_date_time_alert').show();                            
                         }
@@ -86,17 +86,33 @@
     });
 
     function set_assignment_date() {
-        let assignment_date_start = new Date(window.calendarSelectionInfo.start);
+        // let assignment_date_start = new Date(window.calendarSelectionInfo.start);
+        let assignment_date_start = new Date(jQuery("#start_date").val() + " " +  jQuery("#start_time").val());
+        console.log("assignment_date_start >>> ", assignment_date_start);
+
         let day = new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(assignment_date_start);
         let month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(assignment_date_start);
         let date = assignment_date_start.getDate();
-        let time_start = assignment_date_start.toLocaleTimeString('en-US', {timeZone: 'UTC'});
-        let assignment_date_end = new Date(window.calendarSelectionInfo.end);
-        let time_end = assignment_date_end.toLocaleTimeString('en-US', {timeZone: 'UTC'});
+        // let time_start = assignment_date_start.toLocaleTimeString('en-US', {timeZone: 'UTC'});
+        let time_start = assignment_date_start.toLocaleTimeString('en-US');
+        
+        let assignment_date_end = new Date(jQuery("#end_date").val() + " " + jQuery("#end_time").val());
+        let day_end = new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(assignment_date_end);
+        let month_end = new Intl.DateTimeFormat("en-US", { month: "long" }).format(assignment_date_end);
+        let date_end = assignment_date_end.getDate();
+
+        console.log("assignment_date_end >>> ", assignment_date_end);
+
+        // let time_end = assignment_date_end.toLocaleTimeString('en-US', {timeZone: 'UTC'});
+        let time_end = assignment_date_end.toLocaleTimeString('en-US');
         jQuery("#assignment_day").text(day);
         jQuery("#assignment_month").text(month);
         jQuery("#assignment_date").text(date);
         jQuery("#assignment_time_start").text(time_start);
+        
+        jQuery("#assignment_day_end").text(day_end);
+        jQuery("#assignment_month_end").text(month_end);
+        jQuery("#assignment_date_end").text(date_end);
         jQuery("#assignment_time_end").text(time_end);
     }
 

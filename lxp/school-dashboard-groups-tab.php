@@ -18,13 +18,13 @@ $groups = $args["groups"];
                 <tr>
                     <th class="">
                         <div class="th1">
-                            Small Group
+                            Groups
                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                         </div>
                     </th>
                     <th>
                         <div class="th1 th2">
-                            Classes/Other Group
+                            Class/Group
                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                         </div>
                     </th>

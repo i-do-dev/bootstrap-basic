@@ -208,7 +208,7 @@ if (isset($_GET['teacher_id']) && $_GET['teacher_id'] != 0) {
                                     </th>
                                     <th>
                                         <div class="th1 th3">
-                                            Other Group
+                                            Group
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>

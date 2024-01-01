@@ -127,12 +127,12 @@ $classes = array_merge($default_classes, $classes);
                     <div class="card">
                         <img src="<?php echo $treks_src; ?>/assets/img/classes.svg" alt="logo" />
                         <h3 class="numbers-heading"><?php echo $countClassesOtherGroup; ?></h3>
-                        <p class="name-text">Classes & Other Group</p>
+                        <p class="name-text">Classes & Groups</p>
                     </div>
                     <div class="card">
                         <img src="<?php echo $treks_src; ?>/assets/img/groups.svg" alt="logo" />
                         <h3 class="numbers-heading"><?php echo count($groups); ?></h3>
-                        <p class="name-text">Small Groups</p>
+                        <p class="name-text">Groups</p>
                     </div>
                     <div class="card">
                         <img src="<?php echo $treks_src; ?>/assets/img/user.svg" alt="logo" />
@@ -176,14 +176,14 @@ $classes = array_merge($default_classes, $classes);
                                 <button class="nav-link" id="og-tab" data-bs-toggle="tab"
                                     data-bs-target="#other-group-tab-content" type="button" role="tab"
                                     aria-controls="other-group-tab-content" aria-selected="false">
-                                    Other Group
+                                    Group
                                 </button>
                             </li>
                             <li>
                                 <button class="nav-link" id="sg-tab" data-bs-toggle="tab"
                                     data-bs-target="#group-tab-content" type="button" role="tab"
                                     aria-controls="group-tab-content" aria-selected="false">
-                                    Small Group
+                                    Groups
                                 </button>
                             </li>
                         </ul>

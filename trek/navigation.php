@@ -30,9 +30,14 @@
       <a href="/">Students</a>
     </li> -->
 
-    <li class="<?php echo ( $post->post_name === "assignments" || $post->post_name === "calendar" ) ? "nav-section-selected" : ""; ?>">
+    <li class="<?php echo ( $post->post_name === "assignments") ? "nav-section-selected" : ""; ?>">
       <img src="<?php echo $treks_src; ?>/assets/img/nav_reports.svg" />
       <a href="<?php echo site_url("assignments"); ?>">Assignments</a>
+    </li>
+    
+    <li class="<?php echo ( $post->post_name === "calendar" ) ? "nav-section-selected" : ""; ?>">
+      <img src="<?php echo $treks_src; ?>/assets/img/nav_reports.svg" />
+      <a href="<?php echo site_url("calendar"); ?>">Calendar</a>
     </li>
   </ul>
 </nav>

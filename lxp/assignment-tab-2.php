@@ -45,6 +45,7 @@
                                 <p class="date-time"><span id="assignment_day"></span>, <span id="assignment_month"></span> <span id="assignment_date"></span></p>
                                 <p class="date-time" id="assignment_time_start"></p>
                                 <p class="date-time to-text">To</p>
+                                <p class="date-time"><span id="assignment_day_end"></span>, <span id="assignment_month_end"></span> <span id="assignment_date_end"></span></p>
                                 <p class="date-time" id="assignment_time_end"></p>
                             </div>
                             <!-- <label class="to-text all-day-label">

@@ -89,7 +89,7 @@ $teacher_selected = is_array($teacher) && count($teacher) > 0 ? $teacher[0] : nu
                     </th>
                     <th>
                         <div class="th1 th3">
-                            Other Group
+                            Group
                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                         </div>
                     </th>

@@ -18,7 +18,7 @@ $other_groups = $args["other_groups"];
                 <tr>
                     <th class="">
                         <div class="th1">
-                            Other Group
+                            Group
                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                         </div>
                     </th>
@@ -42,7 +42,7 @@ $other_groups = $args["other_groups"];
                     </th>
                     <th>
                         <div class="th1 th5">
-                            Small Groups
+                            Groups
                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                         </div>
                     </th>

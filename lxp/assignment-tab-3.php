@@ -117,15 +117,15 @@
                 <select onChange="studentsFrom()" class="form-select form-control" aria-label="Default select example" name="students_from_select" id="students_from_select">
                     <option value="none">Select...</option>
                     <option value="all_students">All Students</option>
-                    <option value="classes_other_groups">Classes/Other Groups</option>
+                    <option value="classes_other_groups">Classes/Groups</option>
                 </select>
             </div>
 
             <div class="search_box assign-content-classes-groups hidden">
-                <label class="trek-label">Classes/Other Groups</label>
+                <label class="trek-label">Classes/Groups</label>
                 <input type="hidden" id="class_id" name="class_id" value="" />
                 <select onChange="class_select()" class="form-select form-control" aria-label="Default select example" name="classes_other_group" id="classes_other_group">
-                    <option value="0">Select Class/Other Group</option>
+                    <option value="0">Select Class/Group</option>
                     <optgroup value="classes" label="Classes">
                         <?php
                             foreach ($classes as $class) {
@@ -135,7 +135,7 @@
                             }
                         ?>
                     </optgroup>
-                    <optgroup value="other_group" label="Other Group">
+                    <optgroup value="other_group" label="Group">
                         <?php
                             foreach ($other_groups as $other_group) {
                         ?>
@@ -147,17 +147,17 @@
                 </select>
             </div>
             <div class="invalid-feedback" id="class_select_error">
-                Please Select Class/Other Group
+                Please Select Class/Group
             </div>
 
             <!-- Select a Students -->
             <div class="search_box assign-content-classes-groups hidden">
-                <label class="trek-label">Small Groups</label>                 
+                <label class="trek-label">Groups</label>                 
                 <div class="dropdown period-box">
                     <input type="hidden" id="group_id" name="group_id" value="" />
                     <button class="input_dropdown dropdown-button" type="button" id="smallGroupDD"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span id="group_title">Select Small Group</span>
+                        <span id="group_title">Select Groups</span>
                         <img class="rotate-arrow" src="<?php echo $treks_src; ?>/assets/img/down-arrow.svg" alt="logo" />
                     </button>
                     <div class="dropdown-menu" aria-labelledby="smallGroupDD">
@@ -219,7 +219,7 @@
         var class_id = jQuery('#classes_other_group :selected').val();
         jQuery('#class_id').val(class_id);
         jQuery('#group_id').val("");
-        jQuery('#group_title').text("Select Small Group");
+        jQuery('#group_title').text("Select Groups");
         empty_student();
         fetch_small_groups(class_id);
         fetch_class_student(class_id);
@@ -325,7 +325,7 @@
                 <input class="form-check-input" type="checkbox" value="` + student.post.ID + `" id="student_id_` + student.post.ID + `" name="student_ids[]" />
                 <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="logo" />
                 <div class="tags-body-detail">
-                    <p class="student-name">` + student.user.user_email + `</p>
+                    <p class="student-name">` + student.post.post_title + `</p>
                 </div>
             </div>
         </button>
@@ -386,7 +386,11 @@
             formData.append('student_ids', JSON.stringify(window.selected_students_ids));
             formData.append('teacher_id', teacher_id);
             formData.append('assignment_post_id', '0');
-            formData.append('calendar_selection_info', JSON.stringify(window.calendarSelectionInfo));
+
+            const start = new Date(jQuery("#start_date").val() + ' ' + jQuery("#start_time").val()).toISOString();
+            const end = new Date(jQuery("#end_date").val() + ' ' + jQuery("#end_time").val()).toISOString();
+
+            formData.append('calendar_selection_info', JSON.stringify({start, end}));
 
             jQuery("#assignment-create-btn").attr("disabled", "disabled");
 
@@ -401,7 +405,6 @@
             }).done(function( response ) {
                 //resetWizard();
                 //bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-1-tab')).show();
-                window.calendar.refetchEvents();
                 console.log("assignment created successfully.");
                 jQuery("#assignment-create-btn").removeAttr("disabled");
                 window.location = "<?php echo site_url("assignment"); ?>" + "?trek=" + url_trek_id + "&segment=" + url_segment_id;
@@ -431,7 +434,7 @@
     function resetWizard() {
         jQuery("#class_id").val("");
         jQuery('#group_id').val("");
-        jQuery('#group_title').text("Select Small Group");
+        jQuery('#group_title').text("Select Groups");
         jQuery("#select-students-label").text("Select Students");
         jQuery("#select-all-students").prop("checked", false);
         jQuery("#students-container").empty();

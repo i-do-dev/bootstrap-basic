@@ -103,8 +103,8 @@ $students = lxp_get_school_teacher_students($teacher_school_id, $teacher_post->I
 
             <div class="heading-right">
                 <a href="<?php echo site_url("students"); ?>" type="button" class="btn btn-secondary btn-lg">Students</a>
-                <a href="<?php echo site_url("classes"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Classes & Other Group</a>
-                <a href="<?php echo site_url("groups"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Small Group</a>
+                <a href="<?php echo site_url("classes"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Classes & Groups</a>
+                <a href="<?php echo site_url("groups"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Groups</a>
             </div>
         </div>
 
@@ -199,7 +199,7 @@ $students = lxp_get_school_teacher_students($teacher_school_id, $teacher_post->I
                                     </th>
                                     <th>
                                         <div class="th1 th3">
-                                            Other Group
+                                            Group
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>

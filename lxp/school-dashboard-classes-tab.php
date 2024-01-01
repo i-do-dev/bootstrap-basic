@@ -46,7 +46,7 @@ $classes = $args["classes"];
                     </th>
                     <th>
                         <div class="th1 th5">
-                            Small Groups
+                            Groups
                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                         </div>
                     </th>

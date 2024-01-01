@@ -42,6 +42,10 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
     .calendar-container .calendar-flex-box .calendar-right-box .small-calendar {
       height: auto !important;
     }
+
+    .fc-daygrid-day-frame a {
+      text-decoration: none !important;      
+    }
   </style>
 </head>
 
@@ -91,10 +95,7 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
   </section>
 
   <section class="calendar-container">
-    <div class="d-flex align-content-center justify-content-between mb-3">
-      <h1 class="calendar-heading m-0">Calendar</h1>
-    </div>
-
+    
     <div class="calendar-flex-box">
       <div class="calendar-main" style="padding: 15px;">
         <div id="calendar"></div>
@@ -115,10 +116,10 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
         <div class="rpa-segments-box">
           <h5 class="rpa-heading">RPA Segments</h5>
           <div class="rpa-segments-form">
-            <div class="form-check">
+            <!-- <div class="form-check">
               <input class="form-check-input input-all" type="checkbox" value="" id="all" />
               <label class="form-check-label" for="all"> All </label>
-            </div>
+            </div> -->
             <div class="form-check">
               <input class="form-check-input input-recall" type="checkbox" value="" id="Recall" />
               <label class="form-check-label" for="Recall"> Recall </label>
@@ -148,12 +149,12 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 
           let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
           let apiUrl = host + '/wp-json/lms/v1/';
-          
+          const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
           var calendarEl = document.getElementById('calendar');
           var calendar = new FullCalendar.Calendar(calendarEl, {
-              timeZone: 'UTC',
+              //timeZone: 'UTC',
               selectable: false,
-              initialView: 'timeGridWeek',
+              // initialView: 'timeGridWeek',
               slotDuration: '01:00',
               headerToolbar: false,
               allDaySlot: false,
