@@ -61,7 +61,7 @@
           // if ( $students_graded === count($student_stats) ) { 
       ?>
         <tr>
-          <td><?php echo $class_id > 0 ? $class_post->post_title : 'Demo Class'; ?></td>
+          <td><?php echo $class_post && $class_id > 0 ? $class_post->post_title : 'Demo Class'; ?></td>
           <td><?php echo $trek->post_title; ?></td>
           <td>
             <div class="assignments-table-cs-td-poly">
