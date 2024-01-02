@@ -1,6 +1,6 @@
 <?php
 if (!isset($_GET['filter'])) {
-    $filterDefaultParams = array('filter' => 'all', 'strand' => 'none', 'search' => 'none', 'sort' => 'none', 'tekversion' => '2017');
+    $filterDefaultParams = array('filter' => 'all', 'strand' => 'none', 'search' => 'none', 'sort' => 'none', 'tekversion' => (isset($_GET['tekversion']) ? $_GET['tekversion'] : '2017') );
     wp_redirect( get_permalink($post->ID) . '?' . build_query($filterDefaultParams) );
     die();
 }
