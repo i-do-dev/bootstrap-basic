@@ -29,6 +29,21 @@
     <tbody>
       <?php 
         foreach ($assignments as $assignment) { 
+          $calendar_selection_info = json_decode(get_post_meta($assignment->ID, 'calendar_selection_info', true));
+          $start = '';
+          if (property_exists($calendar_selection_info, 'start') && gettype($calendar_selection_info->start) === 'string') {
+            $start = $calendar_selection_info->start;
+          } elseif (property_exists($calendar_selection_info, 'start') && gettype($calendar_selection_info->start) === 'object') {
+            $start = $calendar_selection_info->start->date;
+          }
+
+          $end = '';
+          if (property_exists($calendar_selection_info, 'end') && gettype($calendar_selection_info->end) === 'string') {
+            $end = $calendar_selection_info->end;
+          } elseif (property_exists($calendar_selection_info, 'end') && gettype($calendar_selection_info->end) === 'object') {
+            $end = $calendar_selection_info->end->date;
+          }
+          
           $class_id = intval(get_post_meta($assignment->ID, 'class_id', true));
           $class_post = get_post($class_id);
           $trek_section_id = get_post_meta($assignment->ID, 'trek_section_id', true);
@@ -80,16 +95,16 @@
             ?>
           </td>
           <td>
-            <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['To Do', 'In Progress'])"><?php echo count($students_in_progress); ?>/<?php echo count($student_stats); ?></a></div>
+            <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['To Do', 'In Progress'], '<?php echo $start; ?>', '<?php echo $end; ?>')"><?php echo count($students_in_progress); ?>/<?php echo count($student_stats); ?></a></div>
           </td>
           <td>
             <?php
               $student_stats = lxp_assignment_stats($assignment->ID);
             ?>
-            <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Completed'])"><?php echo count($students_completed); ?>/<?php echo count($student_stats); ?></a></div>
+            <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Completed'], '<?php echo $start; ?>', '<?php echo $end; ?>')"><?php echo count($students_completed); ?>/<?php echo count($student_stats); ?></a></div>
           </td>
           <td>
-            <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Graded'])"><?php echo $students_graded; ?>/<?php echo count($student_stats); ?></a></div>
+            <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Graded'], '<?php echo $start; ?>', '<?php echo $end; ?>')"><?php echo $students_graded; ?>/<?php echo count($student_stats); ?></a></div>
           </td>
         </tr>  
       <?php } ?>

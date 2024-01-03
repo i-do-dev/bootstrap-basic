@@ -42,6 +42,8 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
     integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
   <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
+  <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/newAssignment.css" />
+
   <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
     crossorigin="anonymous"></script>
 
@@ -265,11 +267,23 @@ $assignments = lxp_get_teacher_assignments($teacher_post->ID);
       }
     });
 
-    function fetch_assignment_stats(assignment_id, trek, segment, statuses) {
+    function fetch_assignment_stats(assignment_id, trek, segment, statuses, start, end) {
 
       jQuery('#student-progress-trek-title').text(trek);
       jQuery('#student-progress-trek-segment').text(segment);
       jQuery('#student-progress-trek-segment-char').text(segment[0]);
+
+      // starting date and time
+      let start_date = new Date(start);
+      let start_date_string = start_date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+      let start_time_string = start_date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+      jQuery('#student-progress-trek-start-time').text(start_date_string + ' ' + start_time_string);
+      // ending date and time
+      let end_date = new Date(end);
+      let end_date_string = end_date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+      let end_time_string = end_date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+      jQuery('#student-progress-trek-end-time').text(end_date_string + ' ' + end_time_string);
+
       var segmentColor = "#979797";
       switch (segment) {
           case 'Overview':

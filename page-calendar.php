@@ -152,7 +152,7 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
           const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
           var calendarEl = document.getElementById('calendar');
           var calendar = new FullCalendar.Calendar(calendarEl, {
-              //timeZone: 'UTC',
+              // timeZone: 'UTC',
               selectable: false,
               // initialView: 'timeGridWeek',
               slotDuration: '01:00',
@@ -199,6 +199,17 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
                   jQuery('#student-progress-trek-title').text(eventClickInfo.event.extendedProps.trek);
                   jQuery('#student-progress-trek-segment').text(eventClickInfo.event.title);
                   jQuery('#student-progress-trek-segment-char').text(eventClickInfo.event.title[0]);
+                  // starting date and time
+                  let start_date = new Date(eventClickInfo.event.start);
+                  let start_date_string = start_date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+                  let start_time_string = start_date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+                  jQuery('#student-progress-trek-start-time').text(start_date_string + ' ' + start_time_string);
+                  // ending date and time
+                  let end_date = new Date(eventClickInfo.event.end);
+                  let end_date_string = end_date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+                  let end_time_string = end_date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+                  jQuery('#student-progress-trek-end-time').text(end_date_string + ' ' + end_time_string);
+
                   switch (eventClickInfo.event.title) {
                       case 'Overview':
                           segmentColor = "#979797";

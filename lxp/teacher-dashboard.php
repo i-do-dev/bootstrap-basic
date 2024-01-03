@@ -90,6 +90,8 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
     integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
   <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
+  <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/newAssignment.css" />
+
   <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
     crossorigin="anonymous"></script>
 
@@ -152,6 +154,106 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
 </head>
 
 <body>
+
+  <script type="text/javascript">
+    function fetch_assignment_stats(assignment_id, trek, segment, statuses, start, end) {
+
+      jQuery('#student-progress-trek-title').text(trek);
+      jQuery('#student-progress-trek-segment').text(segment);
+      jQuery('#student-progress-trek-segment-char').text(segment[0]);
+      // starting date and time
+      let start_date = new Date(start);
+      let start_date_string = start_date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+      let start_time_string = start_date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+      jQuery('#student-progress-trek-start-time').text(start_date_string + ' ' + start_time_string);
+      // ending date and time
+      let end_date = new Date(end);
+      let end_date_string = end_date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+      let end_time_string = end_date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+      jQuery('#student-progress-trek-end-time').text(end_date_string + ' ' + end_time_string);
+
+      var segmentColor = "#979797";
+      switch (segment) {
+          case 'Overview':
+              segmentColor = "#979797";
+              break;
+          case 'Recall':
+              segmentColor = "#ca2738";
+              break;
+          case 'Practice A':
+              segmentColor = "#1fa5d4";
+              break;
+          case 'Practice B':
+              segmentColor = "#1fa5d4";
+              break;
+          case 'Apply':
+              segmentColor = "#9fc33b";
+              break;
+          default:
+              segmentColor = "#979797";
+              break;
+      }
+      jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-tab-polygon').css('background-color', segmentColor);
+      jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon-name, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-user-name').css('color', segmentColor);
+      
+      window.assignmentStatsModalObj.show();
+      jQuery("#student-modal-loader").show();
+      jQuery("#student-modal-table").hide();
+      let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+      let apiUrl = host + '/wp-json/lms/v1/';
+      jQuery.ajax({
+          method: "POST",
+          enctype: 'multipart/form-data',
+          url: apiUrl + "assignment/stats",
+          data: {assignment_id}
+      }).done(function( response ) {
+          const in_progress_students = response.data.filter(student => statuses.includes(student.status));
+          jQuery("#student-modal-table tbody").html( in_progress_students.map(student => student_assignment_stat_row_html(student, assignment_id)).join('\n') );
+          jQuery("#student-modal-loader").hide();
+          jQuery("#student-modal-table").show();
+      }).fail(function (response) {
+          console.error("Can not load teacher");
+      });
+    }
+
+    function student_assignment_stat_row_html(student, assignment_id) {
+      let statusClass = '';
+      switch (student.status) {
+        case 'To Do':
+          statusClass = 'bg-gray';
+          break;
+        case 'In Progress':
+          statusClass = 'bg-orange';
+          break;
+        case 'Completed':
+          statusClass = 'bg-green';
+          break;
+        case 'Graded':
+          statusClass = 'bg-blue';
+          break;
+      }
+      
+      return `
+          <tr>
+              <td>
+              <div class="table-user">
+                  <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="user" />
+                  <div class="user-about">
+                  <h5><a class='student-progress-link' href='<?php echo site_url("grade-assignment"); ?>?assignment=` + assignment_id + `&student=` + student.ID + `'>` + student.name + `</a></h5>
+                  </div>
+              </div>
+              </td>
+              <td>
+              <div class="table-status ` + statusClass + `">` + (student.status === 'Completed' ? 'Submitted' : student.status) + `</div>
+              </td>
+              <td><a class='student-progress-link' href='<?php echo site_url("grade-assignment"); ?>?assignment=` + assignment_id + `&student=` + student.ID + `'>` + student.progress + `</a></td>
+              <td>` + student.score + `</td>
+              <td><a href='<?php echo site_url("grade-assignment"); ?>?assignment=` + assignment_id + `&student=` + student.ID + `'><img src="<?php echo $treks_src; ?>/assets/img/review-icon.svg" alt="svg" width="30" /></a></td>
+          </tr>
+      `;
+    }
+  </script>
+
   <nav class="navbar navbar-expand-lg bg-light">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">
@@ -307,6 +409,22 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
             <tbody>
               <?php 
                 foreach ($assignments as $assignment) { 
+                  
+                  $calendar_selection_info = json_decode(get_post_meta($assignment->ID, 'calendar_selection_info', true));
+                  $start = '';
+                  if (property_exists($calendar_selection_info, 'start') && gettype($calendar_selection_info->start) === 'string') {
+                    $start = $calendar_selection_info->start;
+                  } elseif (property_exists($calendar_selection_info, 'start') && gettype($calendar_selection_info->start) === 'object') {
+                    $start = $calendar_selection_info->start->date;
+                  }
+
+                  $end = '';
+                  if (property_exists($calendar_selection_info, 'end') && gettype($calendar_selection_info->end) === 'string') {
+                    $end = $calendar_selection_info->end;
+                  } elseif (property_exists($calendar_selection_info, 'end') && gettype($calendar_selection_info->end) === 'object') {
+                    $end = $calendar_selection_info->end->date;
+                  }
+
                   $class_id = intval(get_post_meta($assignment->ID, 'class_id', true));
                   $class_post = get_post($class_id);
                   $trek_section_id = get_post_meta($assignment->ID, 'trek_section_id', true);
@@ -357,16 +475,16 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
                     ?>
                   </td>
                   <td>
-                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['To Do', 'In Progress'])"><?php echo count($students_in_progress); ?>/<?php echo count($student_stats); ?></a></div>
+                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['To Do', 'In Progress'], '<?php echo $start; ?>', '<?php echo $end; ?>')"><?php echo count($students_in_progress); ?>/<?php echo count($student_stats); ?></a></div>
                   </td>
                   <td>
                     <?php
                       $student_stats = lxp_assignment_stats($assignment->ID);
                     ?>
-                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Completed'])"><?php echo count($students_completed); ?>/<?php echo count($student_stats); ?></a></div>
+                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Completed'], '<?php echo $start; ?>', '<?php echo $end; ?>')"><?php echo count($students_completed); ?>/<?php echo count($student_stats); ?></a></div>
                   </td>
                   <td>
-                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Graded'])"><?php echo $students_graded; ?>/<?php echo count($student_stats); ?></a></div>
+                    <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $trek->post_title; ?>', '<?php echo $trek_section->title; ?>', ['Graded'], '<?php echo $start; ?>', '<?php echo $end; ?>')"><?php echo $students_graded; ?>/<?php echo count($student_stats); ?></a></div>
                   </td>
                 </tr>  
               <?php } ?>
@@ -463,94 +581,6 @@ $teacher_saved_treks = lxp_get_teacher_saved_treks($teacher_post->ID, $treks_sav
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
     crossorigin="anonymous"></script>
-  
-  <script type="text/javascript">
-    function fetch_assignment_stats(assignment_id, trek, segment, statuses) {
-
-      jQuery('#student-progress-trek-title').text(trek);
-      jQuery('#student-progress-trek-segment').text(segment);
-      jQuery('#student-progress-trek-segment-char').text(segment[0]);
-      var segmentColor = "#979797";
-      switch (segment) {
-          case 'Overview':
-              segmentColor = "#979797";
-              break;
-          case 'Recall':
-              segmentColor = "#ca2738";
-              break;
-          case 'Practice A':
-              segmentColor = "#1fa5d4";
-              break;
-          case 'Practice B':
-              segmentColor = "#1fa5d4";
-              break;
-          case 'Apply':
-              segmentColor = "#9fc33b";
-              break;
-          default:
-              segmentColor = "#979797";
-              break;
-      }
-      jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-tab-polygon').css('background-color', segmentColor);
-      jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon-name, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-user-name').css('color', segmentColor);
-      
-      window.assignmentStatsModalObj.show();
-      jQuery("#student-modal-loader").show();
-      jQuery("#student-modal-table").hide();
-      let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
-      let apiUrl = host + '/wp-json/lms/v1/';
-      jQuery.ajax({
-          method: "POST",
-          enctype: 'multipart/form-data',
-          url: apiUrl + "assignment/stats",
-          data: {assignment_id}
-      }).done(function( response ) {
-          const in_progress_students = response.data.filter(student => statuses.includes(student.status));
-          jQuery("#student-modal-table tbody").html( in_progress_students.map(student => student_assignment_stat_row_html(student, assignment_id)).join('\n') );
-          jQuery("#student-modal-loader").hide();
-          jQuery("#student-modal-table").show();
-      }).fail(function (response) {
-          console.error("Can not load teacher");
-      });
-    }
-
-    function student_assignment_stat_row_html(student, assignment_id) {
-      let statusClass = '';
-      switch (student.status) {
-        case 'To Do':
-          statusClass = 'bg-gray';
-          break;
-        case 'In Progress':
-          statusClass = 'bg-orange';
-          break;
-        case 'Completed':
-          statusClass = 'bg-green';
-          break;
-        case 'Graded':
-          statusClass = 'bg-blue';
-          break;
-      }
-      
-      return `
-          <tr>
-              <td>
-              <div class="table-user">
-                  <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="user" />
-                  <div class="user-about">
-                  <h5><a class='student-progress-link' href='<?php echo site_url("grade-assignment"); ?>?assignment=` + assignment_id + `&student=` + student.ID + `'>` + student.name + `</a></h5>
-                  </div>
-              </div>
-              </td>
-              <td>
-              <div class="table-status ` + statusClass + `">` + (student.status === 'Completed' ? 'Submitted' : student.status) + `</div>
-              </td>
-              <td><a class='student-progress-link' href='<?php echo site_url("grade-assignment"); ?>?assignment=` + assignment_id + `&student=` + student.ID + `'>` + student.progress + `</a></td>
-              <td>` + student.score + `</td>
-              <td><a href='<?php echo site_url("grade-assignment"); ?>?assignment=` + assignment_id + `&student=` + student.ID + `'><img src="<?php echo $treks_src; ?>/assets/img/review-icon.svg" alt="svg" width="30" /></a></td>
-          </tr>
-      `;
-    }
-  </script>
 </body>
 
 </html>
