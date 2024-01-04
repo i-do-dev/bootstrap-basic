@@ -169,16 +169,16 @@ $assignment = isset($_GET['assignment_id']) ? lxp_get_assignment($_GET['assignme
 				if ($assignment) { 
 					$calendar_selection_info = json_decode(get_post_meta($assignment->ID, 'calendar_selection_info', true));
 					$start = '';
-					if (property_exists($calendar_selection_info, 'start') && gettype($calendar_selection_info->start) === 'string') {
+					if (!is_null($calendar_selection_info) && property_exists($calendar_selection_info, 'start') && gettype($calendar_selection_info->start) === 'string') {
 						$start = $calendar_selection_info->start;
-					} elseif (property_exists($calendar_selection_info, 'start') && gettype($calendar_selection_info->start) === 'object') {
+					} elseif (!is_null($calendar_selection_info) && property_exists($calendar_selection_info, 'start') && gettype($calendar_selection_info->start) === 'object') {
 						$start = $calendar_selection_info->start->date;
 					}
 
 					$end = '';
-					if (property_exists($calendar_selection_info, 'end') && gettype($calendar_selection_info->end) === 'string') {
+					if (!is_null($calendar_selection_info) && property_exists($calendar_selection_info, 'end') && gettype($calendar_selection_info->end) === 'string') {
 						$end = $calendar_selection_info->end;
-					} elseif (property_exists($calendar_selection_info, 'end') && gettype($calendar_selection_info->end) === 'object') {
+					} elseif (!is_null($calendar_selection_info) && property_exists($calendar_selection_info, 'end') && gettype($calendar_selection_info->end) === 'object') {
 						$end = $calendar_selection_info->end->date;
 					}
 			?>
