@@ -165,15 +165,32 @@ $assignment = isset($_GET['assignment_id']) ? lxp_get_assignment($_GET['assignme
 			</div>
 			<p class="interpendence_text"><?php echo $trekTitle ?></p>
 			<!-- <p class="practice_text student_text">Digital Student Journal &nbsp;<span><a id="dsj_link" href="#"><img class="copy-anchor-icon-img" src="<?php // echo $treks_src; ?>/assets/img/link_icon.png" width="18" height="18" /></a></span></p> -->
-			<?php if ($assignment) { ?>
+			<?php 
+				if ($assignment) { 
+					$calendar_selection_info = json_decode(get_post_meta($assignment->ID, 'calendar_selection_info', true));
+					$start = '';
+					if (property_exists($calendar_selection_info, 'start') && gettype($calendar_selection_info->start) === 'string') {
+						$start = $calendar_selection_info->start;
+					} elseif (property_exists($calendar_selection_info, 'start') && gettype($calendar_selection_info->start) === 'object') {
+						$start = $calendar_selection_info->start->date;
+					}
+
+					$end = '';
+					if (property_exists($calendar_selection_info, 'end') && gettype($calendar_selection_info->end) === 'string') {
+						$end = $calendar_selection_info->end;
+					} elseif (property_exists($calendar_selection_info, 'end') && gettype($calendar_selection_info->end) === 'object') {
+						$end = $calendar_selection_info->end->date;
+					}
+			?>
 				<!-- make row with 2 columns -->
 					<div class="row">
 						<div class="col-md-12">
 							<div class="time-date-box">
-								<p class="date-time"><span id="assignment_day"><?php echo date("D", strtotime($assignment->start_date)); ?></span>, <span id="assignment_month"><?php echo date("F", strtotime($assignment->start_date)); ?></span> <span id="assignment_date"><?php echo date("d", strtotime($assignment->start_date)); ?></span>, <span id="assignment_date"><?php echo date("Y", strtotime($assignment->start_date)); ?></span></p>
-								<p class="date-time" id="assignment_time_start"><?php echo date("h:i:s a", strtotime($assignment->start_time)); ?></p>
+								<input type="hidden" name="startDateTime" id="startDateTime" value="<?php echo $start; ?>" />
+								<input type="hidden" name="endDateTime" id="endDateTime" value="<?php echo $end; ?>" />
+								<p class="date-time" id="student-progress-trek-start-time"></p>
 								<p class="date-time to-text">To</p>
-								<p class="date-time" id="assignment_time_end"><?php echo date("h:i:s a", strtotime($assignment->end_time)); ?></p>
+								<p class="date-time" id="student-progress-trek-end-time"></p>
 							</div>
 						</div>
 					</div>	
@@ -229,6 +246,17 @@ $assignment = isset($_GET['assignment_id']) ? lxp_get_assignment($_GET['assignme
 			var gradeBookModal = document.getElementById('gradeBookModal');
 			gradeBookModalObj = new bootstrap.Modal(gradeBookModal);
 			window.gradeBookModalObj = gradeBookModalObj;
+
+			// starting date and time
+			let start_date = new Date(jQuery('#startDateTime').val());
+			let start_date_string = start_date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+			let start_time_string = start_date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+			jQuery('#student-progress-trek-start-time').text(start_date_string + ' ' + start_time_string);
+			// ending date and time
+			let end_date = new Date(jQuery('#endDateTime').val());
+			let end_date_string = end_date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+			let end_time_string = end_date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+			jQuery('#student-progress-trek-end-time').text(end_date_string + ' ' + end_time_string);
 		});
 
 		window.addEventListener('message', function (event) {

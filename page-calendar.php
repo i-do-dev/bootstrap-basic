@@ -155,9 +155,9 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
               // timeZone: 'UTC',
               selectable: false,
               // initialView: 'timeGridWeek',
-              slotDuration: '01:00',
-              headerToolbar: false,
-              allDaySlot: false,
+              //slotDuration: '01:00',
+              //headerToolbar: false,
+              //allDaySlot: false,
               events: apiUrl + "assignments/calendar/events/?user_id=" + <?php echo get_current_user_id(); ?> ,
               dayHeaderContent: function (args) {
                   let weekday_el = document.createElement('p');
@@ -169,7 +169,8 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
                   day_el.classList.add("month-text");
                   day_el.classList.add("month-date-text");
                   day_el.classList.add("text-bold");
-                  let event_dom_nodes = [day_el, weekday_el];
+                  // let event_dom_nodes = [day_el, weekday_el];
+                  let event_dom_nodes = [weekday_el];
                   return {domNodes: event_dom_nodes};
               },
               eventClassNames: function(arg) {

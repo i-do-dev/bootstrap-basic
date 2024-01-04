@@ -152,9 +152,9 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
               // timeZone: 'UTC',
               selectable: false,
               // initialView: 'timeGridWeek',
-              slotDuration: '01:00',
-              headerToolbar: false,
-              allDaySlot: false,
+              //slotDuration: '01:00',
+              //headerToolbar: false,
+              //allDaySlot: false,
               events: apiUrl + "assignments/calendar/events/?user_id=" + <?php echo get_current_user_id(); ?> ,
               dayHeaderContent: function (args) {
                   let weekday_el = document.createElement('p');
@@ -166,7 +166,8 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
                   day_el.classList.add("month-text");
                   day_el.classList.add("month-date-text");
                   day_el.classList.add("text-bold");
-                  let event_dom_nodes = [day_el, weekday_el];
+                  //let event_dom_nodes = [day_el, weekday_el];
+                  let event_dom_nodes = [weekday_el];
                   return {domNodes: event_dom_nodes};
               },
               eventClassNames: function(arg) {
@@ -194,46 +195,6 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
               },
               eventClick: function(eventClickInfo) {
                 window.open(eventClickInfo.event.extendedProps.digital_journal_link, '_blank');
-                /*  
-                jQuery('#student-progress-trek-title').text(eventClickInfo.event.extendedProps.trek);
-                  jQuery('#student-progress-trek-segment').text(eventClickInfo.event.title);
-                  jQuery('#student-progress-trek-segment-char').text(eventClickInfo.event.title[0]);
-                  // starting date and time
-                  let start_date = new Date(eventClickInfo.event.start);
-                  let start_date_string = start_date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
-                  let start_time_string = start_date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-                  jQuery('#student-progress-trek-start-time').text(start_date_string + ' ' + start_time_string);
-                  // ending date and time
-                  let end_date = new Date(eventClickInfo.event.end);
-                  let end_date_string = end_date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
-                  let end_time_string = end_date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-                  jQuery('#student-progress-trek-end-time').text(end_date_string + ' ' + end_time_string);
-
-                  switch (eventClickInfo.event.title) {
-                      case 'Overview':
-                          segmentColor = "#979797";
-                          break;
-                      case 'Recall':
-                          segmentColor = "#ca2738";
-                          break;
-                      case 'Practice A':
-                          segmentColor = "#1fa5d4";
-                          break;
-                      case 'Practice B':
-                          segmentColor = "#1fa5d4";
-                          break;
-                      case 'Apply':
-                          segmentColor = "#9fc33b";
-                          break;
-                      default:
-                          segmentColor = "#ca2738";
-                          break;
-                  }
-                  jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-tab-polygon').css('background-color', segmentColor);
-                  jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon-name, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-user-name').css('color', segmentColor);
-                  fetch_assignment_stats(eventClickInfo.event.id);
-                  window.assignmentStatsModalObj.show();
-                  */
               },
               select: function( calendarSelectionInfo ) {
                   window.calendarSelectionInfo = calendarSelectionInfo;
