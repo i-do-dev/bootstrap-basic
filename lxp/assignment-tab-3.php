@@ -111,7 +111,7 @@
         <!-- Assign Content -->
         <div class="select-trek-box assign-content">
             <h3 class="new-assignment-heading assign-heading">Assign Content</h3>
-            <p class="date-time assign-text">What <strong>stdents</strong> would you like to assign?
+            <p class="date-time assign-text">What <strong>students</strong> would you like to assign?
             <div class="search_box">
                 <label class="trek-label">From</label>
                 <select onChange="studentsFrom()" class="form-select form-control" aria-label="Default select example" name="students_from_select" id="students_from_select">
@@ -407,7 +407,8 @@
                 //bootstrap.Tab.getOrCreateInstance(document.querySelector('#step-1-tab')).show();
                 console.log("assignment created successfully.");
                 jQuery("#assignment-create-btn").removeAttr("disabled");
-                window.location = "<?php echo site_url("assignment"); ?>" + "?trek=" + url_trek_id + "&segment=" + url_segment_id;
+                // window.location = "<?php // echo site_url("assignment"); ?>" + "?trek=" + url_trek_id + "&segment=" + url_segment_id;
+                window.location = "<?php echo site_url("assignments"); ?>";
             }).fail(function (response) {
                 console.error(response);
                 jQuery("#assignment-create-btn").removeAttr("disabled");

@@ -279,7 +279,7 @@ while (have_posts()) : the_post();
         </form> -->
         
         <?php // echo do_shortcode("[Schools-Short-Code]"); ?>
-        <?php get_template_part('lxp/client-school-modal'); ?>
+        <?php get_template_part('lxp/client-school-modal', 'client-school-modal', array('district_post' => $district_post)); ?>
 
         <script type="text/javascript">
             function onSchoolEdit(school_id) {

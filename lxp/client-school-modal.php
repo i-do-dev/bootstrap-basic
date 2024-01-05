@@ -1,6 +1,6 @@
 <?php
 global $treks_src;
-global $district_post;
+$district_post = $args['district_post'];
 ?>
 
 <style style="text/css">

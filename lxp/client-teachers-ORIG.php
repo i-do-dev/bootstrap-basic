@@ -1,10 +1,11 @@
 <?php
+//get_template_part('lxp/functions');
 lxp_login_check();
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
-$district_post = lxp_get_user_district_post( (isset($_GET['district_id']) ? get_post_meta($_GET['district_id'], 'lxp_district_admin', true) : 0) );
-$district_schools = !$district_post ? [] : lxp_get_district_schools($district_post->ID);
+$district_post = lxp_get_user_district_post();
+$district_schools = lxp_get_district_schools($district_post->ID);
 $district_schools_ids = array_map(function ($school) { return $school->ID; },  $district_schools);
-$district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_id']) ? [$_GET['school_id']] : $district_schools_ids );
+$district_schools_teachers = lxp_get_all_schools_teachers($district_schools_ids);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,10 +21,10 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolDashboard.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolAdminStudents.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/adminTeacher.css" />
+    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/adminInternalTeacherView.css" />
     <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
-    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/addNewTeacherModal.css" />
 </head>
 
 <body>
@@ -76,35 +77,23 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
         <div class="welcome-content">
             <h2 class="welcome-heading">Teachers</h2>
             <p class="welcome-text">Comprehensive teacher database and records management</p>
-            <br />
-            
-            <form class="row g-3 recent-treks-section-div">
-                <div class="col-md-4">
-                    <!-- School drop down using $district_schools -->
-                    <label for="school-drop-down" class="form-label">School</label>
-                    <select id="school-drop-down" class="form-select">
-                        <option value="0">Choose...</option>
-                        <?php foreach ($district_schools as $district_school) { ?>
-                            <option value="<?php echo $district_school->ID; ?>"<?php echo isset($_GET['school_id']) && $_GET['school_id'] == $district_school->ID ? ' selected=selected' : '' ?>><?php echo $district_school->post_title; ?></option>
-                        <?php } ?>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <button class="add-heading" type="button" type="button" data-bs-toggle="modal"
-                        data-bs-target="#teacherModal" class="primary-btn" style="margin-top: 25px;">
-                        Add New Teacher
-                    </button>
-                    <label for="import-teacher" class="primary-btn add-heading">
-                        Import Teachers (CSV)
-                    </label >
-                    <input type="file" id="import-teacher" hidden />
-                </div>
-            </form>
         </div>
 
         <!-- Teachers: section-->
         <section class="school-section">
             <section class="school_teacher_cards">
+                <!-- <div class="add-teacher-box">
+                    <div class="search-filter-box">
+                        <div class="search_box">
+                            <label class="search-label">Search</label>
+                            <input type="text" name="text" placeholder="School, ID, admin" />
+                        </div>
+                        <div class="filter-box">
+                            <img src="<?php // echo $treks_src; ?>/assets/img/filter-alt.svg" alt="filter logo" />
+                            <p class="filter-heading">Filter</p>
+                        </div>
+                    </div>
+                </div> -->
 
                 <!-- Admin Teacher Table Section -->
                 <section class="recent-treks-section-div table-school-section">
@@ -168,19 +157,7 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                                     </th>
                                     <th>
                                         <div class="th1 th3">
-                                            District
-                                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="th1 th3">
-                                            School
-                                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="th1 th3">
-                                            Students
+                                            Classes
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>
@@ -190,62 +167,41 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>
+                                    <th>
+                                        <div class="th1 th5">
+                                            School
+                                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="th1 th2">
+                                            Region / District
+                                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
+                                        </div>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php 
                                     foreach ($district_schools_teachers as $teacher) {
                                         $teacher_admin = get_userdata(get_post_meta($teacher->ID, 'lxp_teacher_admin_id', true));
-                                        $lxp_teacher_school = null;
-                                        $lxp_teacher_district = null;
-                                        $lxp_teacher_school_id = get_post_meta($teacher->ID, 'lxp_teacher_school_id', true);
-                                        if ($lxp_teacher_school_id) {
-                                            $lxp_teacher_school = get_post($lxp_teacher_school_id);
-                                            $lxp_teacher_district_id = get_post_meta($lxp_teacher_school->ID, 'lxp_school_district_id', true);
-                                            if ($lxp_teacher_district_id) {
-                                                $lxp_teacher_district = get_post($lxp_teacher_district_id);
-                                            }
-                                        }
-                                        $lxp_teacher_students = array();
-                                        if ($lxp_teacher_district && $lxp_teacher_school) {
-                                            $lxp_teacher_students = lxp_get_school_teacher_students($lxp_teacher_school->ID,  $teacher->ID);
-                                        }
                                 ?>
                                     <tr>
                                         <td class="user-box">
                                             <div class="table-user">
                                                 <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="teacher" />
                                                 <div class="user-about">
-                                                    <h5><?php echo $teacher->post_title?></h5>
+                                                    <h5><?php echo $teacher_admin->display_name?></h5>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="table-status"><?php echo $teacher_admin->user_email?></div>
                                         </td>
-                                        <td><?php echo $lxp_teacher_district ? $lxp_teacher_district->post_title : '---'; ?></td>
-                                        <td><?php echo $lxp_teacher_school ? $lxp_teacher_school->post_title : '---' ?></td>
-                                        <td><?php echo $lxp_teacher_students ? count($lxp_teacher_students) : 0 ?></td>
+                                        <td><?php echo count(lxp_get_teacher_classes($teacher->ID)); ?></td>
                                         <td><?php echo $teacher->ID; ?></td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <button class="dropdown_btn" type="button" id="dropdownMenu2"
-                                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <img src="<?php echo $treks_src; ?>/assets/img/dots.svg" alt="logo" />
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                                    <button class="dropdown-item" type="button" onclick="onTeacherEdit(<?php echo $teacher->ID; ?>)">
-                                                        <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
-                                                        Edit</button>
-                                                    <button class="dropdown-item" type="button" onclick="onTeacherRestrictTreksClick(<?php echo $teacher->ID; ?>)">
-                                                        <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
-                                                        Restrict TREKs</button>
-                                                    <!-- <button class="dropdown-item" type="button">
-                                                        <img src="<?php // echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />
-                                                        Delete</button> -->
-                                                </div>
-                                            </div>
-                                        </td>
+                                        <td><?php echo get_post(get_post_meta($teacher->ID, "lxp_teacher_school_id", true))->post_title; ?></td>
+                                        <td>Texas</td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -286,109 +242,6 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
-    
-    <script>
-        $(document).ready(function () {
-            $('#district-drop-down').change(function () {
-                var district_id = $(this).val();
-                var url = new URL(window.location.href);
-                url.searchParams.set('district_id', district_id);
-                // unset school_id url param
-                url.searchParams.delete('school_id');
-                if (district_id == 0) {
-                    url.searchParams.delete('district_id');
-                }
-                window.location.href = url.href;
-            });
-
-            $('#school-drop-down').change(function() {
-                var school_id = $(this).val();
-                var url = new URL(window.location.href);
-                url.searchParams.set('school_id', school_id);
-                if (school_id == 0) {
-                    url.searchParams.delete('school_id');
-                }
-                window.location = url.href;
-            });
-        });
-    </script>
-
-    <?php 
-        get_template_part('lxp/admin-teacher-assign-treks-modal');
-
-        // check if district_id and school_id GET set
-        if (isset($_GET['school_id'])) {
-            get_template_part('lxp/admin-teacher-modal');
-    ?>
-            <input type="hidden" name="school_admin_id_imp" id="school_admin_id_imp" value="<?php echo get_post_meta( $_GET['school_id'], 'lxp_school_admin_id', true ); ?>">
-            <input type="hidden" name="teacher_school_id_imp" id="teacher_school_id_imp" value="<?php echo $_GET['school_id']; ?>">
-            
-            <script type="text/javascript">
-                let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
-                let apiUrl = host + '/wp-json/lms/v1/';
-                
-                jQuery("#import-teacher").on("change", function(e) {
-                    let formData = new FormData();
-                    formData.append('teacher_school_id', jQuery("#teacher_school_id_imp").val());
-                    formData.append('school_admin_id', jQuery("#school_admin_id_imp").val());
-                    formData.append('teachers', e.target.files[0]);
-                    $.ajax({
-                        method: "POST",
-                        enctype: 'multipart/form-data',
-                        url: apiUrl + "teachers/import",
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        cache: false,
-                    }).done(function( response ) {
-                        jQuery("#import-teacher").val("");
-                        window.location.reload();
-                    }).fail(function (response) {
-                        jQuery("#import-teacher").val("");
-                        if (response.responseJSON) {
-                            alert(response.responseJSON.data);
-                        }
-                    });
-                });
-            </script>
-    <?php
-        } else {
-    ?>
-            <div class="modal fade teachers-modal" id="teacherModal" tabindex="-1" aria-labelledby="teacherModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <div class="modal-header-title">
-                                <h2 class="modal-title" id="teacherModalLabel"><span class="teacher-action-head">New</span> Teacher</h2>
-                            </div>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Bootstrap alert with text: Please select District and School to add new teacher. -->
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                Please select <strong>School</strong> to add/edit a teacher.</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <script type="text/javascript">
-                function onTeacherEdit(x) {
-                    $('#teacherModal').modal('show');
-                }
-
-                jQuery(document).ready(function() {
-                    jQuery("#import-teacher").on("change", function(e) {
-                        $('#teacherModal').modal('show');
-                        jQuery("#import-teacher").val("");
-                    });
-                });
-            </script>
-    <?php
-        }    
-    ?>
-
 </body>
 
 </html>
