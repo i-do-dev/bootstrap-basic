@@ -220,6 +220,131 @@ if (is_admin()) {
     unset($bbsc_adminhelp);
 }
 
+/**
+ * displaying some dummy pages.
+ */
+// Function to create pages
+function create_custom_pages_on_theme_activation() {
+    // Check if the pages already exist to avoid duplication
+    $pagesArray = array(
+    	['title' => 'Assignment','content' =>''],
+    	['title' => 'Assignments','content' =>''],
+		['title' => 'Calendar','content' =>''],
+        ['title' => 'Classes','content' =>''],
+		['title' => 'Courses','content' =>''],
+		['title' => 'Dashboard','content' =>''],
+		['title' => 'Districts','content' =>''],
+		['title' => 'Grade Assignment','content' =>''],
+		['title' => 'Grade Summary','content' =>''],
+		['title' => 'Grades','content' =>''],
+		['title' => 'Groups','content' =>''],
+        ['title' => 'Lessons','content' =>''],
+		['title' => 'Login','content' =>''],
+		['title' => 'Sample Page','content' =>''],
+		['title' => 'Schools','content' =>''],
+		['title' => 'Search','content' =>''],
+		['title' => 'Students','content' =>''],
+		['title' => 'Teachers','content' =>'']
+	);
+    global $wpdb;
+
+    foreach ($pagesArray as $newPage) {
+        $pageExist = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->posts WHERE post_title = %s AND post_type = 'page' AND post_status = 'publish' ", $newPage['title']));
+
+        if (!$pageExist) {
+            // Page does not exist, create it
+            $page = array(
+                'post_title'    => $newPage['title'],
+                'post_content'  => $newPage['content'],
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+            );
+
+            wp_insert_post($page);
+        }
+    }
+    // Embaded tiny-lxp plugin into theme
+    // plugins_url().'/tiny-lxp/tiny-lxp-platform.php';
+    function run_activate_plugin( $plugin ) {
+        $plugin = trim( $plugin );
+        $current = get_option( 'active_plugins' );
+        $plugin = plugin_basename( $plugin );
+
+        if ( !in_array( $plugin, $current ) ) {
+            $current[] = $plugin;
+            sort( $current );
+            do_action( 'activate_plugin', $plugin );
+            update_option( 'active_plugins', $current );
+            do_action( 'activate_' . $plugin );
+            do_action( 'activated_plugin', $plugin );
+        }
+
+        return null;
+    }
+    run_activate_plugin( 'tiny-lxp/tiny-lxp-platform.php' );
+    function refresh_wp_admin_page() {
+        echo '<script type="text/javascript">window.location.reload(true);</script>';
+    }
+    add_action('admin_enqueue_scripts', 'refresh_wp_admin_page');
+}
+
+// Hook into the after_switch_theme action
+add_action('after_switch_theme', 'create_custom_pages_on_theme_activation');
+
+// This function will change the pages created by tiny-lxp theme.
+function my_theme_activation_function() {
+//     $pagesArray = array(
+//         ['title' => 'Assignment'],
+//         ['title' => 'Assignments'],
+//         ['title' => 'Calendar'],
+//         ['title' => 'Courses'],
+//         ['title' => 'Dashboard'],
+//         ['title' => 'Districts'],
+//         ['title' => 'Grade Assignment'],
+//         ['title' => 'Grade Summary'],
+//         ['title' => 'Grades'],
+//         ['title' => 'Groups'],
+//         ['title' => 'Login'],
+//         ['title' => 'Sample Page'],
+//         ['title' => 'Schools'],
+//         ['title' => 'Search'],
+//         ['title' => 'Students'],
+//         ['title' => 'Teachers']
+//     );
+//     global $wpdb;
+//     foreach ($pagesArray as $newPage) {
+//         $pageExist = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->posts WHERE post_title = %s AND post_type = 'page' AND post_status = 'publish' ", $newPage['title']));
+//         if ($pageExist) { 
+//             wp_delete_post($pageExist->ID); // The second parameter is set to true to force delete
+//         }
+//     }
+    // Deactivate a plugin
+    // deactivate_plugins('tiny-lxp');
+    // UPDATE wp_options SET option_value = 'a:0:{}' WHERE option_name = 'active_plugins';
+    // Replace 'plugin-folder/plugin-file.php' with the relative path to your plugin
+    
+    // $plugin_to_deactivate = 'tiny-lxp/tiny-lxp-platform.php';
+
+    // // Check if the plugin is active before deactivating
+    // if (is_plugin_active($plugin_to_deactivate)) {
+    //     deactivate_plugins($plugin_to_deactivate);
+    // }
+
+    $plugin_to_deactivate = 'tiny-lxp/tiny-lxp-platform.php';
+
+    // Get the list of active plugins
+    $active_plugins = get_option('active_plugins');
+
+    // Find and remove the plugin from the active plugins array
+    $plugin_key = array_search($plugin_to_deactivate, $active_plugins);
+    if ($plugin_key !== false) {
+        unset($active_plugins[$plugin_key]);
+    }
+    // Update the active plugins option
+    update_option('active_plugins', $active_plugins);
+
+}
+add_action('switch_theme', 'my_theme_activation_function');
 
 /**
  * Make WordPress 5 (Gutenberg) editor support Bootstrap CSS.
