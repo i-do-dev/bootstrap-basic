@@ -4,7 +4,7 @@
   // filter $assignments based on "To Do", "In Progress" statuses and not having "Completed" status
   $assignments = array_filter($assignments, function($assignment) {
     $student_stats = lxp_assignment_stats($assignment->ID);
-    $statuses = array("To Do", "In Progress");
+    $statuses = array("To Do", "In Progress",'Completed');
     $students_in_progress = array_filter($student_stats, function($studentStat) use ($statuses) {
       return in_array($studentStat["status"], $statuses);
     });
@@ -54,6 +54,7 @@
             return $ok;
           });
           
+        if ($students_graded != count($student_stats)) {
       ?>
         <tr>
           <td><?php echo $class_post->post_title; ?></td>
@@ -91,7 +92,7 @@
             <div class="student-stats-link"><a href="#" onclick="fetch_assignment_stats(<?php echo $assignment->ID; ?>, '<?php echo $course->post_title; ?>', '<?php echo $lxp_lesson_post->post_title; ?>', ['Graded'], '<?php echo $course_post_image; ?>')"><?php echo $students_graded; ?>/<?php echo count($student_stats); ?></a></div>
           </td>
         </tr>  
-      <?php } ?>
+      <?php } } ?>
     </tbody>
   </table>
 </div>

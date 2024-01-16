@@ -223,9 +223,9 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                                                     <button class="dropdown-item" type="button" onclick="onTeacherEdit(<?php echo $teacher->ID; ?>)">
                                                         <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
                                                         Edit</button>
-                                                    <button class="dropdown-item" type="button" onclick="onTeacherAssignTreksClick(<?php echo $teacher->ID; ?>)">
-                                                        <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
-                                                        Assign TREKs</button>
+                                                    <!-- <button class="dropdown-item" type="button" onclick="onTeacherAssignTreksClick(<?php // echo $teacher->ID; ?>)">
+                                                        <img src="<?php // echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
+                                                        Assign TREKs</button> -->
                                                     <!-- <button class="dropdown-item" type="button">
                                                         <img src="<?php // echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />
                                                         Delete</button> -->
@@ -300,7 +300,7 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
     </script>
 
     <?php 
-        get_template_part('lxp/admin-teacher-assign-treks-modal');
+        //get_template_part('lxp/admin-teacher-assign-treks-modal');
 
         // check if district_id and school_id GET set
         if (isset($_GET['district_id']) && isset($_GET['school_id'])) {

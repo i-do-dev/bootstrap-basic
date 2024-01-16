@@ -173,48 +173,6 @@ $classes = array_merge($default_classes, $classes);
             </section>
             <!-- Recent TREKs -->
             <section class="recent-treks-section" style="width: 100%;">
-                <div class="recent-treks-section-div">
-                    <!--  TREKs header-->
-                    <div class="recent-treks-header section-div-header">
-                        <h2>Top TREKs</h2>
-                        <div>
-                            <a href="#">See All</a>
-                        </div>
-                    </div>
-                    <!-- TREKs cards -->
-                    <!-- 
-                    <div class="recent-treks-cards-list">
-
-                        <div class="recent-treks-card-body">
-                            <div>
-                                <img src="<?php // echo $treks_src; ?>/assets/img/admin_rec_tre_img1.svg" />
-                            </div>
-                            <div>
-                                <h3>5.12A Interdependence</h3>
-                                <span>Due date: May 17, 2023</span>
-                            </div>
-                        </div>
-                        <div class="recent-treks-card-body">
-                            <div>
-                                <img src="<?php // echo $treks_src; ?>/assets/img/admin_rec_tre_img2.svg" />
-                            </div>
-                            <div class="recent-second-card">
-                                <h3>5.7B Forces & Experimental Design</h3>
-                                <span>Due date: May 17, 2023</span>
-                            </div>
-                        </div>
-                        <div class="recent-treks-card-body">
-                            <div>
-                                <img src="<?php // echo $treks_src; ?>/assets/img/admin_rec_tre_img3.svg" />
-                            </div>
-                            <div>
-                                <h3>5.6A Physical Properties</h3>
-                                <span>Due date: May 17, 2023</span>
-                            </div>
-                        </div>
-                    </div>
- -->
-                </div>
                 <!-- Assignment section -->
                 <section class="recent-treks-section assignment-section">
                     <div class="recent-treks-section-div">
@@ -243,7 +201,7 @@ $classes = array_merge($default_classes, $classes);
         crossorigin="anonymous"></script>
     
     <?php get_template_part('lxp/school-teacher-modal'); ?>
-    <?php get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post)); ?>
+    <?php get_template_part('lxp/school-student-modal', 'student-modal', array("school_post" => $school_post,"teacher_post" => $school_post)); ?>
     
     <script type="text/javascript">
         jQuery(document).ready(function(){

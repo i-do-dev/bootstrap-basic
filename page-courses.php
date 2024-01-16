@@ -10,8 +10,11 @@
 	    get_template_part('lxp/teacher-courses');
 	    break;
 	  case 'lxp_student':
-	    get_template_part('lxp/student-courses');
-	    break;
+		get_template_part('lxp/student-courses');
+		break;
+	  case 'administrator':
+		get_template_part('lxp/admin-courses');
+		break;
 	  default:
 	    echo 'Not a valid User role';
 	    break;
