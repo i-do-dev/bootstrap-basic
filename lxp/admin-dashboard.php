@@ -63,7 +63,7 @@ global $treks_src;
     <!-- Welcome: section-->
     <div class="welcome-section">
         <h2 class="welcome-heading">Welcome Administrator!</h2>
-        <p class="welcome-text">Manage RPA</p>
+        <p class="welcome-text">Manage TSG</p>
     </div>
 
     <!-- Total Schools: section-->
@@ -92,12 +92,12 @@ global $treks_src;
             <div class="card">
                 <img src="<?php echo $treks_src; ?>/assets/img/user.svg" alt="logo" />
                 <!-- <h3 class="numbers-heading"><?php //echo count($district_schools_students); ?></h3> -->
-                <p class="name-text"> <a href="<?php echo site_url('classes'); ?>">Manage Classes & Other Groups</a></p>
+                <p class="name-text"> <a href="<?php echo site_url('classes'); ?>">Manage Classes & Groups</a></p>
             </div>
             <div class="card">
                 <img src="<?php echo $treks_src; ?>/assets/img/user.svg" alt="logo" />
                 <!-- <h3 class="numbers-heading"><?php //echo count($district_schools_students); ?></h3> -->
-                <p class="name-text"> <a href="<?php echo site_url('groups'); ?>">Manage Small Groups</a></p>
+                <p class="name-text"> <a href="<?php echo site_url('groups'); ?>">Manage Groups</a></p>
             </div>
             <div class="card">
                 <img src="<?php echo $treks_src; ?>/assets/img/user.svg" alt="logo" />

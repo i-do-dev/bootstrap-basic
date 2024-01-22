@@ -42,6 +42,10 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
     .calendar-container .calendar-flex-box .calendar-right-box .small-calendar {
       height: auto !important;
     }
+
+    .fc-daygrid-day-frame a {
+      text-decoration: none !important;      
+    }
   </style>
 </head>
 
@@ -84,10 +88,7 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
   </section>
 
   <section class="calendar-container">
-    <div class="d-flex align-content-center justify-content-between mb-3">
-      <h1 class="calendar-heading m-0">Calendar</h1>
-    </div>
-
+    
     <div class="calendar-flex-box">
       <div class="calendar-main" style="padding: 15px;">
         <div id="calendar"></div>
@@ -105,6 +106,31 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
             </form>
           </div>
         </div>
+        <div class="rpa-segments-box">
+          <h5 class="rpa-heading">TSG Segments</h5>
+          <div class="rpa-segments-form">
+            <!-- <div class="form-check">
+              <input class="form-check-input input-all" type="checkbox" value="" id="all" />
+              <label class="form-check-label" for="all"> All </label>
+            </div> -->
+            <div class="form-check">
+              <input class="form-check-input input-recall" type="checkbox" value="" id="Recall" />
+              <label class="form-check-label" for="Recall"> Recall </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input input-practiceA" type="checkbox" value="" id="practiceA" />
+              <label class="form-check-label" for="practiceA"> Practice A</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input input-practiceB" type="checkbox" value="" id="practiceB" />
+              <label class="form-check-label" for="practiceB"> Practice B </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input input-apply" type="checkbox" value="" id="apply" />
+              <label class="form-check-label" for="apply"> Apply </label>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -116,15 +142,15 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 
           let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
           let apiUrl = host + '/wp-json/lms/v1/';
-          
+          const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
           var calendarEl = document.getElementById('calendar');
           var calendar = new FullCalendar.Calendar(calendarEl, {
-              timeZone: 'UTC',
+              // timeZone: 'UTC',
               selectable: false,
-              initialView: 'timeGridWeek',
-              slotDuration: '01:00',
-              headerToolbar: false,
-              allDaySlot: false,
+              // initialView: 'timeGridWeek',
+              //slotDuration: '01:00',
+              //headerToolbar: false,
+              //allDaySlot: false,
               events: apiUrl + "assignments/calendar/events/?user_id=" + <?php echo get_current_user_id(); ?> ,
               dayHeaderContent: function (args) {
                   let weekday_el = document.createElement('p');
@@ -136,39 +162,68 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
                   day_el.classList.add("month-text");
                   day_el.classList.add("month-date-text");
                   day_el.classList.add("text-bold");
-                  let event_dom_nodes = [day_el, weekday_el];
+                  // let event_dom_nodes = [day_el, weekday_el];
+                  let event_dom_nodes = [weekday_el];
                   return {domNodes: event_dom_nodes};
               },
               eventClassNames: function(arg) {
                   let segment_class = "segment-default-event";
                   if (arg.event.extendedProps.hasOwnProperty("segment")) {
-                      segment_class = "practice-b-event";
+                      segment_class = arg.event.extendedProps.segment + "-event";
                   }
                   return segment_class;
               },
               eventContent: function(arg) {
-                  let lesson_segment_el = document.createElement('p');
-                  lesson_segment_el.innerHTML = arg.event.title;
-                  let event_title_class  = "practice-b-segment-event-title";
-                  lesson_segment_el.classList.add(event_title_class);
-                  lesson_segment_el.classList.add("lxp-event-title");
+                  let trek_segment_el = document.createElement('p');
+                  trek_segment_el.innerHTML = arg.event.title;
+                  let event_title_class  = arg.event.extendedProps.segment + "-segment-event-title";
+                  trek_segment_el.classList.add(event_title_class);
+                  trek_segment_el.classList.add("lxp-event-title");
                   
-                  let course_el = document.createElement('p');
-                  course_el.innerHTML = arg.event.extendedProps.course;
-                  let event_sub_title_class = "practice-b-segment-event-sub-title"
-                  course_el.classList.add(event_sub_title_class);
-                  course_el.classList.add("lxp-event-sub-title");
+                  let trek_el = document.createElement('p');
+                  trek_el.innerHTML = arg.event.extendedProps.trek;
+                  let event_sub_title_class = arg.event.extendedProps.segment + "-segment-event-sub-title"
+                  trek_el.classList.add(event_sub_title_class);
+                  trek_el.classList.add("lxp-event-sub-title");
 
-                  let event_dom_nodes = [lesson_segment_el, course_el];
+                  let event_dom_nodes = [trek_segment_el, trek_el];
                   return {domNodes: event_dom_nodes};
               },
               eventClick: function(eventClickInfo) {
-                var course_post_image = ( eventClickInfo.event.extendedProps.course_post_image ) ? eventClickInfo.event.extendedProps.course_post_image : '<?php echo $treks_src; ?>'+'/assets/img/tr_main.jpg';
-                  jQuery('#student-progress-course-title').text(eventClickInfo.event.extendedProps.course);
-                  jQuery('#student-progress-course-post-image').html(`<img width="50" class="rounded wp-post-image" src="`+course_post_image+`" alt="logo" />`);
-                  jQuery('#student-progress-course-segment').text(eventClickInfo.event.title);
-                  jQuery('#student-progress-course-segment-char').text('L');
-                  var segmentColor = "#1fa5d4";
+                  jQuery('#student-progress-trek-title').text(eventClickInfo.event.extendedProps.trek);
+                  jQuery('#student-progress-trek-segment').text(eventClickInfo.event.title);
+                  jQuery('#student-progress-trek-segment-char').text(eventClickInfo.event.title[0]);
+                  // starting date and time
+                  let start_date = new Date(eventClickInfo.event.start);
+                  let start_date_string = start_date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+                  let start_time_string = start_date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+                  jQuery('#student-progress-trek-start-time').text(start_date_string + ' ' + start_time_string);
+                  // ending date and time
+                  let end_date = new Date(eventClickInfo.event.end);
+                  let end_date_string = end_date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+                  let end_time_string = end_date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+                  jQuery('#student-progress-trek-end-time').text(end_date_string + ' ' + end_time_string);
+
+                  switch (eventClickInfo.event.title) {
+                      case 'Overview':
+                          segmentColor = "#979797";
+                          break;
+                      case 'Recall':
+                          segmentColor = "#ca2738";
+                          break;
+                      case 'Practice A':
+                          segmentColor = "#1fa5d4";
+                          break;
+                      case 'Practice B':
+                          segmentColor = "#1fa5d4";
+                          break;
+                      case 'Apply':
+                          segmentColor = "#9fc33b";
+                          break;
+                      default:
+                          segmentColor = "#ca2738";
+                          break;
+                  }
                   jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-tab-polygon').css('background-color', segmentColor);
                   jQuery('.students-modal .modal-content .modal-body .students-breadcrumb .interdependence-tab .inter-tab-polygon-name, .assignment-modal .modal-content .modal-body .assignment-modal-left .recall-user .inter-user-name').css('color', segmentColor);
                   fetch_assignment_stats(eventClickInfo.event.id);

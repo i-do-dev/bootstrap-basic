@@ -205,6 +205,12 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
                             <tbody>
                                 <?php 
                                     foreach ($district_posts as $district) {
+                                        $totalSchools = lxp_get_district_schools($district->ID);
+                                        $totalTeachers = []; $totalStudents = [];
+                                        foreach($totalSchools as $singleSchool) {
+                                            $totalTeachers = array_merge($totalTeachers, lxp_get_school_teachers($singleSchool->ID));
+                                            $totalStudents = array_merge($totalStudents, lxp_get_school_students($singleSchool->ID));
+                                        }
                                 ?>
                                     <tr>
                                         <td class="user-box">
@@ -219,9 +225,9 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
                                             <div class="table-status"><?php echo get_userdata(get_post_meta($district->ID, 'lxp_district_admin', true))->display_name; ?></div>
                                         </td>
                                         <td><?php echo $district->ID; ?></td>
-                                        <td><?php echo count(lxp_get_district_schools($district->ID)); ?></td>
-                                        <td><?php echo count(lxp_get_school_teachers($district->ID)); ?></td>
-                                        <td><?php echo count(lxp_get_school_students($district->ID)); ?></td>
+                                        <td><?php echo count($totalSchools); ?></td>
+                                        <td><?php echo count($totalTeachers); ?></td>
+                                        <td><?php echo count($totalStudents); ?></td>
                                         <td>Texas</td>
                                         <td>
                                             <div class="dropdown">

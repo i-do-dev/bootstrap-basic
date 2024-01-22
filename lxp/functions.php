@@ -85,6 +85,24 @@ function lxp_get_school_students($school_id)
     return $posts;
 }
 
+function lxp_get_school_teacher_students($school_id, $teacher_id)
+{
+    $school_query = new WP_Query( array( 
+        'post_type' => TL_STUDENT_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_student_school_id', 'value' => $school_id, 'compare' => '='),
+            array('key' => 'lxp_teacher_id', 'value' => $teacher_id, 'compare' => '=')
+        ),
+        'orderby' => 'title',
+        'order' => 'ASC'
+    ) );
+    
+    $posts = $school_query->get_posts();
+    return $posts;
+}
+
 function lxp_get_all_schools_teachers($school_ids)
 {
     if (empty($school_ids)) {

@@ -10,7 +10,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-header-title">
-                    <h2 class="modal-title" id="groupModalLabel"><span id="small-group-action-heading">New</span> Small Group</h2>
+                    <h2 class="modal-title" id="groupModalLabel"><span id="small-group-action-heading">New</span> Group</h2>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-label="Close"></button>
@@ -27,7 +27,7 @@
                     <div class="personal_box">
                         <!-- Left Class box -->
                         <div class="class-information">
-                            <p class="personal-text">Small Group information</p>
+                            <p class="personal-text">Group information</p>
                             <div class="search_box">
                                 <label class="trek-label">Name</label>
                                 <input type="text" class="form-control period-select" value="" id="group_name" name="group_name" />
@@ -47,9 +47,9 @@
                             <p class="personal-text">Add Students</p>
                             <!-- Select Grade -->
                             <div class="search_box">
-                                <label class="trek-label">Classes/Other Group</label>
+                                <label class="trek-label">Classes/Groups</label>
                                 <select onChange="fetch_class_students()" class="form-select form-control" aria-label="Default select example" name="classes_other_group" id="classes_other_group">
-                                    <option value="0">Select Classes/Other Group</option>
+                                    <option value="0">Select Classes/Group</option>
                                     <optgroup value="classes" label="Classes">
                                         <?php
                                             foreach ($classes as $class) {
@@ -59,7 +59,7 @@
                                             }
                                         ?>
                                     </optgroup>
-                                    <optgroup value="other_group" label="Other Group">
+                                    <optgroup value="other_group" label="Group">
                                         <?php
                                             foreach ($other_groups as $other_group) {
                                         ?>
@@ -205,7 +205,7 @@ function onGroupEdit(group_post_id) {
         jQuery('#groupModal #classes_other_group').val(group_record.lxp_class_group_id).change();
         groupModalObj.show();
     }).fail(function (response) {
-        console.error("Can not load Small Group");
+        console.error("Can not load Groups");
     });
 }
 

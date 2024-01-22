@@ -47,7 +47,12 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
     <!-- Header Section -->
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
-            <?php get_template_part('trek/header-logo'); ?>
+            <a class="navbar-brand" href="#">
+                <div class="header-logo-search">
+                    <!-- logo -->
+                    <?php get_template_part('trek/header-logo'); ?>
+                </div>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -112,6 +117,10 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                         data-bs-target="#teacherModal" class="primary-btn" style="margin-top: 25px;">
                         Add New Teacher
                     </button>
+                    <label for="import-teacher" class="primary-btn add-heading">
+                        Import Teachers (CSV)
+                    </label >
+                    <input type="file" id="import-teacher" hidden />
                 </div>
             </form>
         </div>
@@ -182,7 +191,19 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                                     </th>
                                     <th>
                                         <div class="th1 th3">
-                                            Classes
+                                            District
+                                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="th1 th3">
+                                            School
+                                            <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="th1 th3">
+                                            Students
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>
@@ -198,6 +219,20 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                                 <?php 
                                     foreach ($district_schools_teachers as $teacher) {
                                         $teacher_admin = get_userdata(get_post_meta($teacher->ID, 'lxp_teacher_admin_id', true));
+                                        $lxp_teacher_school = null;
+                                        $lxp_teacher_district = null;
+                                        $lxp_teacher_school_id = get_post_meta($teacher->ID, 'lxp_teacher_school_id', true);
+                                        if ($lxp_teacher_school_id) {
+                                            $lxp_teacher_school = get_post($lxp_teacher_school_id);
+                                            $lxp_teacher_district_id = get_post_meta($lxp_teacher_school->ID, 'lxp_school_district_id', true);
+                                            if ($lxp_teacher_district_id) {
+                                                $lxp_teacher_district = get_post($lxp_teacher_district_id);
+                                            }
+                                        }
+                                        $lxp_teacher_students = array();
+                                        if ($lxp_teacher_district && $lxp_teacher_school) {
+                                            $lxp_teacher_students = lxp_get_school_teacher_students($lxp_teacher_school->ID,  $teacher->ID);
+                                        }
                                 ?>
                                     <tr>
                                         <td class="user-box">
@@ -211,7 +246,9 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                                         <td>
                                             <div class="table-status"><?php echo $teacher_admin->user_email?></div>
                                         </td>
-                                        <td><?php echo count(lxp_get_teacher_classes($teacher->ID)); ?></td>
+                                        <td><?php echo $lxp_teacher_district ? $lxp_teacher_district->post_title : '---'; ?></td>
+                                        <td><?php echo $lxp_teacher_school ? $lxp_teacher_school->post_title : '---' ?></td>
+                                        <td><?php echo $lxp_teacher_students ? count($lxp_teacher_students) : 0 ?></td>
                                         <td><?php echo $teacher->ID; ?></td>
                                         <td>
                                             <div class="dropdown">
@@ -223,9 +260,9 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                                                     <button class="dropdown-item" type="button" onclick="onTeacherEdit(<?php echo $teacher->ID; ?>)">
                                                         <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
                                                         Edit</button>
-                                                    <!-- <button class="dropdown-item" type="button" onclick="onTeacherAssignTreksClick(<?php // echo $teacher->ID; ?>)">
-                                                        <img src="<?php // echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
-                                                        Assign TREKs</button> -->
+                                                    <button class="dropdown-item" type="button" onclick="onTeacherAssignCoursesClick(<?php echo $teacher->ID; ?>)">
+                                                        <img src="<?php echo $treks_src; ?>/assets/img/classes.svg" alt="logo" />
+                                                        Restrict Courses</button>
                                                     <!-- <button class="dropdown-item" type="button">
                                                         <img src="<?php // echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />
                                                         Delete</button> -->
@@ -300,11 +337,44 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
     </script>
 
     <?php 
-        //get_template_part('lxp/admin-teacher-assign-treks-modal');
+        get_template_part('lxp/admin-teacher-assign-treks-modal');
 
         // check if district_id and school_id GET set
         if (isset($_GET['district_id']) && isset($_GET['school_id'])) {
             get_template_part('lxp/admin-teacher-modal');
+    ?>
+            <input type="hidden" name="school_admin_id_imp" id="school_admin_id_imp" value="<?php echo get_post_meta( $_GET['school_id'], 'lxp_school_admin_id', true ); ?>">
+            <input type="hidden" name="teacher_school_id_imp" id="teacher_school_id_imp" value="<?php echo $_GET['school_id']; ?>">
+            
+            <script type="text/javascript">
+                let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;
+                let apiUrl = host + '/wp-json/lms/v1/';
+                
+                jQuery("#import-teacher").on("change", function(e) {
+                    let formData = new FormData();
+                    formData.append('teacher_school_id', jQuery("#teacher_school_id_imp").val());
+                    formData.append('school_admin_id', jQuery("#school_admin_id_imp").val());
+                    formData.append('teachers', e.target.files[0]);
+                    $.ajax({
+                        method: "POST",
+                        enctype: 'multipart/form-data',
+                        url: apiUrl + "teachers/import",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        cache: false,
+                    }).done(function( response ) {
+                        jQuery("#import-teacher").val("");
+                        window.location.reload();
+                    }).fail(function (response) {
+                        jQuery("#import-teacher").val("");
+                        if (response.responseJSON) {
+                            alert(response.responseJSON.data);
+                        }
+                    });
+                });
+            </script>
+    <?php
         } else {
     ?>
             <div class="modal fade teachers-modal" id="teacherModal" tabindex="-1" aria-labelledby="teacherModalLabel" aria-hidden="true">
@@ -330,6 +400,13 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                 function onTeacherEdit(x) {
                     $('#teacherModal').modal('show');
                 }
+
+                jQuery(document).ready(function() {
+                    jQuery("#import-teacher").on("change", function(e) {
+                        $('#teacherModal').modal('show');
+                        jQuery("#import-teacher").val("");
+                    });
+                });
             </script>
     <?php
         }    

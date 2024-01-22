@@ -120,8 +120,8 @@ while (have_posts()) : the_post();
                                     <label for="district-drop-down" class="form-label">District</label>
                                     <select class="form-select" id="district-drop-down" name="district_id">
                                         <option value="0">Choose...</option>
-                                        <?php foreach ($district_posts as $district_post) { ?>
-                                            <option value="<?php echo $district_post->ID; ?>"<?php echo isset($_GET['district_id']) && $_GET['district_id'] == $district_post->ID ? ' selected=selected' : '' ?>><?php echo $district_post->post_title; ?></option>
+                                        <?php foreach ($district_posts as $dist_post) { ?>
+                                            <option value="<?php echo $dist_post->ID; ?>"<?php echo isset($_GET['district_id']) && $_GET['district_id'] == $dist_post->ID ? ' selected=selected' : '' ?>><?php echo $dist_post->post_title; ?></option>
                                         <?php } ?>
                                     </select>
                                 </div>
