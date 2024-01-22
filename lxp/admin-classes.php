@@ -132,7 +132,7 @@ $classes = array_merge($default_classes, $classes);
         <div class="heading-wrapper">
             <div class="heading-left">
                 <div class="welcome-content">
-                    <h2 class="welcome-heading">Classes & Other Groups</h2>
+                    <h2 class="welcome-heading">Classes & Groups</h2>
                     <p class="welcome-text">Classes and Groups management</p>
                 </div>
             </div>
@@ -182,7 +182,7 @@ $classes = array_merge($default_classes, $classes);
                         </div>
                         <div class="col-md-3">                   
                             <button id="classModalBtn" class="add-heading" type="button" data-bs-toggle="modal" data-bs-target="#classModal" class="primary-btn" style="margin-top: 25px;">
-                                Add New Class & Other Group
+                                Add New Class & Groups
                             </button>
                         </div>
                     </div>
@@ -221,7 +221,7 @@ $classes = array_merge($default_classes, $classes);
                                     </th>
                                     <th>
                                         <div class="th1 th5">
-                                            Small Groups
+                                            Groups
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>
@@ -293,7 +293,7 @@ $classes = array_merge($default_classes, $classes);
                                 <tr>
                                     <th class="">
                                         <div class="th1">
-                                            Other Group
+                                            Groups
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>
@@ -317,7 +317,7 @@ $classes = array_merge($default_classes, $classes);
                                     </th>
                                     <th>
                                         <div class="th1 th5">
-                                            Small Groups
+                                            Groups
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>

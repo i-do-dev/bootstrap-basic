@@ -28,10 +28,7 @@ $teacher_school_id = $teacher_post ? get_post_meta($teacher_post->ID, 'lxp_teach
 $school_post = $teacher_school_id > 0 ? get_post($teacher_school_id) : null;
 $students = [];
 if(isset($_GET['school_id']) && isset($_GET['teacher_id'])) {
-    $students = lxp_get_school_students($teacher_school_id);
-    $students = array_filter($students, function($student) use ($teacher_post) {
-        return get_post_meta($student->ID, 'lxp_teacher_id', true) == $teacher_post->ID;
-    });
+    $students = lxp_get_school_teacher_students($teacher_school_id, $teacher_post->ID);
 } else if(isset($_GET['school_id'])) {
     $students = lxp_get_school_students($_GET['school_id']);
     $school_post = get_post($_GET['school_id']);
@@ -138,8 +135,8 @@ if(isset($_GET['school_id']) && isset($_GET['teacher_id'])) {
 <!-- 
             <div class="heading-right">
                 <a href="<?php //echo site_url("students"); ?>" type="button" class="btn btn-secondary btn-lg">Students</a>
-                <a href="<?php //echo site_url("classes"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Classes & Other Group</a>
-                <a href="<?php //echo site_url("groups"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Small Group</a>
+                <a href="<?php //echo site_url("classes"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Classes & Groups</a>
+                <a href="<?php //echo site_url("groups"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Groups</a>
             </div> -->
         </div>
 
@@ -259,7 +256,7 @@ if(isset($_GET['school_id']) && isset($_GET['teacher_id'])) {
                                     </th>
                                     <th>
                                         <div class="th1 th2">
-                                            Email
+                                            Username
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>
@@ -271,7 +268,7 @@ if(isset($_GET['school_id']) && isset($_GET['teacher_id'])) {
                                     </th>
                                     <th>
                                         <div class="th1 th3">
-                                            Other Group
+                                            Group
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>
@@ -293,18 +290,19 @@ if(isset($_GET['school_id']) && isset($_GET['teacher_id'])) {
                                 <?php 
                                     foreach ($students as $student) {
                                         $student_admin = get_userdata(get_post_meta($student->ID, 'lxp_student_admin_id', true));
+                                        $student_id = get_post_meta($student->ID, 'student_id', true);
                                 ?>
                                     <tr>
                                         <td class="user-box">
                                             <div class="table-user">
                                                 <img src="<?php echo $treks_src; ?>/assets/img/profile-icon.png" alt="student" />
                                                 <div class="user-about">
-                                                    <h5><?php echo $student_admin->display_name?></h5>
+                                                    <h5><?php echo $student->post_title; ?></h5>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="table-status"><?php echo $student_admin->user_email?></div>
+                                            <div class="table-status"><?php echo $student_admin->user_login; ?></div>
                                         </td>
                                         <td>
                                             <?php 
@@ -328,7 +326,7 @@ if(isset($_GET['school_id']) && isset($_GET['teacher_id'])) {
                                                 }
                                             ?>
                                         </td>
-                                        <td><?php echo $student->ID ?></td>
+                                        <td><?php echo $student_id ? $student_id : '--'; ?></td>
                                         <td>
                                             <div class="dropdown">
                                                 <button class="dropdown_btn" type="button" id="dropdownMenu2"
@@ -405,7 +403,7 @@ if(isset($_GET['school_id']) && isset($_GET['teacher_id'])) {
                     <div class="modal-body">
                         <!-- Bootstrap alert with text: Please select District and School to add new student. -->
                         <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            Please select <strong>Teacher</strong>.</strong>
+                            Please select <strong>District, School</strong> and <strong>Teacher </strong> to add/edit a student.
                         </div>
                     </div>
                 </div>
@@ -501,6 +499,12 @@ if(isset($_GET['school_id']) && isset($_GET['teacher_id'])) {
                     url.searchParams.delete('teacher_id');
                 }
                 window.location = url.href;
+            });
+
+            $('#studentModalBtn').click(function() {
+                if ($('#school-drop-down').val() == '0') {
+                    $('#studentModalAlert').modal('show');
+                }
             });
         });
     </script>

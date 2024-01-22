@@ -2,9 +2,7 @@
 global $treks_src;
 $args = array(
     'posts_per_page'   => -1,
-    'post_type'        => 'tl_trek',
-    'meta_key'        => 'sort',
-    'orderby'        => 'meta_value_num',
+    'post_type'        => 'tl_course',    
     'order' => 'asc'
 );
 $treks = get_posts($args);
@@ -22,7 +20,7 @@ $treks = get_posts($args);
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-header-title">
-                    <h2 class="modal-title" id="teacherTreksModalLabel"><span class="teacher-action-head">Assign</span> TREKs</h2>
+                    <h2 class="modal-title" id="teacherTreksModalLabel"><span class="teacher-action-head">Restrict</span> Courses</h2>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-label="Close"></button>
@@ -51,14 +49,17 @@ $treks = get_posts($args);
                                     <?php foreach ($treks as $trek) { ?>
                                         <tr>
                                             <td><input type="checkbox" name="treks[]" value="<?php echo $trek->ID; ?>"></td>
-                                            <td><?php echo $trek->post_title; ?></td>
+                                            <td>
+                                                <img width="30" height="30" src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" class="rounded wp-post-image" /> 
+                                                
+                                                &nbsp <?php echo $trek->post_title; ?></td>
                                         </tr>
                                     <?php } ?>
                                 </tbody>
                             </table>
                         </div>
                         <div class="btn_box">
-                            <button class="btn" id="saveTeacherBtn"><span class="teacher-action">Assign</span></button>
+                            <button class="btn" id="saveTeacherBtn"><span class="teacher-action">Restrict</span></button>
                             <button class="btn" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
                         </div>
                     </div>
@@ -115,7 +116,7 @@ $treks = get_posts($args);
         });
     });
 
-    function onTeacherAssignTreksClick(teacher_post_id) {
+    function onTeacherAssignCoursesClick(teacher_post_id) {
         jQuery("#teacher_post_id").val(teacher_post_id);
 
         let host = window.location.hostname === 'localhost' ? window.location.origin + '/wordpress' : window.location.origin;

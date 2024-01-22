@@ -9,7 +9,7 @@ $teacher_post = $args['teacher_post'];
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-header-title">
-                    <h2 class="modal-title" id="classModalLabel"><span id="class-action-heading">New</span> Class & Other Group</h2>
+                    <h2 class="modal-title" id="classModalLabel"><span id="class-action-heading">New</span> Class &  Groups</h2>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-label="Close"></button>
@@ -27,7 +27,7 @@ $teacher_post = $args['teacher_post'];
                     <div class="personal_box">
                         <!-- Left Class box -->
                         <div class="class-information">
-                            <p class="personal-text">Class & Other Group information</p>
+                            <p class="personal-text">Class & Group information</p>
                             <div class="search_box">
                                 <label class="trek-label">Name</label>
                                 <input type="text" class="form-control period-select" value="" id="class_name" name="class_name" />
@@ -108,7 +108,7 @@ $teacher_post = $args['teacher_post'];
 
                         <!-- Right Class box -->
                         <div class="class-information class-information">
-                            <p class="personal-text">Classes & Other Group</p>
+                            <p class="personal-text">Class & Group</p>
                             <!-- Select Grade -->
                             <div class="search_box">
                                 <label class="trek-label">Grade</label>
@@ -185,7 +185,7 @@ $teacher_post = $args['teacher_post'];
                                         <td>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" value="other_group" id="other_group_radio" name="type">
-                                                <label class="form-check-label" for="other_group">Other Group</label>
+                                                <label class="form-check-label" for="other_group">Groups</label>
                                             </div>
                                         </td>
                                     </tr>
@@ -297,7 +297,6 @@ function onClassEdit(class_id) {
             }).fail(function (response) {
                 jQuery('#classForm .form-control').removeClass('is-invalid');
                 if (response.responseJSON !== undefined && response.responseJSON.code === "rest_missing_callback_param") {
-                    console.log("yesss", response.responseJSON.data.params);
                     response.responseJSON.data.params.forEach(element => {
                         jQuery(".invalid-feedback-" + element).show();
                     });

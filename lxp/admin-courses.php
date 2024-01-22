@@ -1,8 +1,5 @@
 <?php
-//get_template_part('lxp/functions');
-lxp_login_check();
-$treks_src = get_stylesheet_directory_uri() . '/treks-src';
-// get treks based on tekversion metadata using WP_Query and meta_query
+global $treks_src;
 $args = array(
     'posts_per_page'   => -1,
     'post_type'        => 'tl_course',    
@@ -17,9 +14,10 @@ $courses = get_posts($args);
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>District / Teachers</title>
+    <title>Admin Courses</title>
     <link href="<?php echo $treks_src; ?>/style/main.css" rel="stylesheet" />
-
+    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
+    <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/treksstyle.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
     <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
@@ -91,94 +89,92 @@ $courses = get_posts($args);
         </nav>
     </section>
 
-    <!-- Teachers: section-->
+    
     <section class="welcome-section">
-        <!-- Teachers: heading-->
+        
         <div class="welcome-content">
             <h2 class="welcome-heading">COURSES</h2>
-            <p class="welcome-text">Comprehensive teacher database and records management</p>
+            <p class="welcome-text">Manage your Courses</p>
             <br />
         </div>
 
-        <!-- Teachers: section-->
+        
         <section class="main-container treks_main_container">
-        <!-- Recent Filters & Courses flex -->
-        <div class="filter_treks_flx">
-            <!-- Recent Courses -->
-            <section class="recent-treks-section filter_treks_section filter_my_treks_sec" style="width: 90%; margin: 0 auto;">
-                <div class="recent-treks-section-div">
-                    <!--  Courses header-->
-                    <div class="section-div-header">
-                        <h2>My Courses</h2>
-                    </div>
-                    <nav class="nav-section treks_nav">
-                        <ul class="treks_ul" id="myTab" role="tablist">
-                            <li>
-                                <button class="nav-link active" id="all-tab" data-bs-toggle="tab"
-                                    data-bs-target="#all-tab-pane" type="button" role="tab" aria-controls="all-tab-pane"
-                                    aria-selected="true">All</button>
-                            </li>
-                        </ul>
-                        <div class="treks_inner_flx">
-                            <img src="<?php echo $treks_src; ?>/assets/img/filter-right-logo.svg" />
-                            <div class="sort_flex_bx">
-                                <img src="<?php echo $treks_src; ?>/assets/img/filter-sort-logo.svg" />
-                                <p>Sort by A-Z</p>
-                            </div>
+            <!-- Recent Filters & Courses flex -->
+            <div class="filter_treks_flx">
+                <!-- Recent Courses -->
+                <section class="recent-treks-section filter_treks_section filter_my_treks_sec">
+                    <div class="recent-treks-section-div">
+                        <!--  Courses header-->
+                        <div class="section-div-header">
+                            <h2>My Courses</h2>
                         </div>
-                    </nav>
-                    <!-- Courses cards -->
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active recent-treks-cards-list treks_card_list" id="all-tab-pane"
-                            role="tabpanel" aria-labelledby="all-tab" tabindex="0">
-                            <!-- each cards  -->
-                            <?php
-                            foreach($courses as $course) {
-                            ?>
-                                <div class="recent-treks-card-body treks-card">
-                                    <div class="treks-card-saved">
-                                        <div class="dropdown">
-                                            <i id="dropdownMenu<?php echo $course->ID ?>" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <div class="dot"></div>
-                                                <div class="dot"></div>
-                                                <div class="dot"></div>
-                                            </i>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenu<?php echo $course->ID ?>">
-                                                <button class="dropdown-item" type="button" onclick="onCourseEdit('<?php echo $course->ID ?>')">
-                                                    <img src="http://rpaportal.local/wp-content/themes/bootstrap-basic/treks-src/assets/img/edit.svg" alt="logo">
-                                                    Edit</button>
-                                                
-                                            </div>
-                                        </div>
-                                    
-                                    </div>
-                                    
-                                    <div class='course-img' id="img-id-<?php echo $course->ID; ?>">
-                                        <?php
-                                            if ( has_post_thumbnail( $course->ID ) ) {
-                                                echo get_the_post_thumbnail($course->ID, "medium", array( 'class' => 'rounded' )); 
-                                            } else {
-                                        ?>
-                                            <img width="300" height="180" src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" class="rounded wp-post-image" />
-                                        <?php        
-                                            }
-                                        ?>
-                                    </div>
-                                    <div>
-                                        <h3><?php echo get_the_title($course->ID); ?></h3>
-                                    </div>
+                        <nav class="nav-section treks_nav">
+                            <ul class="treks_ul" id="myTab" role="tablist">
+                                <li>
+                                    <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all-tab-pane" type="button" role="tab" aria-controls="all-tab-pane" aria-selected="true">All</button>
+                                </li>
+                            </ul>
+                            <div class="treks_inner_flx">
+                                <img src="<?php echo $treks_src; ?>/assets/img/filter-right-logo.svg" />
+                                <div class="sort_flex_bx">
+                                    <img src="<?php echo $treks_src; ?>/assets/img/filter-sort-logo.svg" />
+                                    <p>Sort by A-Z</p>
                                 </div>
-                            
-                            <?php
-                            }
-                            ?>
-                        </div>
+                            </div>
+                        </nav>
+                        <!-- Courses cards -->
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active recent-treks-cards-list treks_card_list" id="all-tab-pane"
+                                role="tabpanel" aria-labelledby="all-tab" tabindex="0">
+                                <!-- each cards  -->
+                                <?php
+                                foreach($courses as $course) {
+                                ?>
+                                    <div class="recent-treks-card-body treks-card">
+                                        <div class="treks-card-saved">
+                                            <div class="dropdown">
+                                                <i id="dropdownMenu<?php echo $course->ID ?>" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <div class="dot"></div>
+                                                    <div class="dot"></div>
+                                                    <div class="dot"></div>
+                                                </i>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenu<?php echo $course->ID ?>">
+                                                    <button class="dropdown-item" type="button" onclick="onCourseEdit('<?php echo $course->ID ?>')">
+                                                        <img src="http://rpaportal.local/wp-content/themes/bootstrap-basic/treks-src/assets/img/edit.svg" alt="logo">
+                                                        Edit</button>
+                                                    
+                                                </div>
+                                            </div>
+                                        
+                                        </div>
+                                        
+                                        <div class='course-img' id="img-id-<?php echo $course->ID; ?>">
+                                            <?php
+                                                if ( has_post_thumbnail( $course->ID ) ) {
+                                                    echo get_the_post_thumbnail($course->ID, "medium", array( 'class' => 'rounded' )); 
+                                                } else {
+                                            ?>
+                                                <img width="300" height="180" src="<?php echo $treks_src; ?>/assets/img/tr_main.jpg" class="rounded wp-post-image" />
+                                            <?php        
+                                                }
+                                            ?>
+                                        </div>
+                                        <div>
+                                            <h3><?php echo get_the_title($course->ID); ?></h3>
+                                        </div>
+                                    </div>
+                                
+                                <?php
+                                }
+                                ?>
+                            </div>
 
+                        </div>
                     </div>
-                </div>
-            </section>
-        </div>
-    </section>
+                </section>
+            </div>
+        </section>
     </section>
 
     <script src="https://code.jquery.com/jquery-3.6.3.js"

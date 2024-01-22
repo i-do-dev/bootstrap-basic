@@ -39,7 +39,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Small Groups</title>
+    <title>Groups</title>
     <link href="<?php echo $treks_src; ?>/style/main.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/schoolAdminTeachers.css" />
@@ -118,14 +118,14 @@
         <div class="heading-wrapper">
             <div class="heading-left">
                 <div class="welcome-content">
-                    <h2 class="welcome-heading">Small Groups</h2>
+                    <h2 class="welcome-heading">Groups</h2>
                 </div>
             </div>
 
             <div class="heading-right">
                 <!-- <a href="<?php //echo site_url("students"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Students</a>
-                <a href="<?php //echo site_url("classes"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Classes & Other Group</a>
-                <a href="<?php //echo site_url("groups"); ?>" type="button" class="btn btn-secondary btn-lg">Small Group</a> -->
+                <a href="<?php //echo site_url("classes"); ?>" type="button" class="btn btn-outline-secondary btn-lg">Classes & Groups</a>
+                <a href="<?php //echo site_url("groups"); ?>" type="button" class="btn btn-secondary btn-lg">Groups</a> -->
             </div>
         </div>
 
@@ -167,13 +167,13 @@
                         </div>
                         <div class="col-md-3">                   
                             <button id="groupModalBtn" class="add-heading" type="button" data-bs-toggle="modal" data-bs-target="#groupModal" class="primary-btn" style="margin-top: 25px;">
-                                Add New Small Group
+                                Add New Group
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Small Groups Section -->
+                <!-- Groups Section -->
                 <section class="recent-treks-section-div table-school-section">
 
                     <div class="students-table">
@@ -182,13 +182,13 @@
                                 <tr>
                                     <th class="">
                                         <div class="th1">
-                                            Small Groups
+                                            Groups
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>
                                     <th>
                                         <div class="th1 th2">
-                                            Classes/Other Group
+                                            Class/Group
                                             <img src="<?php echo $treks_src; ?>/assets/img/showing.svg" alt="logo" />
                                         </div>
                                     </th>
@@ -262,14 +262,14 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <div class="modal-header-title">
-                            <h2 class="modal-title" id="groupModalLabel"><span id="small-group-action-heading">New</span> Small Group</h2>
+                            <h2 class="modal-title" id="groupModalLabel"><span id="small-group-action-heading">New</span> Group</h2>
                         </div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            Please select <strong>Teacher</strong> to add/edit a Classe & Other Group</strong>
+                            Please select <strong>Teacher</strong> to add/edit a Classe & Group</strong>
                         </div>
                     </div>
                 </div>
