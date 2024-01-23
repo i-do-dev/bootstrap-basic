@@ -228,9 +228,26 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
                                             <div class="table-status"><?php echo get_userdata(get_post_meta($district->ID, 'lxp_district_admin', true))->display_name; ?></div>
                                         </td>
                                         <td><?php echo $district->ID; ?></td>
-                                        <td><?php echo count(lxp_get_district_schools($district->ID)); ?></td>
-                                        <td><?php echo count(lxp_get_school_teachers($district->ID)); ?></td>
-                                        <td><?php echo count(lxp_get_school_students($district->ID)); ?></td>
+                                        <td><?php 
+                                            $schools = lxp_get_district_schools($district->ID);
+                                            echo count($schools); 
+                                        ?></td>
+                                        <td><?php
+                                            // reduce array of schools to array of teachers
+                                            $teachers = array_reduce($schools, function ($carry, $school) {
+                                                $school_teachers = lxp_get_school_teachers($school->ID);
+                                                return array_merge($carry, $school_teachers);
+                                            }, array()); 
+                                            echo count($teachers); 
+                                        ?></td>
+                                        <td><?php 
+                                            // reduce array of schools to array of students
+                                            $students = array_reduce($schools, function ($carry, $school) {
+                                                $school_students = lxp_get_school_students($school->ID);
+                                                return array_merge($carry, $school_students);
+                                            }, array());
+                                            echo count($students);
+                                        ?></td>
                                         <td>Texas</td>
                                         <td>
                                             <div class="dropdown">
