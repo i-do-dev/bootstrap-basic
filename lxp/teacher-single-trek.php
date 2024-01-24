@@ -29,6 +29,7 @@ $button_styles = array();
 while (have_posts()) : the_post();
 global $wpdb;
 $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections WHERE trek_id={$post->ID} ORDER BY sort");
+$css_styles = get_post_meta($post->ID, 'css_styles', true);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,8 +40,12 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
     <title><?php the_title(); ?></title>
     <link href="<?php echo $treks_src; ?>/style/common.css" rel="stylesheet" />
     <link href="<?php echo $treks_src; ?>/style/treksstyle.css" rel="stylesheet" />
-    <link href="<?php echo $treks_src; ?>/style/style-trek-section.css" rel="stylesheet" />
-    <link href="<?php echo $treks_src; ?>/style/trek-section.css" rel="stylesheet" />
+
+    <?php if (!trim($css_styles)) { ?>
+      <link href="<?php echo $treks_src; ?>/style/style-trek-section.css" rel="stylesheet" />
+      <link href="<?php echo $treks_src; ?>/style/trek-section.css" rel="stylesheet" />
+    <?php } ?>
+
     <link rel="stylesheet" href="<?php echo $treks_src; ?>/style/header-section.css" />
     
     <link
@@ -49,6 +54,12 @@ $trek_sections = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}trek_sections 
       integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
       crossorigin="anonymous"
     />
+    
+    <?php if (trim($css_styles)) { ?>
+      <style type="text/css">
+        <?php echo stripslashes($css_styles); ?>
+      </style>
+    <?php } ?>
 
     <style type="text/css">
       .header-notification-user .copy-anchor
