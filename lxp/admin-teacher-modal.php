@@ -51,28 +51,28 @@ global $treks_src;
                         <div class="input_box">
                             <div class="label_box">
                                 <label class="label">First name</label>
-                                <input class="form-control" type="text" name="first_name" id="first_name"
+                                <input class="form-control" type="text" name="lxp_first_name" id="lxp_first_name"
                                     placeholder="Enter teacher’s first name here" />
                             </div>
                         </div>
                         <div class="input_box">
                             <div class="label_box">
                                 <label class="label">Last name</label>
-                                <input class="form-control" type="text" name="last_name" id="last_name"
+                                <input class="form-control" type="text" name="lxp_last_name" id="lxp_last_name"
                                     placeholder="Enter teacher’s last name here" />
                             </div>
                         </div>
                         <div class="input_box">
                             <div class="label_box">
                                 <label class="label">Email</label>
-                                <input class="form-control" type="email" name="user_email" id="email" placeholder="johndoe@gmail.com" />
-                                <input type="hidden" id="inputEmailDefault" name="user_email_default" />
+                                <input class="form-control" type="email" name="lxp_user_email" id="lxp_email" placeholder="johndoe@gmail.com" />
+                                <input type="hidden" id="lxp_inputEmailDefault" name="lxp_user_email_default" />
                             </div>
                         </div>
                         <div class="input_box">
                             <div class="label_box">
                                 <label class="label">Password</label>
-                                <input class="form-control" type="password" name="user_password" id="password" placeholder="***" />
+                                <input class="form-control" type="password" name="lxp_user_password" id="lxp_password" placeholder="***" />
                             </div>
                         </div>
                         <div class="input_box brief_input_box">
@@ -264,10 +264,10 @@ global $treks_src;
             jQuery("#teacherModal #teacher_post_id").val(teacher_id);
             jQuery('#teacherForm .form-control').removeClass('is-invalid');
             jQuery('#teacherModal #about').val(teacher.post_content);
-            jQuery('#teacherModal #first_name').val(admin.first_name);
-            jQuery('#teacherModal #last_name').val(admin.last_name);
-            jQuery('#teacherModal #email').val(admin.user_email);
-            jQuery('#teacherModal #inputEmailDefault').val(admin.user_email);
+            jQuery('#teacherModal #lxp_first_name').val(admin.first_name);
+            jQuery('#teacherModal #lxp_last_name').val(admin.last_name);
+            jQuery('#teacherModal #lxp_email').val(admin.user_email);
+            jQuery('#teacherModal #lxp_inputEmailDefault').val(admin.user_email);
             
             if (teacher.grades) {
                 teacher.grades.forEach(grade => jQuery('#teacherModal input.grade-checkbox[value=' + grade +']').prop('checked', true));

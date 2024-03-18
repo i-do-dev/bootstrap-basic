@@ -246,7 +246,7 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="table-status"><?php echo $teacher_admin->user_email?></div>
+                                            <div class="table-status"><?php echo $teacher_admin ? $teacher_admin->user_email : '(No Admin Login Found)'; ?></div>
                                         </td>
                                         <td><?php echo $lxp_teacher_district ? $lxp_teacher_district->post_title : '---'; ?></td>
                                         <td><?php echo $lxp_teacher_school ? $lxp_teacher_school->post_title : '---' ?></td>
@@ -268,6 +268,10 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                                                     <!-- <button class="dropdown-item" type="button">
                                                         <img src="<?php // echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />
                                                         Delete</button> -->
+                                                    <button class="dropdown-item" type="button" onclick="onSettingsClick(<?php echo $teacher->ID; ?>, 'teacher')">
+                                                        <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
+                                                        Settings
+                                                    </button>
                                                 </div>
                                             </div>
                                         </td>
@@ -340,7 +344,8 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
 
     <?php 
         get_template_part('lxp/admin-teacher-assign-treks-modal');
-
+        get_template_part('lxp/admin-settings-modal');
+        
         // check if district_id and school_id GET set
         if (isset($_GET['district_id']) && isset($_GET['school_id'])) {
             get_template_part('lxp/admin-teacher-modal');
