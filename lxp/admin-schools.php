@@ -255,6 +255,10 @@ while (have_posts()) : the_post();
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                                     <button class="dropdown-item" type="button" onclick="onSchoolEdit(<?php echo $school->ID; ?>)"><img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />Edit</button>
                                                     <!-- <button class="dropdown-item" type="button"><img src="<?php // echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />Delete</button> -->
+                                                    <button class="dropdown-item" type="button" onclick="onSettingsClick(<?php echo $school->ID; ?>, 'school')">
+                                                        <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
+                                                        Settings
+                                                    </button>
                                                 </div>
                                             </div>
                                         </td>
@@ -302,6 +306,8 @@ while (have_posts()) : the_post();
         </form> -->
         
         <?php // echo do_shortcode("[Schools-Short-Code]"); ?>
+        <?php get_template_part('lxp/admin-settings-modal'); ?>
+
         <?php
             if (isset($_GET['district_id'])) {
                 get_template_part('lxp/admin-school-modal', 'district_modal',  array('district_post' => $district_post)); 

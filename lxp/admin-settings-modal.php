@@ -55,7 +55,7 @@
         jQuery("#updateSettingsBtn").on('click', function() {
             let isActive = jQuery("#activeSwitch").prop('checked');
             let data = {
-                teacher_post_id: window.settingsEntityId,
+                entity_post_id: window.settingsEntityId,
                 active: isActive
             };
 
@@ -82,7 +82,7 @@
 
         $.ajax({
             method: "GET",
-            url: apiUrl + settingsEntity +"/settings" + "?" + settingsEntity +"_post_id=" + settingsEntityId 
+            url: apiUrl + settingsEntity +"/settings" + "?entity_post_id=" + settingsEntityId 
         }).done(function( response ) {
             window.settingsEntity = settingsEntity;
             window.settingsEntityId = settingsEntityId;

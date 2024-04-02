@@ -20,7 +20,14 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 $district_post = lxp_get_user_district_post( (isset($_GET['district_id']) ? get_post_meta($_GET['district_id'], 'lxp_district_admin', true) : 0) );
 $district_schools = !$district_post ? [] : lxp_get_district_schools($district_post->ID);
 $district_schools_ids = array_map(function ($school) { return $school->ID; },  $district_schools);
-$district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_id']) ? [$_GET['school_id']] : $district_schools_ids );
+//$district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_id']) ? [$_GET['school_id']] : $district_schools_ids );
+$district_schools_teachers = [];
+if (isset($_GET['inactive']) && $_GET['inactive'] == 'true') {
+    $district_schools_teachers = lxp_get_all_schools_inactive_teachers( isset($_GET['school_id']) ? [$_GET['school_id']] : $district_schools_ids );
+} else {
+    $district_schools_teachers = lxp_get_all_schools_active_teachers( isset($_GET['school_id']) ? [$_GET['school_id']] : $district_schools_ids );
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -131,8 +138,18 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
         <section class="school-section">
             <section class="school_teacher_cards">
 
-                <!-- Admin Teacher Table Section -->
-                <section class="recent-treks-section-div table-school-section">
+                    <!-- Admin Teacher Table Section -->
+                    <section class="recent-treks-section-div table-school-section">
+
+                    <!-- bootstrap Active and Inactive tabs -->
+                    <ul class="nav nav-tabs mb-3" id="settingsTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link<?php echo !isset($_GET['inactive']) ? ' active':''; ?>" id="active-tab" data-bs-toggle="tab" href="#active" role="tab" aria-controls="active" aria-selected="true">Active</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link<?php echo isset($_GET['inactive']) ? ' active' : ''; ?>" id="inactive-tab" data-bs-toggle="tab" href="#inactive" role="tab" aria-controls="inactive" aria-selected="false">Inactive</a>
+                        </li>
+                    </ul> 
 
                     <div class="students-table">
                         <div class="school-box">
@@ -338,6 +355,34 @@ $district_schools_teachers = lxp_get_all_schools_teachers( isset($_GET['school_i
                     url.searchParams.delete('school_id');
                 }
                 window.location = url.href;
+            });
+
+
+            // Get the tabs
+            let activeTab = document.querySelector('#active-tab');
+            let inactiveTab = document.querySelector('#inactive-tab');
+
+            // Add event listener for 'shown.bs.tab' event
+            activeTab.addEventListener('shown.bs.tab', function (e) {
+                // Create a URLSearchParams object
+                let params = new URLSearchParams(window.location.search);
+                // Remove 'inactive' parameter
+                params.delete('inactive');
+                // Create the new URL
+                let newUrl = window.location.pathname + '?' + params.toString();
+                // Reload the page with the new URL
+                window.location.href = newUrl;
+            });
+
+            inactiveTab.addEventListener('shown.bs.tab', function (e) {
+                // Create a URLSearchParams object
+                let params = new URLSearchParams(window.location.search);
+                // Add 'inactive' parameter
+                params.set('inactive', 'true');
+                // Create the new URL
+                let newUrl = window.location.pathname + '?' + params.toString();
+                // Reload the page with the new URL
+                window.location.href = newUrl;
             });
         });
     </script>

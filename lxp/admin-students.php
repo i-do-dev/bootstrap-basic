@@ -28,9 +28,19 @@ $teacher_school_id = $teacher_post ? get_post_meta($teacher_post->ID, 'lxp_teach
 $school_post = $teacher_school_id > 0 ? get_post($teacher_school_id) : null;
 $students = [];
 if(isset($_GET['school_id']) && isset($_GET['teacher_id'])) {
-    $students = lxp_get_school_teacher_students($teacher_school_id, $teacher_post->ID);
+    // $students = lxp_get_school_teacher_students($teacher_school_id, $teacher_post->ID);
+    if (isset($_GET['inactive']) && $_GET['inactive'] == 'true') {
+        $students = lxp_get_school_teacher_students_inactive($teacher_school_id, $teacher_post->ID, true);
+    } else {
+        $students = lxp_get_school_teacher_students_active($teacher_school_id, $teacher_post->ID);
+    }
 } else if(isset($_GET['school_id'])) {
-    $students = lxp_get_school_students($_GET['school_id']);
+    // $students = lxp_get_school_students($_GET['school_id']);
+    if (isset($_GET['inactive']) && $_GET['inactive'] == 'true') {
+        $students = lxp_get_school_students_inactive($_GET['school_id'], true);
+    } else {
+        $students = lxp_get_school_students_active($_GET['school_id']);
+    }
     $school_post = get_post($_GET['school_id']);
 }
 ?>
@@ -212,6 +222,16 @@ if(isset($_GET['school_id']) && isset($_GET['teacher_id'])) {
                 <!-- Table Section -->
                 <section class="recent-treks-section-div table-school-section">
 
+                    <!-- bootstrap Active and Inactive tabs -->
+                    <ul class="nav nav-tabs mb-3" id="settingsTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link<?php echo !isset($_GET['inactive']) ? ' active':''; ?>" id="active-tab" data-bs-toggle="tab" href="#active" role="tab" aria-controls="active" aria-selected="true">Active</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link<?php echo isset($_GET['inactive']) ? ' active' : ''; ?>" id="inactive-tab" data-bs-toggle="tab" href="#inactive" role="tab" aria-controls="inactive" aria-selected="false">Inactive</a>
+                        </li>
+                    </ul>
+
                     <div class="students-table">
                         <!-- 
                         <div class="school-box">
@@ -347,6 +367,10 @@ if(isset($_GET['school_id']) && isset($_GET['teacher_id'])) {
                                                     <!-- <button class="dropdown-item" type="button">
                                                         <img src="<?php // echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />
                                                         Delete</button> -->
+                                                    <button class="dropdown-item" type="button" onclick="onSettingsClick(<?php echo $student->ID; ?>, 'student')">
+                                                        <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
+                                                        Settings
+                                                    </button>
                                                 </div>
                                             </div>
                                         </td>
@@ -390,6 +414,7 @@ if(isset($_GET['school_id']) && isset($_GET['teacher_id'])) {
         crossorigin="anonymous"></script>
     
     <?php 
+        get_template_part('lxp/admin-settings-modal');
         //if(isset($_GET['teacher_id'])) {
         if( $school_post ) {
             get_template_part('lxp/admin-student-modal', 'student-modal', array("school_post" => $school_post, "teachers" => $district_schools_teachers)); 
@@ -506,6 +531,33 @@ if(isset($_GET['school_id']) && isset($_GET['teacher_id'])) {
                     url.searchParams.delete('teacher_id');
                 }
                 window.location = url.href;
+            });
+
+            // Get the tabs
+            let activeTab = document.querySelector('#active-tab');
+            let inactiveTab = document.querySelector('#inactive-tab');
+
+            // Add event listener for 'shown.bs.tab' event
+            activeTab.addEventListener('shown.bs.tab', function (e) {
+                // Create a URLSearchParams object
+                let params = new URLSearchParams(window.location.search);
+                // Remove 'inactive' parameter
+                params.delete('inactive');
+                // Create the new URL
+                let newUrl = window.location.pathname + '?' + params.toString();
+                // Reload the page with the new URL
+                window.location.href = newUrl;
+            });
+
+            inactiveTab.addEventListener('shown.bs.tab', function (e) {
+                // Create a URLSearchParams object
+                let params = new URLSearchParams(window.location.search);
+                // Add 'inactive' parameter
+                params.set('inactive', 'true');
+                // Create the new URL
+                let newUrl = window.location.pathname + '?' + params.toString();
+                // Reload the page with the new URL
+                window.location.href = newUrl;
             });
         });
     </script>
