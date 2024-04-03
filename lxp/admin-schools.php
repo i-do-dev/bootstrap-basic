@@ -19,7 +19,13 @@ if ( isset($_GET['district_id']) ) {
     $district_post = get_post( $_GET['district_id'] );
 }
 
-$schools = $district_post ? lxp_get_district_schools($district_post->ID) : [];
+// $schools = $district_post ? lxp_get_district_schools($district_post->ID) : [];
+$schools = [];
+if (isset($_GET['inactive']) && $_GET['inactive'] == 'true') {
+    $schools = $district_post ? lxp_get_district_schools_inactive($district_post->ID, true) : [];
+} else {
+    $schools = $district_post ? lxp_get_district_schools_active($district_post->ID) : [];
+}
 
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 while (have_posts()) : the_post();
@@ -144,6 +150,15 @@ while (have_posts()) : the_post();
 
                 <!-- Admin School Table Section -->
                 <section class="recent-treks-section-div table-school-section">
+                    <!-- bootstrap Active and Inactive tabs -->
+                    <ul class="nav nav-tabs mb-3" id="settingsTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link<?php echo !isset($_GET['inactive']) ? ' active':''; ?>" id="active-tab" data-bs-toggle="tab" href="#active" role="tab" aria-controls="active" aria-selected="true">Active</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link<?php echo isset($_GET['inactive']) ? ' active' : ''; ?>" id="inactive-tab" data-bs-toggle="tab" href="#inactive" role="tab" aria-controls="inactive" aria-selected="false">Inactive</a>
+                        </li>
+                    </ul>
 
                     <div class="students-table">
                         <div class="school-box">
@@ -392,6 +407,33 @@ while (have_posts()) : the_post();
                 }
 
                 window.location.href = url.href;
+            });
+
+            // Get the tabs
+            let activeTab = document.querySelector('#active-tab');
+            let inactiveTab = document.querySelector('#inactive-tab');
+
+            // Add event listener for 'shown.bs.tab' event
+            activeTab.addEventListener('shown.bs.tab', function (e) {
+                // Create a URLSearchParams object
+                let params = new URLSearchParams(window.location.search);
+                // Remove 'inactive' parameter
+                params.delete('inactive');
+                // Create the new URL
+                let newUrl = window.location.pathname + '?' + params.toString();
+                // Reload the page with the new URL
+                window.location.href = newUrl;
+            });
+
+            inactiveTab.addEventListener('shown.bs.tab', function (e) {
+                // Create a URLSearchParams object
+                let params = new URLSearchParams(window.location.search);
+                // Add 'inactive' parameter
+                params.set('inactive', 'true');
+                // Create the new URL
+                let newUrl = window.location.pathname + '?' + params.toString();
+                // Reload the page with the new URL
+                window.location.href = newUrl;
             });
         });
     </script>

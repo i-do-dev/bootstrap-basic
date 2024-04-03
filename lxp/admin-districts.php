@@ -3,6 +3,7 @@
 $lxp_client_admin_users = get_users(array('role' => 'lxp_client_admin'));
 $lxp_client_admin_user_ids = array_map(function ($user) { return $user->ID; },  $lxp_client_admin_users);
 // get post TL_DISTRICT_CPT based on multiple 'lxp_district_admin' meta values
+/*
 $district_posts = get_posts(array(
   'post_type' => 'tl_district',
   'meta_query' => array(
@@ -13,7 +14,52 @@ $district_posts = get_posts(array(
     )
   )
 ));
+*/
 
+if (isset($_GET['inactive']) && $_GET['inactive'] === 'true') {
+    // $district_posts using get_posts where lxp_district_admin meta IN $lxp_client_admin_user_ids and settings_active meta key is equal to false
+    $district_posts = get_posts(array(
+        'post_type' => 'tl_district',
+        'meta_query' => array(
+            'relation' => 'AND',
+            array(
+                'key' => 'lxp_district_admin',
+                'value' => $lxp_client_admin_user_ids,
+                'compare' => 'IN'
+            ),
+            array(
+                'key' => 'settings_active',
+                'value' => 'false',
+                'compare' => '='
+            )
+        )
+    ));   
+} else {
+    // $district_posts using get_posts where lxp_district_admin meta IN $lxp_client_admin_user_ids and settings_active meta key is not set or not equal to false
+    $district_posts = get_posts(array(
+        'post_type' => 'tl_district',
+        'meta_query' => array(
+            'relation' => 'AND',
+            array(
+                'key' => 'lxp_district_admin',
+                'value' => $lxp_client_admin_user_ids,
+                'compare' => 'IN'
+            ),
+            array(
+                'relation' => 'OR',
+                array(
+                    'key' => 'settings_active',
+                    'compare' => 'NOT EXISTS'
+                ),
+                array(
+                    'key' => 'settings_active',
+                    'value' => 'false',
+                    'compare' => '!='
+                )
+            )
+        )
+    ));
+}
 
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 ?>
@@ -123,7 +169,16 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 
                 <!-- Admin District Table Section -->
                 <section class="recent-treks-section-div table-district-section">
-
+                    <!-- bootstrap Active and Inactive tabs -->
+                    <ul class="nav nav-tabs mb-3" id="settingsTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link<?php echo !isset($_GET['inactive']) ? ' active':''; ?>" id="active-tab" data-bs-toggle="tab" href="#active" role="tab" aria-controls="active" aria-selected="true">Active</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link<?php echo isset($_GET['inactive']) ? ' active' : ''; ?>" id="inactive-tab" data-bs-toggle="tab" href="#inactive" role="tab" aria-controls="inactive" aria-selected="false">Inactive</a>
+                        </li>
+                    </ul>
+                    
                     <div class="students-table">
                         <div class="district-box">
                             <div class="showing-row-box">
@@ -258,6 +313,10 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                                     <button class="dropdown-item" type="button" onclick="onDistrictEdit(<?php echo $district->ID; ?>)"><img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />Edit</button>
                                                     <!-- <button class="dropdown-item" type="button"><img src="<?php // echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />Delete</button> -->
+                                                    <button class="dropdown-item" type="button" onclick="onSettingsClick(<?php echo $district->ID; ?>, 'district')">
+                                                        <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
+                                                        Settings
+                                                    </button>
                                                 </div>
                                             </div>
                                         </td>
@@ -306,6 +365,7 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
         
         <?php // echo do_shortcode("[Districts-Short-Code]"); ?>
         <?php
+            get_template_part('lxp/admin-settings-modal');
             get_template_part('lxp/admin-district-modal'); 
         ?>
 
@@ -354,6 +414,33 @@ $treks_src = get_stylesheet_directory_uri() . '/treks-src';
                 }
 
                 window.location.href = url.href;
+            });
+
+            // Get the tabs
+            let activeTab = document.querySelector('#active-tab');
+            let inactiveTab = document.querySelector('#inactive-tab');
+
+            // Add event listener for 'shown.bs.tab' event
+            activeTab.addEventListener('shown.bs.tab', function (e) {
+                // Create a URLSearchParams object
+                let params = new URLSearchParams(window.location.search);
+                // Remove 'inactive' parameter
+                params.delete('inactive');
+                // Create the new URL
+                let newUrl = window.location.pathname + '?' + params.toString();
+                // Reload the page with the new URL
+                window.location.href = newUrl;
+            });
+
+            inactiveTab.addEventListener('shown.bs.tab', function (e) {
+                // Create a URLSearchParams object
+                let params = new URLSearchParams(window.location.search);
+                // Add 'inactive' parameter
+                params.set('inactive', 'true');
+                // Create the new URL
+                let newUrl = window.location.pathname + '?' + params.toString();
+                // Reload the page with the new URL
+                window.location.href = newUrl;
             });
         });
     </script>
