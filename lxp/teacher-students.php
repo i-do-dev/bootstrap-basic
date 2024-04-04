@@ -5,7 +5,14 @@ global $userdata;
 $teacher_post = lxp_get_teacher_post($userdata->data->ID);
 $teacher_school_id = get_post_meta($teacher_post->ID, 'lxp_teacher_school_id', true);
 $school_post = get_post($teacher_school_id);
-$students = lxp_get_school_teacher_students($teacher_school_id, $teacher_post->ID);
+//$students = lxp_get_school_teacher_students($teacher_school_id, $teacher_post->ID);
+$students = array();
+if (isset($_GET['inactive']) && $_GET['inactive'] == 'true') {
+    $students = lxp_get_school_teacher_students_inactive($teacher_school_id, $teacher_post->ID);
+} else {
+    $students = lxp_get_school_teacher_students_active($teacher_school_id, $teacher_post->ID);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -137,6 +144,15 @@ $students = lxp_get_school_teacher_students($teacher_school_id, $teacher_post->I
                 <section class="recent-treks-section-div table-school-section">
 
                     <div class="students-table">
+                        <!-- bootstrap Active and Inactive tabs -->
+                        <ul class="nav nav-tabs mb-3" id="settingsTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link<?php echo !isset($_GET['inactive']) ? ' active':''; ?>" id="active-tab" data-bs-toggle="tab" href="#active" role="tab" aria-controls="active" aria-selected="true">Active</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link<?php echo isset($_GET['inactive']) ? ' active' : ''; ?>" id="inactive-tab" data-bs-toggle="tab" href="#inactive" role="tab" aria-controls="inactive" aria-selected="false">Inactive</a>
+                            </li>
+                        </ul>
                         <!-- 
                         <div class="school-box">
                             <div class="showing-row-box">
@@ -271,6 +287,10 @@ $students = lxp_get_school_teacher_students($teacher_school_id, $teacher_post->I
                                                     <!-- <button class="dropdown-item" type="button">
                                                         <img src="<?php // echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />
                                                         Delete</button> -->
+                                                        <button class="dropdown-item" type="button" onclick="onSettingsClick(<?php echo $student->ID; ?>, 'student')">
+                                                            <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
+                                                            Settings
+                                                        </button>
                                                 </div>
                                             </div>
                                         </td>
@@ -313,7 +333,49 @@ $students = lxp_get_school_teacher_students($teacher_school_id, $teacher_post->I
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
     
+    <?php get_template_part('lxp/admin-settings-modal'); ?>
     <?php get_template_part('lxp/teacher-student-modal', 'student-modal', array("school_post" => $school_post, "teacher_post" => $teacher_post)); ?>
+    <script>
+        // document ready
+        $(document).ready(function () {
+            // on change teacher drop down
+            $('#teacher-drop-down').on('change', function () {
+                var teacher_id = $(this).val();
+                if (teacher_id > 0) {
+                    window.location.href = '<?php echo get_permalink(); ?>?teacher_id=' + teacher_id;
+                } else {
+                    window.location.href = '<?php echo get_permalink(); ?>';
+                }
+            });
+
+            // Get the tabs
+            let activeTab = document.querySelector('#active-tab');
+            let inactiveTab = document.querySelector('#inactive-tab');
+
+            // Add event listener for 'shown.bs.tab' event
+            activeTab.addEventListener('shown.bs.tab', function (e) {
+                // Create a URLSearchParams object
+                let params = new URLSearchParams(window.location.search);
+                // Remove 'inactive' parameter
+                params.delete('inactive');
+                // Create the new URL
+                let newUrl = window.location.pathname + '?' + params.toString();
+                // Reload the page with the new URL
+                window.location.href = newUrl;
+            });
+
+            inactiveTab.addEventListener('shown.bs.tab', function (e) {
+                // Create a URLSearchParams object
+                let params = new URLSearchParams(window.location.search);
+                // Add 'inactive' parameter
+                params.set('inactive', 'true');
+                // Create the new URL
+                let newUrl = window.location.pathname + '?' + params.toString();
+                // Reload the page with the new URL
+                window.location.href = newUrl;
+            });
+        });
+    </script>
 </body>
 
 </html>

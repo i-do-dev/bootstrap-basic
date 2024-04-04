@@ -1,6 +1,12 @@
 <?php
 $district_post = lxp_get_user_district_post();
-$schools = $district_post ? lxp_get_district_schools($district_post->ID) : [];
+//$schools = $district_post ? lxp_get_district_schools($district_post->ID) : [];
+$schools = [];
+if (isset($_GET['inactive']) && $_GET['inactive'] === 'true') {
+    $schools = lxp_get_district_schools_inactive($district_post->ID, 'inactive');
+} else {
+    $schools = lxp_get_district_schools_active($district_post->ID, 'active');
+}
 
 $treks_src = get_stylesheet_directory_uri() . '/treks-src';
 while (have_posts()) : the_post();
@@ -121,6 +127,15 @@ while (have_posts()) : the_post();
 
                 <!-- Admin School Table Section -->
                 <section class="recent-treks-section-div table-school-section">
+                    <!-- bootstrap Active and Inactive tabs -->
+                    <ul class="nav nav-tabs mb-3" id="settingsTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link<?php echo !isset($_GET['inactive']) ? ' active':''; ?>" id="active-tab" data-bs-toggle="tab" href="#active" role="tab" aria-controls="active" aria-selected="true">Active</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link<?php echo isset($_GET['inactive']) ? ' active' : ''; ?>" id="inactive-tab" data-bs-toggle="tab" href="#inactive" role="tab" aria-controls="inactive" aria-selected="false">Inactive</a>
+                        </li>
+                    </ul>
 
                     <div class="students-table">
                         <div class="school-box">
@@ -232,6 +247,10 @@ while (have_posts()) : the_post();
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                                     <button class="dropdown-item" type="button" onclick="onSchoolEdit(<?php echo $school->ID; ?>)"><img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />Edit</button>
                                                     <!-- <button class="dropdown-item" type="button"><img src="<?php // echo $treks_src; ?>/assets/img/delete.svg" alt="logo" />Delete</button> -->
+                                                    <button class="dropdown-item" type="button" onclick="onSettingsClick(<?php echo $school->ID; ?>, 'school')">
+                                                        <img src="<?php echo $treks_src; ?>/assets/img/edit.svg" alt="logo" />
+                                                        Settings
+                                                    </button>
                                                 </div>
                                             </div>
                                         </td>
@@ -278,6 +297,7 @@ while (have_posts()) : the_post();
             <input type="submit">
         </form> -->
         
+        <?php get_template_part('lxp/admin-settings-modal'); ?>
         <?php // echo do_shortcode("[Schools-Short-Code]"); ?>
         <?php get_template_part('lxp/client-school-modal', 'client-school-modal', array('district_post' => $district_post)); ?>
 
@@ -310,6 +330,35 @@ while (have_posts()) : the_post();
                     console.error("Can not load school");
                 });
             }
+
+            jQuery(document).ready(function() {
+                // Get the tabs
+                let activeTab = document.querySelector('#active-tab');
+                let inactiveTab = document.querySelector('#inactive-tab');
+
+                // Add event listener for 'shown.bs.tab' event
+                activeTab.addEventListener('shown.bs.tab', function (e) {
+                    // Create a URLSearchParams object
+                    let params = new URLSearchParams(window.location.search);
+                    // Remove 'inactive' parameter
+                    params.delete('inactive');
+                    // Create the new URL
+                    let newUrl = window.location.pathname + '?' + params.toString();
+                    // Reload the page with the new URL
+                    window.location.href = newUrl;
+                });
+
+                inactiveTab.addEventListener('shown.bs.tab', function (e) {
+                    // Create a URLSearchParams object
+                    let params = new URLSearchParams(window.location.search);
+                    // Add 'inactive' parameter
+                    params.set('inactive', 'true');
+                    // Create the new URL
+                    let newUrl = window.location.pathname + '?' + params.toString();
+                    // Reload the page with the new URL
+                    window.location.href = newUrl;
+                });
+            });
 
         </script>
     </body>

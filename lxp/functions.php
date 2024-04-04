@@ -94,6 +94,48 @@ function lxp_get_district_schools($district_id)
     return $posts;
 }
 
+// function lxp_get_school_teachers_active($school_id) where settings_active meta key is not set or not equal to false
+function lxp_get_school_teachers_active($school_id)
+{
+    $school_query = new WP_Query( array( 
+        'post_type' => TL_TEACHER_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_teacher_school_id', 'value' => $school_id, 'compare' => '='),
+            array(
+                'relation' => 'OR',
+                array('key' => 'settings_active', 'compare' => 'NOT EXISTS'),
+                array('key' => 'settings_active', 'value' => 'false', 'compare' => '!=')
+            )
+        ),
+        'orderby' => 'title',
+        'order' => 'ASC'
+    ) );
+    
+    $posts = $school_query->get_posts();
+    return $posts;
+}
+
+// function lxp_get_school_teachers_inactive($school_id) where settings_active meta key is equal to false
+function lxp_get_school_teachers_inactive($school_id)
+{
+    $school_query = new WP_Query( array( 
+        'post_type' => TL_TEACHER_CPT, 
+        'post_status' => array( 'publish' ),
+        'posts_per_page'   => -1,        
+        'meta_query' => array(
+            array('key' => 'lxp_teacher_school_id', 'value' => $school_id, 'compare' => '='),
+            array('key' => 'settings_active', 'value' => 'false', 'compare' => '=')
+        ),
+        'orderby' => 'title',
+        'order' => 'ASC'
+    ) );
+    
+    $posts = $school_query->get_posts();
+    return $posts;
+}
+
 function lxp_get_school_teachers($school_id)
 {
     $school_query = new WP_Query( array( 
