@@ -257,7 +257,7 @@ function onStudentEdit(lxp_student_id) {
             jQuery('#studentModal #lxp_last_name_student').val("");
             jQuery('#studentModal #lxp_usernameStudent').val("");
             jQuery('#studentModal #inputUsernameDefaultStudent').val("");
-            jQuery('#studentModal #passwordStudent').val("");
+            jQuery('#studentModal #lxp_passwordStudent').val("");
             window.location.reload();
         });
 
